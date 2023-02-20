@@ -17,6 +17,7 @@
  */
 package com.wultra.security.userdatastore.userclaims;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,10 @@ class UserClaimsController {
      * @param userId user identifier
      * @return user claims
      */
+    @Operation(
+            summary = "Return claims",
+            description = "Return claims for the given user."
+    )
     @GetMapping("/private/user/{userId}/claims")
     public Object userClaims(@PathVariable final String userId) {
         logger.info("Fetching claims of user ID: {}", userId);
@@ -56,6 +61,10 @@ class UserClaimsController {
      * @param userId user identifier
      * @param claims claims to be stored
      */
+    @Operation(
+            summary = "Create or update claims",
+            description = "Create claims for the given user or update the exiting ones."
+    )
     @PostMapping("/public/user/{userId}/claims")
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrUpdate(@PathVariable final String userId, @RequestBody final Object claims) {
@@ -68,6 +77,10 @@ class UserClaimsController {
      *
      * @param userId user identifier
      */
+    @Operation(
+            summary = "Delete claims",
+            description = "Delete claims of the given user."
+    )
     @DeleteMapping("/public/user/{userId}/claims")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable final String userId) {
