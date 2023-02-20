@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="UserDataStoreApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ACTIVE_PROFILES" value="dev" />
+    <envs>
+      <env name="JDBC_DATABASE_SCHEMA" value="powerauth" />
+      <env name="JDBC_DATABASE_USERNAME" value="powerauth" />
+      <env name="JDBC_DATABASE_PASSWORD" value="" />
+    </envs>
+    <module name="user-data-store" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.wultra.security.userdatastore.UserDataStoreApplication" />
+    <option name="VM_PARAMETERS" value="-Dserver.servlet.context-path=/user-data-store -Dserver.port=8091" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
