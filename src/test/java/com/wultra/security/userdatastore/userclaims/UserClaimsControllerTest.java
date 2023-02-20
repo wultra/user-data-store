@@ -17,12 +17,15 @@
  */
 package com.wultra.security.userdatastore.userclaims;
 
+import com.wultra.security.userdatastore.SecurityConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Map;
@@ -39,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Lubos Racansky lubos.racansky@wultra.com
  */
 @WebMvcTest(UserClaimsController.class)
+@Import(SecurityConfiguration.class)
 class UserClaimsControllerTest {
 
     @MockBean
@@ -47,6 +51,7 @@ class UserClaimsControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @WithMockUser(roles = "READ")
     @Test
     void testGet() throws Exception {
         when(service.fetchUserClaims("alice"))
@@ -68,6 +73,15 @@ class UserClaimsControllerTest {
                 .andExpect(jsonPath("$.name", is("Alice Adams")));
     }
 
+    @WithMockUser(roles = {"DELETE", "WRITE"})
+    @Test
+    void testGet_wrongRoles() throws Exception {
+        mvc.perform(get("/private/user/alice/claims")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+    }
+
+    @WithMockUser(roles = "DELETE")
     @Test
     void testDelete() throws Exception {
         mvc.perform(delete("/public/user/alice/claims"))
@@ -76,6 +90,14 @@ class UserClaimsControllerTest {
         verify(service).deleteUserClaims("alice");
     }
 
+    @WithMockUser(roles = {"WRITE", "READ"})
+    @Test
+    void testDelete_wrongRoles() throws Exception {
+        mvc.perform(delete("/public/user/alice/claims"))
+                .andExpect(status().isForbidden());
+    }
+
+    @WithMockUser(roles = "WRITE")
     @Test
     void testPost() throws Exception {
         mvc.perform(post("/public/user/alice/claims")
@@ -99,5 +121,14 @@ class UserClaimsControllerTest {
                 "https://claims.example.com/department", "engineering"
         );
         verify(service).createOrUpdateUserClaims("alice", expectedClaims);
+    }
+
+    @WithMockUser(roles = {"DELETE", "READ"})
+    @Test
+    void testPost_wrongRoles() throws Exception {
+        mvc.perform(post("/public/user/alice/claims")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isForbidden());
     }
 }
