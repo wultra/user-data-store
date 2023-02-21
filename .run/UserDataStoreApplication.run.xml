@@ -6,6 +6,7 @@
       <env name="JDBC_DATABASE_SCHEMA" value="powerauth" />
       <env name="JDBC_DATABASE_USERNAME" value="powerauth" />
       <env name="JDBC_DATABASE_PASSWORD" value="" />
+      <env name="USER_DATA_STORE_LIQUIBASE_ENABLED" value="true" />
     </envs>
     <module name="user-data-store" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.wultra.security.userdatastore.UserDataStoreApplication" />

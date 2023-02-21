@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="user-data-store-20230220-initial-schema" author="racansky" labels="user-data-store">
+        <createTable tableName="ud_user_claims">
+            <column name="user_id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="claims" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="now()"/>
+            <column name="timestamp_updated" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
