@@ -23,6 +23,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 /**
  * REST controller providing API for CRUD of user claims.
  *
@@ -49,8 +52,8 @@ class UserClaimsController {
             summary = "Return claims",
             description = "Return claims for the given user."
     )
-    @GetMapping("/private/user/{userId}/claims")
-    public Object userClaims(@PathVariable final String userId) {
+    @GetMapping("/private/user-claims")
+    public Object userClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
         logger.info("Fetching claims of user ID: {}", userId);
         return userClaimsService.fetchUserClaims(userId);
     }
@@ -65,9 +68,9 @@ class UserClaimsController {
             summary = "Create or update claims",
             description = "Create claims for the given user or update the exiting ones."
     )
-    @PostMapping("/public/user/{userId}/claims")
+    @PostMapping("/public/user-claims")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createOrUpdate(@PathVariable final String userId, @RequestBody final Object claims) {
+    public void createOrUpdate(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
         logger.info("Creating or updating claims of user ID: {}", userId);
         userClaimsService.createOrUpdateUserClaims(userId, claims);
     }
@@ -81,9 +84,9 @@ class UserClaimsController {
             summary = "Delete claims",
             description = "Delete claims of the given user."
     )
-    @DeleteMapping("/public/user/{userId}/claims")
+    @DeleteMapping("/public/user-claims")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable final String userId) {
+    public void delete(@NotBlank @Size(max = 255) @RequestParam String userId) {
         logger.info("Deleting claims of user ID: {}", userId);
         userClaimsService.deleteUserClaims(userId);
     }

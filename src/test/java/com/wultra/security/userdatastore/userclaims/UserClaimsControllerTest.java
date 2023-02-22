@@ -65,7 +65,7 @@ class UserClaimsControllerTest {
                         }
                         """);
 
-        mvc.perform(get("/private/user/alice/claims")
+        mvc.perform(get("/private/user-claims?userId=alice")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
@@ -76,7 +76,7 @@ class UserClaimsControllerTest {
     @WithMockUser(roles = {"DELETE", "WRITE"})
     @Test
     void testGet_wrongRoles() throws Exception {
-        mvc.perform(get("/private/user/alice/claims")
+        mvc.perform(get("/private/user-claims?userId=alice")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
@@ -84,7 +84,7 @@ class UserClaimsControllerTest {
     @WithMockUser(roles = "DELETE")
     @Test
     void testDelete() throws Exception {
-        mvc.perform(delete("/public/user/alice/claims"))
+        mvc.perform(delete("/public/user-claims?userId=alice"))
                 .andExpect(status().is(HttpStatus.NO_CONTENT.value()));
 
         verify(service).deleteUserClaims("alice");
@@ -93,14 +93,14 @@ class UserClaimsControllerTest {
     @WithMockUser(roles = {"WRITE", "READ"})
     @Test
     void testDelete_wrongRoles() throws Exception {
-        mvc.perform(delete("/public/user/alice/claims"))
+        mvc.perform(delete("/public/user-claims?userId=alice"))
                 .andExpect(status().isForbidden());
     }
 
     @WithMockUser(roles = "WRITE")
     @Test
     void testPost() throws Exception {
-        mvc.perform(post("/public/user/alice/claims")
+        mvc.perform(post("/public/user-claims?userId=alice")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -126,7 +126,7 @@ class UserClaimsControllerTest {
     @WithMockUser(roles = {"DELETE", "READ"})
     @Test
     void testPost_wrongRoles() throws Exception {
-        mvc.perform(post("/public/user/alice/claims")
+        mvc.perform(post("/public/user-claims?userId=alice")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isForbidden());
