@@ -17,10 +17,12 @@
  */
 package com.wultra.security.userdatastore;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -31,10 +33,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfiguration {
 
+    @Value("${user-data-store.security.basic.realm}")
+    private String realm;
+
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-        return http.csrf()
-                .disable()
+        return http
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .httpBasic(httpBasic -> httpBasic.realmName(realm))
                 .authorizeRequests()
                 .antMatchers(HttpMethod.DELETE, "/public/**")
                 .hasRole("DELETE")
