@@ -45,7 +45,7 @@ public class SecurityConfiguration {
                 .httpBasic(httpBasic -> httpBasic.realmName(realm))
                 .authorizeRequests(authorize -> authorize
                         .antMatchers(HttpMethod.DELETE, "/public/**")
-                            .hasRole("DELETE")
+                            .hasRole("WRITE")
                         .antMatchers(HttpMethod.POST, "/public/**")
                             .hasRole("WRITE")
                         .antMatchers(HttpMethod.GET, "/private/**")

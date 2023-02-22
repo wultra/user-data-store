@@ -73,7 +73,7 @@ class UserClaimsControllerTest {
                 .andExpect(jsonPath("$.name", is("Alice Adams")));
     }
 
-    @WithMockUser(roles = {"DELETE", "WRITE"})
+    @WithMockUser(roles = "WRITE")
     @Test
     void testGet_wrongRoles() throws Exception {
         mvc.perform(get("/private/user-claims?userId=alice")
@@ -81,7 +81,7 @@ class UserClaimsControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    @WithMockUser(roles = "DELETE")
+    @WithMockUser(roles = "WRITE")
     @Test
     void testDelete() throws Exception {
         mvc.perform(delete("/public/user-claims?userId=alice"))
@@ -90,7 +90,7 @@ class UserClaimsControllerTest {
         verify(service).deleteUserClaims("alice");
     }
 
-    @WithMockUser(roles = {"WRITE", "READ"})
+    @WithMockUser(roles = "READ")
     @Test
     void testDelete_wrongRoles() throws Exception {
         mvc.perform(delete("/public/user-claims?userId=alice"))
@@ -123,7 +123,7 @@ class UserClaimsControllerTest {
         verify(service).createOrUpdateUserClaims("alice", expectedClaims);
     }
 
-    @WithMockUser(roles = {"DELETE", "READ"})
+    @WithMockUser(roles = "READ")
     @Test
     void testPost_wrongRoles() throws Exception {
         mvc.perform(post("/public/user-claims?userId=alice")
