@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -39,20 +40,18 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         return http
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(httpBasic -> httpBasic.realmName(realm))
-                .authorizeRequests()
-                .antMatchers(HttpMethod.DELETE, "/public/**")
-                .hasRole("DELETE")
-                .antMatchers(HttpMethod.POST, "/public/**")
-                .hasRole("WRITE")
-                .antMatchers(HttpMethod.GET, "/private/**")
-                .hasRole("READ")
-                .antMatchers("/swagger-ui*/**")
-                .anonymous()
-                .and()
-                .build();
+                .authorizeRequests(authorize -> authorize
+                        .antMatchers(HttpMethod.DELETE, "/public/**")
+                            .hasRole("DELETE")
+                        .antMatchers(HttpMethod.POST, "/public/**")
+                            .hasRole("WRITE")
+                        .antMatchers(HttpMethod.GET, "/private/**")
+                            .hasRole("READ")
+                        .antMatchers("/swagger-ui*/**")
+                            .anonymous()
+                ).build();
     }
 }
