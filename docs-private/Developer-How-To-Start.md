@@ -21,3 +21,15 @@ Mind that the working directory MUST be `src/main/resources` to be consistent wi
 cd src/main/resources
 liquibase --changelog-file=db/changelog/db.changelog-master.xml --url=jdbc:postgresql://localhost:5432/powerauth --username=powerauth --hub-mode=off status
 ```
+
+
+### Users
+
+To create a testing user, execute the following sql.
+
+```sql
+INSERT INTO ud_users (username, password, enabled) VALUES ('user', '{sha256}48c13b0404540c2f2b0952ab4580f82213605e0aed7edf8979addeddfd9a3e70185688cdcdb9b3dc', true);
+
+INSERT INTO ud_authorities (username, authority) VALUES ('user', 'ROLE_READ');
+INSERT INTO ud_authorities (username, authority) VALUES ('user', 'ROLE_WRITE');
+```

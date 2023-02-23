@@ -17,14 +17,13 @@
  */
 package com.wultra.security.userdatastore;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
+
+import javax.sql.DataSource;
 
 /**
  * Security configuration class.
@@ -32,26 +31,20 @@ import org.springframework.security.web.SecurityFilterChain;
  * @author Lubos Racansky lubos.racansky@wultra.com
  */
 @Configuration
+@Slf4j
 public class SecurityConfiguration {
 
-    @Value("${user-data-store.security.basic.realm}")
-    private String realm;
+    private static final String USERS_BY_USERNAME_QUERY = "select username,password,enabled from ud_users where username = ?";
+
+    private static final String AUTHORITIES_BY_USERNAME_QUERY = "select username,authority from ud_authorities where username = ?";
 
     @Bean
-    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(httpBasic -> httpBasic.realmName(realm))
-                .authorizeRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.DELETE, "/public/**")
-                            .hasRole("WRITE")
-                        .antMatchers(HttpMethod.POST, "/public/**")
-                            .hasRole("WRITE")
-                        .antMatchers(HttpMethod.GET, "/private/**")
-                            .hasRole("READ")
-                        .antMatchers("/swagger-ui*/**")
-                            .anonymous()
-                ).build();
+    public UserDetailsService userDetailsService(final DataSource dataSource) {
+        logger.info("Initializing JdbcDaoImpl as UserDetailsService");
+        final JdbcDaoImpl jdbcDao = new JdbcDaoImpl();
+        jdbcDao.setDataSource(dataSource);
+        jdbcDao.setUsersByUsernameQuery(USERS_BY_USERNAME_QUERY);
+        jdbcDao.setAuthoritiesByUsernameQuery(AUTHORITIES_BY_USERNAME_QUERY);
+        return jdbcDao;
     }
 }
