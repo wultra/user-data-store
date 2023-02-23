@@ -15,21 +15,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore;
+package com.wultra.security.userdatastore.userclaims;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Test of spring context start.
+ * Service for user claims.
  *
  * @author Lubos Racansky lubos.racansky@wultra.com
  */
-@SpringBootTest
-class UserDataStoreApplicationTests {
+@Service
+class UserClaimsService {
 
-	@Test
-	void contextLoads() {
-	}
+    // TODO (racansky, 2023-02-17, #4) implement persistence
+    private static final Map<String, Object> data = new HashMap<>();
 
+    public Object fetchUserClaims(final String userId) {
+        return data.get(userId);
+    }
+
+    public void createOrUpdateUserClaims(final String userId, final Object claims) {
+        data.put(userId, claims);
+    }
+
+    public void deleteUserClaims(final String userId) {
+        data.remove(userId);
+    }
 }
