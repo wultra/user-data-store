@@ -26,10 +26,10 @@ liquibase --changelog-file=db/changelog/db.changelog-master.xml --url=jdbc:postg
 ### Users
 
 To create a testing user, execute the following sql.
-To get the salted hash, call `new StandardPasswordEncoder().encode("my password");` 
+To get the hash, call `new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("SHA-256").encode("password");` 
 
 ```sql
-INSERT INTO ud_users (username, password, enabled) VALUES ('user', '{sha256}48c13b0404540c2f2b0952ab4580f82213605e0aed7edf8979addeddfd9a3e70185688cdcdb9b3dc', true);
+INSERT INTO ud_users (username, password, enabled) VALUES ('user', '{O35pWc2gYBen1x6fdP8jxc4knxkOdwwhW4nobRrZ/m4=}ce0f5a243469ffe3371432b2c6970d33ef0403fc3a839b1d19c19d395ff53695', true);
 
 INSERT INTO ud_authorities (username, authority) VALUES ('user', 'ROLE_READ');
 INSERT INTO ud_authorities (username, authority) VALUES ('user', 'ROLE_WRITE');

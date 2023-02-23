@@ -22,8 +22,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
+import java.util.Map;
 
 /**
  * Security configuration class.
@@ -38,6 +43,8 @@ public class SecurityConfiguration {
 
     private static final String AUTHORITIES_BY_USERNAME_QUERY = "select username,authority from ud_authorities where username = ?";
 
+    private static final String SHA_256 = "SHA-256";
+
     @Bean
     public UserDetailsService userDetailsService(final DataSource dataSource) {
         logger.info("Initializing JdbcDaoImpl as UserDetailsService");
@@ -46,5 +53,28 @@ public class SecurityConfiguration {
         jdbcDao.setUsersByUsernameQuery(USERS_BY_USERNAME_QUERY);
         jdbcDao.setAuthoritiesByUsernameQuery(AUTHORITIES_BY_USERNAME_QUERY);
         return jdbcDao;
+    }
+
+    /**
+     * Configure SHA-256 or bcrypt password encoder. Note that since the passwords are technical, using old SHA-256
+     * algorithm does not cause security issues. Bcrypt is used as default in case no prefix is specified.
+     * See the following URL for constant details:
+     * <a href="https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/crypto/factory/PasswordEncoderFactories.html#createDelegatingPasswordEncoder()">PasswordEncoderFactories.createDelegatingPasswordEncoder()</a>
+     *
+     * @return Delegating password encoder.
+     */
+    @Bean
+    @SuppressWarnings({"deprecation", "java:S5344"})
+    public PasswordEncoder passwordEncoder() {
+        logger.info("Initializing DelegatingPasswordEncoder with default {}", SHA_256);
+        final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        final MessageDigestPasswordEncoder sha256 = new MessageDigestPasswordEncoder(SHA_256);
+        final Map<String, PasswordEncoder> encoders = Map.of(
+            "bcrypt", bcrypt,
+                SHA_256, sha256
+        );
+        final DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(SHA_256, encoders);
+        passwordEncoder.setDefaultPasswordEncoderForMatches(sha256); // try using sha256 as default, for technical accounts
+        return passwordEncoder;
     }
 }
