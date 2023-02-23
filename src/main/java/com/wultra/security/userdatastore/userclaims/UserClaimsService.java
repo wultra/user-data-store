@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
 /**
@@ -50,13 +49,12 @@ class UserClaimsService {
     @Transactional(readOnly = true)
     public Object fetchUserClaims(final String userId) {
         final String claims = userClaimsRepository.findById(userId).orElseThrow(() ->
-                        new EntityNotFoundException("Claims for user ID: '%s' not found".formatted(userId)))
+                        new NotFoundException("Claims for user ID: '%s' not found".formatted(userId)))
                 .getClaims();
         try {
             return objectMapper.readValue(claims, new TypeReference<>() {});
         } catch (JsonProcessingException e) {
-            // TODO (racansky, 2023-02-21) choose a dedicated exception, add exception handler
-            throw new RuntimeException(e);
+            throw new InvalidRequestException(e);
         }
     }
 
@@ -65,8 +63,7 @@ class UserClaimsService {
         try {
             claimsAsString = objectMapper.writeValueAsString(claims);
         } catch (JsonProcessingException e) {
-            // TODO (racansky, 2023-02-21) choose a dedicated exception, add exception handler
-            throw new RuntimeException(e);
+            throw new InvalidRequestException(e);
         }
         userClaimsRepository.findById(userId).ifPresentOrElse(userClaims -> {
                     logger.debug("Updating claims of user ID: {}", userId);

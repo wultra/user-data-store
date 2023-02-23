@@ -17,12 +17,16 @@
  */
 package com.wultra.security.userdatastore.userclaims;
 
+import io.getlime.core.rest.model.base.response.ErrorResponse;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -32,6 +36,7 @@ import javax.validation.constraints.Size;
  * @author Lubos Racansky lubos.racansky@wultra.com
  */
 @RestController
+@Validated
 @Slf4j
 class UserClaimsController {
 
@@ -39,6 +44,32 @@ class UserClaimsController {
 
     UserClaimsController(UserClaimsService userClaimsService) {
         this.userClaimsService = userClaimsService;
+    }
+
+    /**
+     * Exception handler for {@link InvalidRequestException} or {@link ConstraintViolationException}.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler({InvalidRequestException.class, ConstraintViolationException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidRequestException(final RuntimeException e) {
+        logger.warn("Error occurred when processing request object.", e);
+        return new ErrorResponse("INVALID_REQUEST", e.getMessage());
+    }
+
+    /**
+     * Exception handler for {@link NotFoundException}.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleNotFoundException(final NotFoundException e) {
+        logger.warn("Error occurred when processing request object.", e);
+        return new ErrorResponse("NOT_FOUND", e.getMessage());
     }
 
     /**
