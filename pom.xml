@@ -22,6 +22,8 @@
         <maven.deploy.skip>true</maven.deploy.skip>
         <maven.install.skip>true</maven.install.skip>
 
+        <wultra-core.version>1.6.0</wultra-core.version>
+
         <springdoc-openapi.version>1.6.14</springdoc-openapi.version>
     </properties>
 
@@ -67,6 +69,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Wultra Dependencies -->
+        <dependency>
+            <groupId>io.getlime.core</groupId>
+            <artifactId>rest-model-base</artifactId>
+            <version>${wultra-core.version}</version>
         </dependency>
 
         <!-- Documentation -->

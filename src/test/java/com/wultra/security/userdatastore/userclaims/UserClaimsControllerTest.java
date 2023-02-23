@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -55,22 +54,21 @@ class UserClaimsControllerTest {
     @Test
     void testGet() throws Exception {
         when(service.fetchUserClaims("alice"))
-                .thenReturn("""
-                        {
-                          "sub": "83692",
-                          "name": "Alice Adams",
-                          "email": "alice@example.com",
-                          "birthdate": "1975-12-31",
-                          "https://claims.example.com/department": "engineering"
-                        }
-                        """);
+                .thenReturn(Map.of(
+                          "sub", "83692",
+                          "name", "Alice Adams",
+                          "email", "alice@example.com",
+                          "birthdate", "1975-12-31",
+                          "https://claims.example.com/department", "engineering"
+                        ));
 
         mvc.perform(get("/private/user-claims?userId=alice")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", is("Alice Adams")));
+                .andExpect(jsonPath("$.status", is("OK")))
+                .andExpect(jsonPath("$.responseObject.name", is("Alice Adams")));
     }
 
     @WithMockUser(roles = "WRITE")
@@ -85,7 +83,10 @@ class UserClaimsControllerTest {
     @Test
     void testDelete() throws Exception {
         mvc.perform(delete("/public/user-claims?userId=alice"))
-                .andExpect(status().is(HttpStatus.NO_CONTENT.value()));
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status", is("OK")));
 
         verify(service).deleteUserClaims("alice");
     }
@@ -111,7 +112,9 @@ class UserClaimsControllerTest {
                                   "https://claims.example.com/department": "engineering"
                                 }
                                 """))
-                .andExpect(status().is(HttpStatus.CREATED.value()));
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status", is("OK")));
 
         final var expectedClaims = Map.of(
                 "sub", "83692",

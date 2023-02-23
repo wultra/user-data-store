@@ -17,9 +17,10 @@
  */
 package com.wultra.security.userdatastore.userclaims;
 
+import io.getlime.core.rest.model.base.response.ObjectResponse;
+import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
@@ -51,9 +52,10 @@ class UserClaimsController {
             description = "Return claims for the given user."
     )
     @GetMapping("/private/user-claims")
-    public Object userClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
+    public ObjectResponse<Object> userClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
         logger.info("Fetching claims of user ID: {}", userId);
-        return userClaimsService.fetchUserClaims(userId);
+        final Object userClaims = userClaimsService.fetchUserClaims(userId);
+        return new ObjectResponse<>(userClaims);
     }
 
     /**
@@ -61,31 +63,33 @@ class UserClaimsController {
      *
      * @param userId user identifier
      * @param claims claims to be stored
+     * @return response status
      */
     @Operation(
             summary = "Create or update claims",
             description = "Create claims for the given user or update the exiting ones."
     )
     @PostMapping("/public/user-claims")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createOrUpdate(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
+    public Response createOrUpdate(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
         logger.info("Creating or updating claims of user ID: {}", userId);
         userClaimsService.createOrUpdateUserClaims(userId, claims);
+        return new Response();
     }
 
     /**
      * Delete claims of the given user.
      *
      * @param userId user identifier
+     * @return response status
      */
     @Operation(
             summary = "Delete claims",
             description = "Delete claims of the given user."
     )
     @DeleteMapping("/public/user-claims")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@NotBlank @Size(max = 255) @RequestParam String userId) {
+    public Response delete(@NotBlank @Size(max = 255) @RequestParam String userId) {
         logger.info("Deleting claims of user ID: {}", userId);
         userClaimsService.deleteUserClaims(userId);
+        return new Response();
     }
 }
