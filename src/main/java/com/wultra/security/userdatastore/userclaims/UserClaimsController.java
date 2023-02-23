@@ -18,8 +18,7 @@
 package com.wultra.security.userdatastore.userclaims;
 
 import io.swagger.v3.oas.annotations.Operation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +31,8 @@ import javax.validation.constraints.Size;
  * @author Lubos Racansky lubos.racansky@wultra.com
  */
 @RestController
+@Slf4j
 class UserClaimsController {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserClaimsController.class);
 
     private final UserClaimsService userClaimsService;
 
