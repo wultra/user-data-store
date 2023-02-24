@@ -20,8 +20,11 @@ package com.wultra.security.userdatastore.userclaims;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wultra.core.audit.base.Audit;
+import com.wultra.core.audit.base.model.AuditDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,11 +42,14 @@ class UserClaimsService {
 
     private final UserClaimsRepository userClaimsRepository;
 
+    private final Audit audit;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    UserClaimsService(final UserClaimsRepository userClaimsRepository) {
+    UserClaimsService(final UserClaimsRepository userClaimsRepository, final Audit audit) {
         this.userClaimsRepository = userClaimsRepository;
+        this.audit = audit;
     }
 
     @Transactional(readOnly = true)
@@ -51,6 +57,7 @@ class UserClaimsService {
         final String claims = userClaimsRepository.findById(userId).orElseThrow(() ->
                         new NotFoundException("Claims for user ID: '%s' not found".formatted(userId)))
                 .getClaims();
+        audit("Retrieved claims of user ID: {}", userId);
         try {
             return objectMapper.readValue(claims, new TypeReference<>() {});
         } catch (JsonProcessingException e) {
@@ -69,6 +76,7 @@ class UserClaimsService {
                     logger.debug("Updating claims of user ID: {}", userId);
                     userClaims.setClaims(claimsAsString);
                     userClaims.setTimestampLastUpdated(LocalDateTime.now());
+                    audit("Updated claims of user ID: {}", userId);
                 },
                 () -> {
                     logger.debug("Creating new claims of user ID: {}", userId);
@@ -76,11 +84,23 @@ class UserClaimsService {
                     userClaims.setUserId(userId);
                     userClaims.setClaims(claimsAsString);
                     userClaimsRepository.saveAndFlush(userClaims);
+                    audit("Created claims for user ID: {}", userId);
                 });
     }
 
     public void deleteUserClaims(final String userId) {
         final UserClaimsEntity user = userClaimsRepository.getReferenceById(userId);
         userClaimsRepository.delete(user);
+        audit("Deleted claims of user ID: {}", userId);
+    }
+
+    private void audit(final String message, final String userId) {
+        final String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        final AuditDetail auditDetail = AuditDetail.builder()
+                .type("userClaims")
+                .param("userId", userId)
+                .param("actorId", loggedUsername)
+                .build();
+        audit.info(message, auditDetail, userId);
     }
 }
