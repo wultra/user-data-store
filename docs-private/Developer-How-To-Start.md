@@ -34,3 +34,26 @@ INSERT INTO uds_users (username, password, enabled) VALUES ('user', '{O35pWc2gYB
 INSERT INTO uds_authorities (username, authority) VALUES ('user', 'ROLE_READ');
 INSERT INTO uds_authorities (username, authority) VALUES ('user', 'ROLE_WRITE');
 ```
+
+
+## Docker
+
+
+### Build War
+
+```shell
+mvn clean package
+```
+
+
+### Prepare environment variables
+
+* Copy `docker/env.list.tmp` to `./env.list`
+* Set your database credential values for the `$USERNAME$` and `$PASSWORD$` to the values from the previous step.
+
+
+### Build the docker image
+
+```shell
+docker build . -t user-data-store:0.1.0-SNAPSHOT
+```
