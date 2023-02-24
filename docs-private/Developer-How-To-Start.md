@@ -29,8 +29,8 @@ To create a testing user, execute the following sql.
 To get the hash, call `new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("SHA-256").encode("password");` 
 
 ```sql
-INSERT INTO ud_users (username, password, enabled) VALUES ('user', '{O35pWc2gYBen1x6fdP8jxc4knxkOdwwhW4nobRrZ/m4=}ce0f5a243469ffe3371432b2c6970d33ef0403fc3a839b1d19c19d395ff53695', true);
+INSERT INTO uds_users (username, password, enabled) VALUES ('user', '{O35pWc2gYBen1x6fdP8jxc4knxkOdwwhW4nobRrZ/m4=}ce0f5a243469ffe3371432b2c6970d33ef0403fc3a839b1d19c19d395ff53695', true);
 
-INSERT INTO ud_authorities (username, authority) VALUES ('user', 'ROLE_READ');
-INSERT INTO ud_authorities (username, authority) VALUES ('user', 'ROLE_WRITE');
+INSERT INTO uds_authorities (username, authority) VALUES ('user', 'ROLE_READ');
+INSERT INTO uds_authorities (username, authority) VALUES ('user', 'ROLE_WRITE');
 ```

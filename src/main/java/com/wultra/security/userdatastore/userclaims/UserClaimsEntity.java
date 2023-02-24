@@ -33,7 +33,7 @@ import java.util.Objects;
  * @author Lubos Racansky lubos.racansky@wultra.com
  */
 @Entity
-@Table(name = "ud_user_claims")
+@Table(name = "uds_user_claims")
 @Getter
 @Setter
 class UserClaimsEntity {

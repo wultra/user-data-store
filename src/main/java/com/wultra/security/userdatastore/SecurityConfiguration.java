@@ -39,9 +39,9 @@ import java.util.Map;
 @Slf4j
 public class SecurityConfiguration {
 
-    private static final String USERS_BY_USERNAME_QUERY = "select username,password,enabled from ud_users where username = ?";
+    private static final String USERS_BY_USERNAME_QUERY = "select username,password,enabled from uds_users where username = ?";
 
-    private static final String AUTHORITIES_BY_USERNAME_QUERY = "select username,authority from ud_authorities where username = ?";
+    private static final String AUTHORITIES_BY_USERNAME_QUERY = "select username,authority from uds_authorities where username = ?";
 
     private static final String SHA_256 = "SHA-256";
 
