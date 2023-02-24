@@ -68,7 +68,7 @@ class UserClaimsService {
         userClaimsRepository.findById(userId).ifPresentOrElse(userClaims -> {
                     logger.debug("Updating claims of user ID: {}", userId);
                     userClaims.setClaims(claimsAsString);
-                    userClaims.setTimestampUpdated(LocalDateTime.now());
+                    userClaims.setTimestampLastUpdated(LocalDateTime.now());
                 },
                 () -> {
                     logger.debug("Creating new claims of user ID: {}", userId);

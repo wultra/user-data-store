@@ -1,9 +1,9 @@
 CREATE TABLE uds_user_claims
 (
-    user_id           VARCHAR(255) NOT NULL,
-    claims            TEXT         NOT NULL,
-    timestamp_created TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
-    timestamp_updated TIMESTAMP WITHOUT TIME ZONE,
+    user_id                VARCHAR(255) NOT NULL,
+    claims                 TEXT         NOT NULL,
+    timestamp_created      TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+    timestamp_last_updated TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT uds_user_claims_pkey PRIMARY KEY (user_id)
 );
 

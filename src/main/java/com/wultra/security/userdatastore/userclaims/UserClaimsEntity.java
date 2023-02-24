@@ -47,7 +47,7 @@ class UserClaimsEntity {
     @Column(nullable = false)
     private LocalDateTime timestampCreated = LocalDateTime.now();
 
-    private LocalDateTime timestampUpdated;
+    private LocalDateTime timestampLastUpdated;
 
     @Override
     public boolean equals(Object o) {

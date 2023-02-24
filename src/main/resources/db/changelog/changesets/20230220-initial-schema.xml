@@ -12,7 +12,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="now()"/>
-            <column name="timestamp_updated" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="timestamp_last_updated" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
 
