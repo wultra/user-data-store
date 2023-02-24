@@ -15,7 +15,7 @@ Database changes are driven by Liquibase.
 This is an example how to manually check the Liquibase status.
 Important and fixed parameter is `changeloge-file`.
 Others (like URL, username, password) depend on your environment.
-Mind that the working directory MUST be `src/main/resources` to be consistent with Spring Boot naming (file names are part of the checksum).
+Mind that the working directory must be `src/main/resources` to be consistent with Spring Boot naming (file names are part of the checksum).
 
 ```shell
 cd src/main/resources
