@@ -17,7 +17,6 @@
  */
 package com.wultra.security.userdatastore.userclaims;
 
-import com.wultra.security.userdatastore.security.EncryptionMode;
 import lombok.Getter;
 import lombok.Setter;
 

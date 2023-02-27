@@ -44,19 +44,23 @@ class UserClaimsService {
 
     private final Audit audit;
 
+    private final EncryptionService encryptionService;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    UserClaimsService(final UserClaimsRepository userClaimsRepository, final Audit audit) {
+    UserClaimsService(final UserClaimsRepository userClaimsRepository, final Audit audit, final EncryptionService encryptionService) {
         this.userClaimsRepository = userClaimsRepository;
         this.audit = audit;
+        this.encryptionService = encryptionService;
     }
 
     @Transactional(readOnly = true)
     public Object fetchUserClaims(final String userId) {
-        final String claims = userClaimsRepository.findById(userId).orElseThrow(() ->
-                        new NotFoundException("Claims for user ID: '%s' not found".formatted(userId)))
-                .getClaims();
+        final String claims = userClaimsRepository.findById(userId)
+                .map(encryptionService::decryptClaims)
+                .orElseThrow(() ->
+                        new NotFoundException("Claims for user ID: '%s' not found".formatted(userId)));
         audit("Retrieved claims of user ID: {}", userId);
         try {
             return objectMapper.readValue(claims, new TypeReference<>() {});
@@ -72,18 +76,18 @@ class UserClaimsService {
         } catch (JsonProcessingException e) {
             throw new InvalidRequestException(e);
         }
-        userClaimsRepository.findById(userId).ifPresentOrElse(userClaims -> {
+        userClaimsRepository.findById(userId).ifPresentOrElse(entity -> {
                     logger.debug("Updating claims of user ID: {}", userId);
-                    userClaims.setClaims(claimsAsString);
-                    userClaims.setTimestampLastUpdated(LocalDateTime.now());
+                    encryptionService.encryptClaims(entity, claimsAsString);
+                    entity.setTimestampLastUpdated(LocalDateTime.now());
                     audit("Updated claims of user ID: {}", userId);
                 },
                 () -> {
                     logger.debug("Creating new claims of user ID: {}", userId);
-                    final UserClaimsEntity userClaims = new UserClaimsEntity();
-                    userClaims.setUserId(userId);
-                    userClaims.setClaims(claimsAsString);
-                    userClaimsRepository.saveAndFlush(userClaims);
+                    final UserClaimsEntity entity = new UserClaimsEntity();
+                    entity.setUserId(userId);
+                    encryptionService.encryptClaims(entity, claimsAsString);
+                    userClaimsRepository.saveAndFlush(entity);
                     audit("Created claims for user ID: {}", userId);
                 });
     }

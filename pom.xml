@@ -23,6 +23,7 @@
         <maven.install.skip>true</maven.install.skip>
 
         <wultra-core.version>1.7.0-SNAPSHOT</wultra-core.version>
+        <powerauth-java-crypto.version>1.4.0</powerauth-java-crypto.version>
 
         <springdoc-openapi.version>1.6.14</springdoc-openapi.version>
     </properties>
@@ -90,6 +91,12 @@
             <groupId>io.getlime.core</groupId>
             <artifactId>rest-model-base</artifactId>
             <version>${wultra-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.getlime.security</groupId>
+            <artifactId>powerauth-java-crypto</artifactId>
+            <version>${powerauth-java-crypto.version}</version>
         </dependency>
 
         <!-- Documentation -->

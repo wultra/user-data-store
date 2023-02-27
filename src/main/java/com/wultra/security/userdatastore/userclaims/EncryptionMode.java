@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.security;
+package com.wultra.security.userdatastore.userclaims;
 
 /**
  * Encryption mode.
  *
  * @author Lubos Racansky, lubos.racansky@wultra.com
  */
-public enum EncryptionMode {
+enum EncryptionMode {
 
     /**
      * No encryption.
