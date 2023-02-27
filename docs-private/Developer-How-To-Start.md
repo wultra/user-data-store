@@ -57,3 +57,10 @@ mvn clean package
 ```shell
 docker build . -t user-data-store:0.1.0-SNAPSHOT
 ```
+
+
+### Run the docker image
+
+```shell
+docker run -p 80:8080 user-data-store:0.1.0-SNAPSHOT 
+```
