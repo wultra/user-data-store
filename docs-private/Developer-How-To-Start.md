@@ -46,12 +46,6 @@ mvn clean package
 ```
 
 
-### Prepare environment variables
-
-* Copy `docker/env.list.tmp` to `./env.list`
-* Set your database credential values for the `$USERNAME$` and `$PASSWORD$` to the values from the previous step.
-
-
 ### Build the docker image
 
 ```shell
@@ -59,8 +53,14 @@ docker build . -t user-data-store:0.1.0-SNAPSHOT
 ```
 
 
+### Prepare environment variables
+
+* Copy `docker/env.list.tmp` to `./env.list` and edit the values to use it via `docker run --env-file env.list IMAGE`
+* Or set environment variables via `docker run -e USER_DATA_STORE_DATASOURCE_USERNAME='powerauth' IMAGE`
+
+
 ### Run the docker image
 
 ```shell
-docker run -p 80:8080 user-data-store:0.1.0-SNAPSHOT 
+docker run -p 80:8080 -e USER_DATA_STORE_DATASOURCE_USERNAME='powerauth' -e USER_DATA_STORE_DATASOURCE_PASSWORD='' user-data-store:0.1.0-SNAPSHOT 
 ```

@@ -6,7 +6,6 @@
       <env name="USER_DATA_STORE_DATASOURCE_URL" value="jdbc:postgresql://localhost:5432/powerauth" />
       <env name="USER_DATA_STORE_DATASOURCE_USERNAME" value="powerauth" />
       <env name="USER_DATA_STORE_DATASOURCE_PASSWORD" value="" />
-      <env name="USER_DATA_STORE_LIQUIBASE_ENABLED" value="true" />
     </envs>
     <module name="user-data-store" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.wultra.security.userdatastore.UserDataStoreApplication" />
