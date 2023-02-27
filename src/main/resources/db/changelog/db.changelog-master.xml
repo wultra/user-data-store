@@ -4,4 +4,5 @@
 
     <include file="changesets/20230220-initial-schema.xml" relativeToChangelogFile="true" />
     <include file="changesets/20230224-audit.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20230227-encryption.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

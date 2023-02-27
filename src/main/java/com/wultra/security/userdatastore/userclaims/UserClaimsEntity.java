@@ -17,20 +17,18 @@
  */
 package com.wultra.security.userdatastore.userclaims;
 
+import com.wultra.security.userdatastore.security.EncryptionMode;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
  * Entity for user claims.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 @Entity
 @Table(name = "uds_user_claims")
@@ -43,6 +41,9 @@ class UserClaimsEntity {
 
     @Column(nullable = false)
     private String claims;
+
+    @Enumerated(EnumType.STRING)
+    private EncryptionMode encryptionMode;
 
     @Column(nullable = false)
     private LocalDateTime timestampCreated = LocalDateTime.now();
