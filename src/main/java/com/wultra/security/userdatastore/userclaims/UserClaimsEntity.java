@@ -38,6 +38,10 @@ class UserClaimsEntity {
     @Id
     private String userId;
 
+    /**
+     * Format of the data depends on the value of {@link #encryptionMode}.
+     * If encrypted, the key is derived from the master server key and {@link #userId}.
+     */
     @Column(nullable = false)
     private String claims;
 

@@ -52,6 +52,9 @@ class EncryptionService {
 
     @Autowired
     public EncryptionService(@Value("${user-data-store.db.master.encryption.key}") String masterDbEncryptionKeyBase64) {
+        if (!StringUtils.hasText(masterDbEncryptionKeyBase64)) {
+            logger.warn("masterDbEncryptionKey is not configured, claims will be stored in plain text");
+        }
         this.masterDbEncryptionKeyBase64 = masterDbEncryptionKeyBase64;
     }
 
