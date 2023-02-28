@@ -17,8 +17,11 @@
  */
 package com.wultra.security.userdatastore;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.security.Security;
 
 /**
  * @author Lubos Racansky lubos.racansky@wultra.com
@@ -27,6 +30,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class UserDataStoreApplication {
 
 	public static void main(String[] args) {
+		Security.addProvider(new BouncyCastleProvider());
 		SpringApplication.run(UserDataStoreApplication.class, args);
 	}
 
