@@ -20,13 +20,21 @@ package com.wultra.security.userdatastore.userclaims;
 import io.getlime.security.powerauth.crypto.lib.generator.KeyGenerator;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
+import io.getlime.security.powerauth.crypto.lib.util.AESEncryptionUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.util.Arrays;
+import java.util.Base64;
 
 /**
  * Service for encryption and decryption database data.
@@ -37,60 +45,113 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 class EncryptionService {
 
-    @Value("${user-data-store.db.master.encryption.key}")
-    private String masterDbEncryptionKeyBase64;
+    private final String masterDbEncryptionKeyBase64;
 
     private final KeyGenerator keyGenerator = new KeyGenerator();
+    private final AESEncryptionUtils aesEncryptionUtils = new AESEncryptionUtils();
 
+    @Autowired
+    public EncryptionService(@Value("${user-data-store.db.master.encryption.key}") String masterDbEncryptionKeyBase64) {
+        this.masterDbEncryptionKeyBase64 = masterDbEncryptionKeyBase64;
+    }
+
+    /**
+     * Decrypt claims of the given entity.
+     *
+     * @param entity user claims entity
+     * @return decrypted claims
+     */
     public String decryptClaims(final UserClaimsEntity entity) {
-        // TODO
-        return entity.getClaims();
+        final EncryptionMode encryptionMode = entity.getEncryptionMode();
+        return switch (encryptionMode) {
+            case NO_ENCRYPTION -> entity.getClaims();
+            case AES_HMAC -> fromDBValue(entity);
+        };
     }
 
+    /**
+     * Encrypt the claims and set to the given entity.
+     *
+     * @param entity user claims entity to be modified
+     * @param claims claims to encrypt
+     */
     public void encryptClaims(final UserClaimsEntity entity, final String claims) {
-        // TODO
-        entity.setClaims(claims);
+        if (!StringUtils.hasText(masterDbEncryptionKeyBase64)) {
+            entity.setEncryptionMode(EncryptionMode.NO_ENCRYPTION);
+            entity.setClaims(claims);
+        } else {
+            entity.setEncryptionMode(EncryptionMode.AES_HMAC);
+            entity.setClaims(toDBValue(entity, claims));
+        }
     }
 
-//    public Object x() {
-//        if (!StringUtils.hasText(masterDbEncryptionKeyBase64)) {
-//            logger.debug("masterDbEncryptionKey is not configured");
-//            return null;
-//        }
-//        final SecretKey secretKey = convertBytesToSharedSecretKey(Base64.getDecoder().decode(masterDbEncryptionKeyBase64));
-//
-//        // IV is present in first 16 bytes
-//        byte[] iv = Arrays.copyOfRange(serverPrivateKeyBytes, 0, 16);
-//
-//        // Encrypted serverPrivateKey is present after IV
-//        byte[] encryptedServerPrivateKey = Arrays.copyOfRange(serverPrivateKeyBytes, 16, serverPrivateKeyBytes.length);
-//
-//        // Decrypt serverPrivateKey
-//        byte[] decryptedServerPrivateKey = aesEncryptionUtils.decrypt(encryptedServerPrivateKey, iv, secretKey);
-//
-//        return Base64.getEncoder().encode(decryptedServerPrivateKey);
-//    }
+    private String toDBValue(final UserClaimsEntity entity, final String claims) {
+        final String userId = entity.getUserId();
+        final SecretKey secretKey = fetchDerivedKey(userId);
+        final byte[] claimsBytes = claims.getBytes(StandardCharsets.UTF_8);
+
+        try {
+            final byte[] iv = keyGenerator.generateRandomBytes(16);
+            final byte[] encrypted = aesEncryptionUtils.encrypt(claimsBytes, iv, secretKey);
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            baos.write(iv);
+            baos.write(encrypted);
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
+        } catch (GenericCryptoException | CryptoProviderException | InvalidKeyException | IOException e) {
+            throw new IllegalStateException("Unable to decrypt claims for user ID: " + userId, e);
+        }
+    }
+
+    private String fromDBValue(final UserClaimsEntity entity) {
+        final String userId = entity.getUserId();
+        final SecretKey secretKey = fetchDerivedKey(userId);
+        final byte[] claimsBytes = Base64.getDecoder().decode(entity.getClaims());
+
+        if (claimsBytes.length < 16) {
+            throw new IllegalStateException("Invalid encrypted private key format - the byte array is too short");
+        }
+
+        // IV is present in first 16 bytes
+        final byte[] iv = Arrays.copyOfRange(claimsBytes, 0, 16);
+
+        // Encrypted claims is present after IV
+        final byte[] encryptedClaims = Arrays.copyOfRange(claimsBytes, 16, claimsBytes.length);
+
+        try {
+            final byte[] decryptedClaims = aesEncryptionUtils.decrypt(encryptedClaims, iv, secretKey);
+            return new String(decryptedClaims);
+        } catch (InvalidKeyException | GenericCryptoException | CryptoProviderException e) {
+            throw new IllegalStateException("Unable to decrypt claims for user ID: " + userId, e);
+        }
+    }
+
+    private SecretKey fetchDerivedKey(final String userId) {
+        if (!StringUtils.hasText(masterDbEncryptionKeyBase64)) {
+            throw new IllegalStateException("masterDbEncryptionKey is not configured");
+        }
+
+        final SecretKey masterDbEncryptionKey = convertBytesToSharedSecretKey(Base64.getDecoder().decode(masterDbEncryptionKeyBase64));
+        return deriveSecretKey(masterDbEncryptionKey, userId);
+    }
 
     private static SecretKey convertBytesToSharedSecretKey(final byte[] bytesSecretKey) {
         return new SecretKeySpec(bytesSecretKey, "AES");
     }
 
     /**
-     * Derive secret key from master DB encryption key, user ID and activation ID.<br/>
-     * <br/>
-     * See: https://github.com/wultra/powerauth-server/blob/develop/docs/Encrypting-Records-in-Database.md
+     * Derive secret key from master DB encryption key and user ID.
      *
      * @param masterDbEncryptionKey Master DB encryption key.
-     * @param userId User ID.
+     * @param userId User ID, used as index for KDF_INTERNAL
      * @return Derived secret key.
-     * @throws GenericCryptoException In case key derivation fails.
+     * @see <a href="https://github.com/wultra/powerauth-server/blob/develop/docs/Encrypting-Records-in-Database.md">Encrypting Records in Database</a>
      */
-    private SecretKey deriveSecretKey(SecretKey masterDbEncryptionKey, String userId) throws GenericCryptoException, CryptoProviderException {
-        // Use user ID bytes as index for KDF_INTERNAL
-        byte[] index = (userId).getBytes(StandardCharsets.UTF_8);
-
-        // Derive secretKey from master DB encryption key using KDF_INTERNAL with constructed index
-        return keyGenerator.deriveSecretKeyHmac(masterDbEncryptionKey, index);
+    private SecretKey deriveSecretKey(final SecretKey masterDbEncryptionKey, final String userId) {
+        final byte[] index = userId.getBytes(StandardCharsets.UTF_8);
+        try {
+            return keyGenerator.deriveSecretKeyHmac(masterDbEncryptionKey, index);
+        } catch (GenericCryptoException | CryptoProviderException e) {
+            throw new IllegalStateException("Unable to derive key for user ID: " + userId, e); // TODO introduce exception and error handler
+        }
     }
-
 }
