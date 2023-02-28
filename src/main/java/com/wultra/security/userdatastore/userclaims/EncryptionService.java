@@ -101,7 +101,7 @@ class EncryptionService {
             baos.write(encrypted);
             return Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (GenericCryptoException | CryptoProviderException | InvalidKeyException | IOException e) {
-            throw new IllegalStateException("Unable to decrypt claims for user ID: " + userId, e);
+            throw new EncryptionException("Unable to decrypt claims for user ID: " + userId, e);
         }
     }
 
@@ -111,7 +111,7 @@ class EncryptionService {
         final byte[] claimsBytes = Base64.getDecoder().decode(entity.getClaims());
 
         if (claimsBytes.length < 16) {
-            throw new IllegalStateException("Invalid encrypted private key format - the byte array is too short");
+            throw new EncryptionException("Invalid encrypted private key format - the byte array is too short");
         }
 
         // IV is present in first 16 bytes
@@ -124,13 +124,13 @@ class EncryptionService {
             final byte[] decryptedClaims = aesEncryptionUtils.decrypt(encryptedClaims, iv, secretKey);
             return new String(decryptedClaims);
         } catch (InvalidKeyException | GenericCryptoException | CryptoProviderException e) {
-            throw new IllegalStateException("Unable to decrypt claims for user ID: " + userId, e);
+            throw new EncryptionException("Unable to decrypt claims for user ID: " + userId, e);
         }
     }
 
     private SecretKey fetchDerivedKey(final String userId) {
         if (!StringUtils.hasText(masterDbEncryptionKeyBase64)) {
-            throw new IllegalStateException("masterDbEncryptionKey is not configured");
+            throw new EncryptionException("masterDbEncryptionKey is not configured");
         }
 
         final SecretKey masterDbEncryptionKey = convertBytesToSharedSecretKey(Base64.getDecoder().decode(masterDbEncryptionKeyBase64));
@@ -154,7 +154,7 @@ class EncryptionService {
         try {
             return keyGenerator.deriveSecretKeyHmac(masterDbEncryptionKey, index);
         } catch (GenericCryptoException | CryptoProviderException e) {
-            throw new IllegalStateException("Unable to derive key for user ID: " + userId, e); // TODO introduce exception and error handler
+            throw new EncryptionException("Unable to derive key for user ID: " + userId, e);
         }
     }
 }
