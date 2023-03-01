@@ -18,9 +18,9 @@
 package com.wultra.security.userdatastore.userclaims;
 
 /**
- * Exception to thrown when the user's request is invalid.
+ * Exception to be thrown when the user's request is invalid.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 class InvalidRequestException extends RuntimeException {
 

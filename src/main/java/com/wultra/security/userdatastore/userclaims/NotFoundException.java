@@ -18,9 +18,9 @@
 package com.wultra.security.userdatastore.userclaims;
 
 /**
- * Exception to thrown when the requested entity is not found.
+ * Exception to be thrown when the requested entity is not found.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 class NotFoundException extends RuntimeException {
 
