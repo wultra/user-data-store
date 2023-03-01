@@ -70,7 +70,7 @@ public class SecurityConfiguration {
         final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         final MessageDigestPasswordEncoder sha256 = new MessageDigestPasswordEncoder(SHA_256);
         final Map<String, PasswordEncoder> encoders = Map.of(
-            "bcrypt", bcrypt,
+                "bcrypt", bcrypt,
                 SHA_256, sha256
         );
         final DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(SHA_256, encoders);
