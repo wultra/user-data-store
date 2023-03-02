@@ -17,10 +17,15 @@
  */
 package com.wultra.security.userdatastore.userclaims;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
 
 /**
  * Service for user claims.
@@ -28,20 +33,54 @@ import java.util.Map;
  * @author Lubos Racansky lubos.racansky@wultra.com
  */
 @Service
+@Transactional
+@Slf4j
 class UserClaimsService {
 
-    // TODO (racansky, 2023-02-17, #4) implement persistence
-    private static final Map<String, Object> data = new HashMap<>();
+    private final UserClaimsRepository userClaimsRepository;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    UserClaimsService(final UserClaimsRepository userClaimsRepository) {
+        this.userClaimsRepository = userClaimsRepository;
+    }
+
+    @Transactional(readOnly = true)
     public Object fetchUserClaims(final String userId) {
-        return data.get(userId);
+        final String claims = userClaimsRepository.findById(userId).orElseThrow(() ->
+                        new NotFoundException("Claims for user ID: '%s' not found".formatted(userId)))
+                .getClaims();
+        try {
+            return objectMapper.readValue(claims, new TypeReference<>() {});
+        } catch (JsonProcessingException e) {
+            throw new InvalidRequestException(e);
+        }
     }
 
     public void createOrUpdateUserClaims(final String userId, final Object claims) {
-        data.put(userId, claims);
+        final String claimsAsString;
+        try {
+            claimsAsString = objectMapper.writeValueAsString(claims);
+        } catch (JsonProcessingException e) {
+            throw new InvalidRequestException(e);
+        }
+        userClaimsRepository.findById(userId).ifPresentOrElse(userClaims -> {
+                    logger.debug("Updating claims of user ID: {}", userId);
+                    userClaims.setClaims(claimsAsString);
+                    userClaims.setTimestampLastUpdated(LocalDateTime.now());
+                },
+                () -> {
+                    logger.debug("Creating new claims of user ID: {}", userId);
+                    final UserClaimsEntity userClaims = new UserClaimsEntity();
+                    userClaims.setUserId(userId);
+                    userClaims.setClaims(claimsAsString);
+                    userClaimsRepository.saveAndFlush(userClaims);
+                });
     }
 
     public void deleteUserClaims(final String userId) {
-        data.remove(userId);
+        final UserClaimsEntity user = userClaimsRepository.getReferenceById(userId);
+        userClaimsRepository.delete(user);
     }
 }

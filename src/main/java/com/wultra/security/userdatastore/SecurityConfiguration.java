@@ -17,14 +17,18 @@
  */
 package com.wultra.security.userdatastore;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import javax.sql.DataSource;
+import java.util.Map;
 
 /**
  * Security configuration class.
@@ -32,26 +36,45 @@ import org.springframework.security.web.SecurityFilterChain;
  * @author Lubos Racansky lubos.racansky@wultra.com
  */
 @Configuration
+@Slf4j
 public class SecurityConfiguration {
 
-    @Value("${user-data-store.security.basic.realm}")
-    private String realm;
+    private static final String USERS_BY_USERNAME_QUERY = "select username,password,enabled from uds_users where username = ?";
+
+    private static final String AUTHORITIES_BY_USERNAME_QUERY = "select username,authority from uds_authorities where username = ?";
+
+    private static final String SHA_256 = "SHA-256";
 
     @Bean
-    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(httpBasic -> httpBasic.realmName(realm))
-                .authorizeRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.DELETE, "/public/**")
-                            .hasRole("WRITE")
-                        .antMatchers(HttpMethod.POST, "/public/**")
-                            .hasRole("WRITE")
-                        .antMatchers(HttpMethod.GET, "/private/**")
-                            .hasRole("READ")
-                        .antMatchers("/swagger-ui*/**")
-                            .anonymous()
-                ).build();
+    public UserDetailsService userDetailsService(final DataSource dataSource) {
+        logger.info("Initializing JdbcDaoImpl as UserDetailsService");
+        final JdbcDaoImpl jdbcDao = new JdbcDaoImpl();
+        jdbcDao.setDataSource(dataSource);
+        jdbcDao.setUsersByUsernameQuery(USERS_BY_USERNAME_QUERY);
+        jdbcDao.setAuthoritiesByUsernameQuery(AUTHORITIES_BY_USERNAME_QUERY);
+        return jdbcDao;
+    }
+
+    /**
+     * Configure SHA-256 or bcrypt password encoder. Note that since the passwords are technical, using old SHA-256
+     * algorithm does not cause security issues. Bcrypt is used as default in case no prefix is specified.
+     * See the following URL for constant details:
+     * <a href="https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/crypto/factory/PasswordEncoderFactories.html#createDelegatingPasswordEncoder()">PasswordEncoderFactories.createDelegatingPasswordEncoder()</a>
+     *
+     * @return Delegating password encoder.
+     */
+    @Bean
+    @SuppressWarnings({"deprecation", "java:S5344"})
+    public PasswordEncoder passwordEncoder() {
+        logger.info("Initializing DelegatingPasswordEncoder with default {}", SHA_256);
+        final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        final MessageDigestPasswordEncoder sha256 = new MessageDigestPasswordEncoder(SHA_256);
+        final Map<String, PasswordEncoder> encoders = Map.of(
+                "bcrypt", bcrypt,
+                SHA_256, sha256
+        );
+        final DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(SHA_256, encoders);
+        passwordEncoder.setDefaultPasswordEncoderForMatches(sha256); // try using sha256 as default, for technical accounts
+        return passwordEncoder;
     }
 }

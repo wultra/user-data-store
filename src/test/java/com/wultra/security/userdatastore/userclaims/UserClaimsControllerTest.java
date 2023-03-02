@@ -17,7 +17,7 @@
  */
 package com.wultra.security.userdatastore.userclaims;
 
-import com.wultra.security.userdatastore.SecurityConfiguration;
+import com.wultra.security.userdatastore.WebSecurityConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Lubos Racansky lubos.racansky@wultra.com
  */
 @WebMvcTest(UserClaimsController.class)
-@Import(SecurityConfiguration.class)
+@Import(WebSecurityConfiguration.class)
 class UserClaimsControllerTest {
 
     @MockBean
