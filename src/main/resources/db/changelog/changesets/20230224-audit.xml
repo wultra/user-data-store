@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="user-data-store-20230224-audit" author="Lubos Racansky" labels="user-data-store">
+    <changeSet id="user-data-store-20230224-audit" logicalFilePath="db/changelog/changesets/20230224-audit.xml" author="Lubos Racansky" labels="user-data-store">
         <sql>
             -- Create audit log table - https://github.com/wultra/lime-java-core#wultra-auditing-library
             CREATE TABLE IF NOT EXISTS audit_log
