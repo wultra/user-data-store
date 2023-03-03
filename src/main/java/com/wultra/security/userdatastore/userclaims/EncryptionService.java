@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
@@ -150,6 +151,7 @@ class EncryptionService {
      * @see <a href="https://github.com/wultra/powerauth-server/blob/develop/docs/Encrypting-Records-in-Database.md">Encrypting Records in Database</a>
      */
     private SecretKey deriveSecretKey(final SecretKey masterDbEncryptionKey, final String userId) {
+        Assert.hasText(userId, "userId must not be blank");
         final byte[] index = userId.getBytes(StandardCharsets.UTF_8);
         try {
             return keyGenerator.deriveSecretKeyHmac(masterDbEncryptionKey, index);
