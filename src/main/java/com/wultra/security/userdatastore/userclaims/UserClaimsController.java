@@ -73,6 +73,19 @@ class UserClaimsController {
     }
 
     /**
+     * Exception handler for {@link EncryptionException}.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(EncryptionException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleEncryptionException(final EncryptionException e) {
+        logger.warn("Error occurred when processing request object.", e);
+        return new ErrorResponse("ENCRYPTION_ERROR", e.getMessage());
+    }
+
+    /**
      * Return claims for the given user.
      *
      * @param userId user identifier

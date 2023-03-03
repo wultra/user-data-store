@@ -20,17 +20,14 @@ package com.wultra.security.userdatastore.userclaims;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
  * Entity for user claims.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 @Entity
 @Table(name = "uds_user_claims")
@@ -41,8 +38,15 @@ class UserClaimsEntity {
     @Id
     private String userId;
 
+    /**
+     * Format of the data depends on the value of {@link #encryptionMode}.
+     * If encrypted, the key is derived from the master server key and {@link #userId}.
+     */
     @Column(nullable = false)
     private String claims;
+
+    @Enumerated(EnumType.STRING)
+    private EncryptionMode encryptionMode;
 
     @Column(nullable = false)
     private LocalDateTime timestampCreated = LocalDateTime.now();

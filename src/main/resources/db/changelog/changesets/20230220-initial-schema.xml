@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="user-data-store-20230220-initial-schema" author="racansky" labels="user-data-store">
+    <changeSet id="user-data-store-20230220-initial-schema" author="Lubos Racansky" labels="user-data-store">
         <createTable tableName="uds_user_claims">
             <column name="user_id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -17,7 +17,7 @@
     </changeSet>
 
     <!-- org/springframework/security/core/userdetails/jdbc/users.ddl -->
-    <changeSet id="user-data-store-20230223-spring-security" author="racansky" labels="user-data-store">
+    <changeSet id="user-data-store-20230223-spring-security" author="Lubos Racansky" labels="user-data-store">
         <sql>
             create table uds_users
             (

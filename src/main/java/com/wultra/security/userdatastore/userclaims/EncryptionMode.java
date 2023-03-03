@@ -15,23 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.security.Security;
+package com.wultra.security.userdatastore.userclaims;
 
 /**
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * Encryption mode.
+ *
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
-@SpringBootApplication
-public class UserDataStoreApplication {
+enum EncryptionMode {
 
-	public static void main(String[] args) {
-		Security.addProvider(new BouncyCastleProvider());
-		SpringApplication.run(UserDataStoreApplication.class, args);
-	}
+    /**
+     * No encryption.
+     */
+    NO_ENCRYPTION,
 
+    /**
+     * AES encryption with HMAC-based index.
+     */
+    AES_HMAC;
 }
