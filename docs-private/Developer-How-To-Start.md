@@ -55,7 +55,7 @@ docker build . -t user-data-store:0.1.0-SNAPSHOT
 
 ### Prepare environment variables
 
-* Copy `docker/env.list.tmp` to `./env.list` and edit the values to use it via `docker run --env-file env.list IMAGE`
+* Copy `deploy/env.list.tmp` to `./env.list` and edit the values to use it via `docker run --env-file env.list IMAGE`
 * Or set environment variables via `docker run -e USER_DATA_STORE_DATASOURCE_USERNAME='powerauth' IMAGE`
 
 

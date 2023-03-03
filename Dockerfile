@@ -27,5 +27,5 @@ RUN groupadd -r powerauth \
 USER powerauth
 
 # Define entry point with mandatory commands (nginx)
-COPY docker/docker-entrypoint.sh /
+COPY deploy/docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
