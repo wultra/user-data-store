@@ -54,13 +54,15 @@ class EncryptionServiceTest {
     void testNoEncryption_encrypt_keyConfigured() {
         final EncryptionService tested = new EncryptionService("MTIzNDU2Nzg5MDEyMzQ1Ng==");
         final UserClaimsEntity entity = new UserClaimsEntity();
+        entity.setUserId("alice");
         entity.setEncryptionMode(EncryptionMode.NO_ENCRYPTION);
         final String claims = "{\"name\": \"Alice Adams\"}";
 
         tested.encryptClaims(entity, claims);
 
-        assertEquals("{\"name\": \"Alice Adams\"}", entity.getClaims());
-        assertEquals(EncryptionMode.NO_ENCRYPTION, entity.getEncryptionMode());
+        assertNotEquals("{\"name\": \"Alice Adams\"}", entity.getClaims());
+        Base64.getDecoder().decode(entity.getClaims()); // would throw IllegalArgumentException if it is not in valid Base64
+        assertEquals(EncryptionMode.AES_HMAC, entity.getEncryptionMode());
     }
 
     @Test
