@@ -18,9 +18,11 @@
 package com.wultra.security.userdatastore.userclaims;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.security.Security;
+import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,8 +33,13 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class EncryptionServiceTest {
 
+    @BeforeAll
+    static void registerSecurityProvider() {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     @Test
-    void testNoEncryption_encrypt() {
+    void testNoEncryption_encrypt_keyNotConfiguredAndModeNotSpecified() {
         final EncryptionService tested = new EncryptionService(null);
         final UserClaimsEntity entity = new UserClaimsEntity();
         final String claims = "{\"name\": \"Alice Adams\"}";
@@ -44,7 +51,32 @@ class EncryptionServiceTest {
     }
 
     @Test
-    void testNoEncryption_decrypt() {
+    void testNoEncryption_encrypt_keyConfigured() {
+        final EncryptionService tested = new EncryptionService("MTIzNDU2Nzg5MDEyMzQ1Ng==");
+        final UserClaimsEntity entity = new UserClaimsEntity();
+        entity.setEncryptionMode(EncryptionMode.NO_ENCRYPTION);
+        final String claims = "{\"name\": \"Alice Adams\"}";
+
+        tested.encryptClaims(entity, claims);
+
+        assertEquals("{\"name\": \"Alice Adams\"}", entity.getClaims());
+        assertEquals(EncryptionMode.NO_ENCRYPTION, entity.getEncryptionMode());
+    }
+
+    @Test
+    void testNoEncryption_decrypt_keyConfigured() {
+        final EncryptionService tested = new EncryptionService("MTIzNDU2Nzg5MDEyMzQ1Ng==");
+        final UserClaimsEntity entity = new UserClaimsEntity();
+        entity.setEncryptionMode(EncryptionMode.NO_ENCRYPTION);
+        entity.setClaims("{\"name\": \"Alice Adams\"}");
+
+        final String result = tested.decryptClaims(entity);
+
+        assertEquals("{\"name\": \"Alice Adams\"}", result);
+    }
+
+    @Test
+    void testNoEncryption_decrypt_keyNotConfigured() {
         final EncryptionService tested = new EncryptionService(null);
         final UserClaimsEntity entity = new UserClaimsEntity();
         entity.setEncryptionMode(EncryptionMode.NO_ENCRYPTION);
@@ -57,7 +89,6 @@ class EncryptionServiceTest {
 
     @Test
     void testEncryption_AES_HMAC() {
-        Security.addProvider(new BouncyCastleProvider());
         final EncryptionService tested = new EncryptionService("MTIzNDU2Nzg5MDEyMzQ1Ng==");
         final UserClaimsEntity entity = new UserClaimsEntity();
         entity.setUserId("alice.adams");
@@ -65,6 +96,7 @@ class EncryptionServiceTest {
         tested.encryptClaims(entity, "{\"name\": \"Alice Adams\"}");
 
         assertNotEquals("{\"name\": \"Alice Adams\"}", entity.getClaims());
+        Base64.getDecoder().decode(entity.getClaims()); // would throw IllegalArgumentException if it is not in valid Base64
         assertEquals(EncryptionMode.AES_HMAC, entity.getEncryptionMode());
 
         final String result = tested.decryptClaims(entity);

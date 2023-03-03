@@ -79,7 +79,7 @@ class EncryptionService {
      * @param claims claims to encrypt
      */
     public void encryptClaims(final UserClaimsEntity entity, final String claims) {
-        if (!StringUtils.hasText(masterDbEncryptionKeyBase64)) {
+        if (!StringUtils.hasText(masterDbEncryptionKeyBase64) || entity.getEncryptionMode() == EncryptionMode.NO_ENCRYPTION) {
             entity.setEncryptionMode(EncryptionMode.NO_ENCRYPTION);
             entity.setClaims(claims);
         } else {
