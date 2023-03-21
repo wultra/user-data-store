@@ -2,7 +2,5 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <include file="changesets/20230220-initial-schema.xml" relativeToChangelogFile="true" />
-    <include file="changesets/20230224-audit.xml" relativeToChangelogFile="true" />
-    <include file="changesets/20230227-encryption.xml" relativeToChangelogFile="true" />
+    <include file="changesets/user-data-store/db.changelog-module.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
