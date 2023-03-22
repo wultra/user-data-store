@@ -43,15 +43,15 @@ public class WebSecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(httpBasic -> httpBasic.realmName(realm))
-                .authorizeRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.DELETE, "/public/**")
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.DELETE, "/public/**")
                             .hasRole("WRITE")
-                        .antMatchers(HttpMethod.POST, "/public/**")
+                        .requestMatchers(HttpMethod.POST, "/public/**")
                             .hasRole("WRITE")
-                        .antMatchers(HttpMethod.GET, "/private/**")
+                        .requestMatchers(HttpMethod.GET, "/private/**")
                             .hasRole("READ")
-                        .antMatchers("/swagger-ui*/**")
-                            .anonymous()
+                        .anyRequest()
+                            .permitAll()
                 ).build();
     }
 
