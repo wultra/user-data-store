@@ -1,0 +1,30 @@
+version: '2.1'
+services:
+  uds:
+    image: user-data-store:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+     - database
+    environment:
+      - USER_DATA_STORE_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/postgres
+      - USER_DATA_STORE_DATASOURCE_USERNAME=uds
+      - USER_DATA_STORE_DATASOURCE_PASSWORD=uds
+
+  database:
+    image: docker.io/library/postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=uds
+      - POSTGRES_PASSWORD=uds
+      - POSTGRES_DB=postgres
+
+
+
+
+
+
