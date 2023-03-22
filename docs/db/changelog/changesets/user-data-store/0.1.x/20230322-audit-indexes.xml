@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="1" logicalFilePath="user-data-store/0.1.x/20230322-audit-indexes.xml" author="Zdenek Cerny">
+        <comment>Create indexes on table audit_log and audit_param</comment>
+        <createIndex indexName="audit_log_timestamp" tableName="audit_log">
+            <column name="timestamp_created"/>
+        </createIndex>
+        <createIndex indexName="audit_log_application" tableName="audit_log">
+            <column name="application_name"/>
+        </createIndex>
+        <createIndex indexName="audit_log_level" tableName="audit_log">
+            <column name="audit_level"/>
+        </createIndex>
+        <createIndex indexName="audit_log_type" tableName="audit_log">
+            <column name="audit_type"/>
+        </createIndex>
+        <createIndex indexName="audit_param_log" tableName="audit_param">
+            <column name="audit_log_id"/>
+        </createIndex>
+        <createIndex indexName="audit_param_timestamp" tableName="audit_param">
+            <column name="timestamp_created"/>
+        </createIndex>
+        <createIndex indexName="audit_param_key" tableName="audit_param">
+            <column name="param_key"/>
+        </createIndex>
+        <createIndex indexName="audit_param_value" tableName="audit_param">
+            <column name="param_value"/>
+        </createIndex>
+        <!-- no rollback on purpose, the audit tables may be shared across several components -->
+        <rollback />
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="1" logicalFilePath="user-data-store/0.1.x/20230322-audit-param.xml" author="Zdenek Cerny">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="audit_param"/>
+            </not>
+        </preConditions>
+        <comment>Create a new table audit_param</comment>
+        <createTable tableName="audit_param">
+            <column name="audit_log_id" type="varchar(36)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="param_key" type="varchar(256)"/>
+            <column name="param_value" type="varchar(4000)"/>
+            <column name="timestamp_created" type="timestamp" defaultValueDate="${now}" />
+        </createTable>
+        <!-- no rollback on purpose, the audit tables may be shared across several components -->
+        <rollback />
+    </changeSet>
+</databaseChangeLog>
