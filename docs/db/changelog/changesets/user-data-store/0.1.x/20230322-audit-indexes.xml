@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
-    <changeSet id="`" logicalFilePath="user-data-store/0.1.x/20230322-audit-indexes.xml" author="Lubos Racansky">
+    <changeSet id="1" logicalFilePath="user-data-store/0.1.x/20230322-audit-indexes.xml" author="Lubos Racansky">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists tableName="audit_log" indexName="audit_log_timestamp" />
@@ -16,7 +16,7 @@
         <rollback />
     </changeSet>
 
-    <changeSet id="1" logicalFilePath="user-data-store/0.1.x/20230322-audit-indexes.xml" author="Lubos Racansky">
+    <changeSet id="2" logicalFilePath="user-data-store/0.1.x/20230322-audit-indexes.xml" author="Lubos Racansky">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists tableName="audit_log" indexName="audit_log_application" />
