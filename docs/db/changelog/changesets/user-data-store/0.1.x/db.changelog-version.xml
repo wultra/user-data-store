@@ -5,5 +5,7 @@
 
     <include file="20230220-initial-schema.xml" relativeToChangelogFile="true" />
     <include file="20230224-audit.xml" relativeToChangelogFile="true" />
+    <include file="20230322-audit-param.xml" relativeToChangelogFile="true" />
+    <include file="20230322-audit-indexes.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>
