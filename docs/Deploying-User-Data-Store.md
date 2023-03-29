@@ -10,8 +10,9 @@ You can download the latest `user-data-store.war` from the [User Data Store rele
 
 ## Configuring User Data Store
 
-Configuration parameter `user-data-store.db.master.encryption.key` is master DB encryption key for decryption of server private key in database.
-Empty value means no encryption, which is not recommended.
+Configuration parameter `user-data-store.db.master.encryption.key` is a master DB encryption key to derive server private keys for the encryption of sensitive data in the database.
+It is an Advanced Encryption Standard (AES) key and recommended length is 256 bits.
+An empty value means no encryption, which is not recommended.
 
 
 ## Setting Up REST Service Credentials
