@@ -123,7 +123,7 @@ class EncryptionService {
 
         try {
             final byte[] decryptedClaims = aesEncryptionUtils.decrypt(encryptedClaims, iv, secretKey);
-            return new String(decryptedClaims);
+            return new String(decryptedClaims, StandardCharsets.UTF_8);
         } catch (InvalidKeyException | GenericCryptoException | CryptoProviderException e) {
             throw new EncryptionException("Unable to decrypt claims for user ID: " + userId, e);
         }
