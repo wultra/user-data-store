@@ -22,8 +22,8 @@
         <maven.deploy.skip>true</maven.deploy.skip>
         <maven.install.skip>true</maven.install.skip>
 
-        <wultra-core.version>1.7.0-SNAPSHOT</wultra-core.version>
-        <powerauth-java-crypto.version>1.4.0</powerauth-java-crypto.version>
+        <wultra-core.version>1.7.0</wultra-core.version>
+        <powerauth-crypto.version>1.5.1</powerauth-crypto.version>
         <bc.version>1.76</bc.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
     </properties>
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>io.getlime.security</groupId>
             <artifactId>powerauth-java-crypto</artifactId>
-            <version>${powerauth-java-crypto.version}</version>
+            <version>${powerauth-crypto.version}</version>
         </dependency>
 
         <!-- Bouncy Castle -->
