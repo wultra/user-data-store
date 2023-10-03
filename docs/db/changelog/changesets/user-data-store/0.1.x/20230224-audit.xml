@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="1" logicalFilePath="user-data-store/0.1.x/20230224-audit.xml" author="Lubos Racansky">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="audit_log"/>
+            </not>
+        </preConditions>
+        <comment>Create a new table audit_log</comment>
+        <createTable tableName="audit_log">
+            <column name="audit_log_id" type="varchar(36)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="application_name" type="varchar(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="audit_level" type="varchar(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="audit_type" type="varchar(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="timestamp_created" type="timestamp" defaultValueDate="${now}" />
+            <column name="message" type="text">
+                <constraints nullable="false" />
+            </column>
+            <column name="exception_message" type="text" />
+            <column name="stack_trace" type="text" />
+            <column name="param" type="text" />
+            <column name="calling_class" type="varchar(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="thread_name" type="varchar(256)">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="varchar(256)" />
+            <column name="build_time" type="timestamp" />
+        </createTable>
+        <!-- no rollback on purpose, the audit tables may be shared across several components -->
+        <rollback />
+    </changeSet>
+</databaseChangeLog>

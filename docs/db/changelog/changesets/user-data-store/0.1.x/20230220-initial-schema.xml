@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="1" logicalFilePath="user-data-store/0.1.x/20230220-initial-schema.xml" author="Lubos Racansky">
+        <comment>Create a new table uds_user_claims</comment>
+        <createTable tableName="uds_user_claims">
+            <column name="user_id" type="varchar(255)">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="claims" type="text">
+                <constraints nullable="false" />
+            </column>
+            <column name="encryption_mode" defaultValue="NO_ENCRYPTION" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="${now}" />
+            <column name="timestamp_last_updated" type="TIMESTAMP WITHOUT TIME ZONE" />
+        </createTable>
+    </changeSet>
+
+    <!-- org/springframework/security/core/userdetails/jdbc/users.ddl -->
+    <changeSet id="2" logicalFilePath="user-data-store/0.1.x/20230220-initial-schema.xml" author="Lubos Racansky">
+        <comment>Create a new table uds_users for spring security</comment>
+        <createTable tableName="uds_users">
+            <column name="username" type="varchar(50)">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="password" type="varchar(500)">
+                <constraints nullable="false" />
+            </column>
+            <column name="enabled" type="boolean">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" logicalFilePath="user-data-store/0.1.x/20230220-initial-schema.xml" author="Lubos Racansky">
+        <comment>Create a new table uds_authorities for spring security</comment>
+        <createTable tableName="uds_authorities">
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false" foreignKeyName="fk_authorities_users" referencedTableName="uds_users" referencedColumnNames="username" />
+            </column>
+            <column name="authority" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" logicalFilePath="user-data-store/0.1.x/20230220-initial-schema.xml" author="Lubos Racansky">
+        <comment>Create a new unique index on uds_authorities(username, authority)</comment>
+        <createIndex tableName="uds_authorities" indexName="ix_auth_username" unique="true">
+            <column name="username" />
+            <column name="authority" />
+        </createIndex>
+    </changeSet>
+    
+</databaseChangeLog>
