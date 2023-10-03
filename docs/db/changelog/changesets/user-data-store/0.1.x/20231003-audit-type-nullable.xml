@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="1" logicalFilePath="user-data-store/0.1.x/20231003-audit-type-nullable.xml" author="Lubos Racansky">
+        <comment>Drop not null constraint for audit_log.audit_type</comment>
+        <dropNotNullConstraint tableName="audit_log" columnName="audit_type" />
+        <!-- no rollback on purpose, the audit tables may be shared across several components -->
+        <rollback />
+    </changeSet>
+
+</databaseChangeLog>
