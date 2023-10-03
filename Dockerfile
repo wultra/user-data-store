@@ -8,6 +8,7 @@ ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
     LB_VERSION=4.23.2 \
     PKG_RELEASE=1~jammy \
+    LOGBACK_CONF=/opt/logback/conf \
     TZ=UTC
 
 ENV PATH=$PATH:$LB_HOME
@@ -44,6 +45,8 @@ STOPSIGNAL SIGQUIT
 
 # Add PowerAuth User
 USER powerauth
+
+COPY deploy/conf/logback/* $LOGBACK_CONF/
 
 # Define entry point with mandatory commands (nginx)
 COPY deploy/docker-entrypoint.sh /
