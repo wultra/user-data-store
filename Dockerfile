@@ -1,12 +1,12 @@
 # Docker image of the powerauth cloud application
-FROM ibm-semeru-runtimes:open-17.0.5_8-jre
+FROM ibm-semeru-runtimes:open-17.0.8_7-jre
 
 LABEL maintainer="Lubos Racansky <lubos.racansky@wultra.com>"
 
 # Prepare environment variables
 ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
-    LB_VERSION=4.20.0 \
+    LB_VERSION=4.23.2 \
     PKG_RELEASE=1~jammy \
     TZ=UTC
 
@@ -19,7 +19,7 @@ RUN apt-get -y update  \
 # Install Liquibase, inspired by https://github.com/mobtitude/liquibase/blob/master/Dockerfile
     && set -x \
     && wget -q -O /tmp/liquibase.tar.gz "https://github.com/liquibase/liquibase/releases/download/v$LB_VERSION/liquibase-$LB_VERSION.tar.gz" \
-    && [ "cd1b5004d1d9c19f367eb973443204e85938e25e39a1ccf3860046d720874626  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
+    && [ "fc7d2a9fa97d91203d639b664715d40953c6c9155a5225a0ddc4c8079b9a3641  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
     && mkdir -p "$LB_HOME" \
     && tar -xzf /tmp/liquibase.tar.gz -C "$LB_HOME" \
     && rm -rf "$LB_HOME/sdk" "$LB_HOME/examples" \
