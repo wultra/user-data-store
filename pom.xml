@@ -22,8 +22,9 @@
         <maven.deploy.skip>true</maven.deploy.skip>
         <maven.install.skip>true</maven.install.skip>
 
-        <wultra-core.version>1.7.0</wultra-core.version>
-        <powerauth-crypto.version>1.5.1</powerauth-crypto.version>
+        <wultra-core.version>1.8.0-SNAPSHOT</wultra-core.version>
+        <powerauth-crypto.version>1.6.0-SNAPSHOT</powerauth-crypto.version>
+
         <bc.version>1.76</bc.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
         <logstash.version>7.4</logstash.version>
