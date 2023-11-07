@@ -35,7 +35,7 @@ jobs:
         echo "REVISION=$REVISION" >> $GITHUB_ENV
     - name: Build war
       run: |
-        mvn package
+        mvn -U -DuseInternalRepo=true --no-transfer-progress package
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
     - name: Set up Docker Buildx
