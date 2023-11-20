@@ -25,7 +25,7 @@
         <wultra-core.version>1.8.0-SNAPSHOT</wultra-core.version>
         <powerauth-crypto.version>1.6.0-SNAPSHOT</powerauth-crypto.version>
 
-        <bc.version>1.76</bc.version>
+        <bc.version>1.77</bc.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
         <logstash.version>7.4</logstash.version>
     </properties>
