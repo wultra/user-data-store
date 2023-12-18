@@ -20,7 +20,7 @@ RUN apt-get -y update  \
 # Install Liquibase, inspired by https://github.com/mobtitude/liquibase/blob/master/Dockerfile
     && set -x \
     && wget -q -O /tmp/liquibase.tar.gz "https://github.com/liquibase/liquibase/releases/download/v$LB_VERSION/liquibase-$LB_VERSION.tar.gz" \
-    && [ "fc7d2a9fa97d91203d639b664715d40953c6c9155a5225a0ddc4c8079b9a3641  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
+    && [ "362174965cd8c2c74f1026201f911afc1a323c822828bf3fd04bcefa3aa45c49  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
     && mkdir -p "$LB_HOME" \
     && tar -xzf /tmp/liquibase.tar.gz -C "$LB_HOME" \
     && rm -rf "$LB_HOME/sdk" "$LB_HOME/examples" \
