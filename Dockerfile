@@ -1,12 +1,12 @@
 # Docker image of the powerauth cloud application
-FROM ibm-semeru-runtimes:open-17.0.8_7-jre
+FROM ibm-semeru-runtimes:open-17.0.9_9-jre
 
 LABEL maintainer="Lubos Racansky <lubos.racansky@wultra.com>"
 
 # Prepare environment variables
 ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
-    LB_VERSION=4.23.2 \
+    LB_VERSION=4.25.0 \
     PKG_RELEASE=1~jammy \
     LOGBACK_CONF=/opt/logback/conf \
     TZ=UTC
