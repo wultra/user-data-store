@@ -1,5 +1,5 @@
 # Docker image of the powerauth cloud application
-FROM ibm-semeru-runtimes:open-21.0.1_12-jre
+FROM ibm-semeru-runtimes:open-21.0.2_13-jre
 
 LABEL maintainer="Lubos Racansky <lubos.racansky@wultra.com>"
 
