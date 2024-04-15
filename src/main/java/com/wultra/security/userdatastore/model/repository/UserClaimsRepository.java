@@ -15,27 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.userclaims;
+package com.wultra.security.userdatastore.model.repository;
+
+import com.wultra.security.userdatastore.model.entity.UserClaimsEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
- * Exception to be thrown when the user's request is invalid.
+ * Repository for {@link UserClaimsEntity}.
  *
- * @author Lubos Racansky, lubos.racansky@wultra.com
+ * @author Lubos Racansky lubos.racansky@wultra.com
  */
-class InvalidRequestException extends RuntimeException {
+@Repository
+public interface UserClaimsRepository extends JpaRepository<UserClaimsEntity, String> {
 
-    /**
-     * No-arg constructor.
-     */
-    public InvalidRequestException() {
-    }
-
-    /**
-     * Constructs a new exception with the specified cause.
-     *
-     * @param cause cause
-     */
-    public InvalidRequestException(Throwable cause) {
-        super(cause);
-    }
 }

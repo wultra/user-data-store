@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.userclaims;
+package com.wultra.security.userdatastore.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -33,7 +33,7 @@ import java.util.Objects;
 @Table(name = "uds_user_claims")
 @Getter
 @Setter
-class UserClaimsEntity {
+public class UserClaimsEntity {
 
     @Id
     private String userId;

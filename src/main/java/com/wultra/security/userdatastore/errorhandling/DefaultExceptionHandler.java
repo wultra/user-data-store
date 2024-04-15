@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore;
+package com.wultra.security.userdatastore.errorhandling;
 
 import io.getlime.core.rest.model.base.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
  */
 @ControllerAdvice
 @Slf4j
-public class DefaultExceptionHandler {
+class DefaultExceptionHandler {
 
     /**
      * Exception handler for no resource found.

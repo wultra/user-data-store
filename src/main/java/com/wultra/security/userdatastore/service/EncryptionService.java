@@ -15,8 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.userclaims;
+package com.wultra.security.userdatastore.service;
 
+import com.wultra.security.userdatastore.model.entity.EncryptionMode;
+import com.wultra.security.userdatastore.model.entity.UserClaimsEntity;
+import com.wultra.security.userdatastore.model.error.EncryptionException;
 import io.getlime.security.powerauth.crypto.lib.generator.KeyGenerator;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoException;

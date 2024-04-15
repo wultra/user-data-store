@@ -15,17 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.userclaims;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+package com.wultra.security.userdatastore.model.entity;
 
 /**
- * Repository for {@link UserClaimsEntity}.
+ * Encryption mode.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
-@Repository
-interface UserClaimsRepository extends JpaRepository<UserClaimsEntity, String> {
+public enum EncryptionMode {
 
+    /**
+     * No encryption.
+     */
+    NO_ENCRYPTION,
+
+    /**
+     * AES encryption with HMAC-based index.
+     */
+    AES_HMAC
 }
