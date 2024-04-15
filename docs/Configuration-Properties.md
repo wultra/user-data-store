@@ -20,7 +20,7 @@ The User Data Store uses the following public configuration properties:
 |--------------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `user-data-store.db.master.encryption.key` | `_empty_` | Master DB encryption key (AES-256, key length of 32 bytes, base64 encoded) to derive server private keys for the encryption of sensitive data in the database. An empty value means no encryption, which is not recommended. |  
 
-# Monitoring and Observability
+## Monitoring and Observability
 
 | Property                                  | Default | Note                                                                                                                                                                        |
 |-------------------------------------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
