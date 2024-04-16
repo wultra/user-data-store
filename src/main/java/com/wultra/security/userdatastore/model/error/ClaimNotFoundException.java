@@ -15,35 +15,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore;
-
-import com.wultra.core.audit.base.Audit;
-import com.wultra.core.audit.base.AuditFactory;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
+package com.wultra.security.userdatastore.model.error;
 
 /**
- * Configuration of auditing.
+ * Exception to be thrown when the requested claim is not found.
  *
  * @author Lubos Racansky, lubos.racansky@wultra.com
  */
-@Configuration("userDataStoreAuditConfiguration")
-@ComponentScan("com.wultra.core.audit.base")
-@EnableScheduling
-@Slf4j
-public class AuditConfiguration {
+public class ClaimNotFoundException extends RuntimeException {
 
     /**
-     * Prepare audit interface.
-     *
-     * @return Audit interface.
+     * No-arg constructor.
      */
-    @Bean
-    public Audit audit(final AuditFactory auditFactory) {
-        logger.info("Initializing Audit");
-        return auditFactory.getAudit();
+    public ClaimNotFoundException() {
+    }
+
+    /**
+     * Constructs a new exception with the specified message.
+     *
+     * @param message message
+     */
+    public ClaimNotFoundException(String message) {
+        super(message);
+    }
+
+    /**
+     * Constructs a new exception with the specified cause.
+     *
+     * @param cause cause
+     */
+    public ClaimNotFoundException(Throwable cause) {
+        super(cause);
     }
 }

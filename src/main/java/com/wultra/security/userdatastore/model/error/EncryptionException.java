@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.userclaims;
+package com.wultra.security.userdatastore.model.error;
 
 /**
  * Exception to be thrown when there is a problem at encryption layer.
  *
  * @author Lubos Racansky, lubos.racansky@wultra.com
  */
-class EncryptionException extends RuntimeException {
+public class EncryptionException extends RuntimeException {
 
     /**
      * No-arg constructor.

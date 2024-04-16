@@ -15,13 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.userclaims;
+package com.wultra.security.userdatastore.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
+import com.wultra.security.userdatastore.model.entity.UserClaimsEntity;
+import com.wultra.security.userdatastore.model.error.ClaimNotFoundException;
+import com.wultra.security.userdatastore.model.error.InvalidRequestException;
+import com.wultra.security.userdatastore.model.repository.UserClaimsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,7 +42,7 @@ import java.time.LocalDateTime;
 @Service
 @Transactional
 @Slf4j
-class UserClaimsService {
+public class UserClaimsService {
 
     private final UserClaimsRepository userClaimsRepository;
 
@@ -60,7 +64,7 @@ class UserClaimsService {
         final String claims = userClaimsRepository.findById(userId)
                 .map(encryptionService::decryptClaims)
                 .orElseThrow(() ->
-                        new NotFoundException("Claims for user ID: '%s' not found".formatted(userId)));
+                        new ClaimNotFoundException("Claims for user ID: '%s' not found".formatted(userId)));
         audit("Retrieved claims of user ID: {}", userId);
         try {
             return objectMapper.readValue(claims, new TypeReference<>() {});

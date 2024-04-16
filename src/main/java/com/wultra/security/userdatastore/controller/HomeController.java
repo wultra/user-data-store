@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore;
+package com.wultra.security.userdatastore.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 class HomeController {
 
-    private BuildProperties buildProperties;
+    private final BuildProperties buildProperties;
 
     public HomeController(@Autowired(required = false) final BuildProperties buildProperties) {
         this.buildProperties = buildProperties;

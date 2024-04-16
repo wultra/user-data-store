@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.userclaims;
+package com.wultra.security.userdatastore.controller;
 
-import com.wultra.security.userdatastore.WebSecurityConfiguration;
+import com.wultra.security.userdatastore.config.WebSecurityConfiguration;
+import com.wultra.security.userdatastore.service.UserClaimsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

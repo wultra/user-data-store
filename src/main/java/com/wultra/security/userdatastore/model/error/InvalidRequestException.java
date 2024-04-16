@@ -15,22 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.userclaims;
+package com.wultra.security.userdatastore.model.error;
 
 /**
- * Encryption mode.
+ * Exception to be thrown when the user's request is invalid.
  *
  * @author Lubos Racansky, lubos.racansky@wultra.com
  */
-enum EncryptionMode {
+public class InvalidRequestException extends RuntimeException {
 
     /**
-     * No encryption.
+     * No-arg constructor.
      */
-    NO_ENCRYPTION,
+    public InvalidRequestException() {
+    }
 
     /**
-     * AES encryption with HMAC-based index.
+     * Constructs a new exception with the specified cause.
+     *
+     * @param cause cause
      */
-    AES_HMAC;
+    public InvalidRequestException(Throwable cause) {
+        super(cause);
+    }
 }

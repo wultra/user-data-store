@@ -15,36 +15,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.userclaims;
+package com.wultra.security.userdatastore.config;
+
+import com.wultra.core.audit.base.Audit;
+import com.wultra.core.audit.base.AuditFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * Exception to be thrown when the requested entity is not found.
+ * Configuration of auditing.
  *
  * @author Lubos Racansky, lubos.racansky@wultra.com
  */
-class NotFoundException extends RuntimeException {
+@Configuration("userDataStoreAuditConfiguration")
+@ComponentScan("com.wultra.core.audit.base")
+@EnableScheduling
+@Slf4j
+public class AuditConfiguration {
 
     /**
-     * No-arg constructor.
-     */
-    public NotFoundException() {
-    }
-
-    /**
-     * Constructs a new exception with the specified message.
+     * Prepare audit interface.
      *
-     * @param message message
+     * @return Audit interface.
      */
-    public NotFoundException(String message) {
-        super(message);
-    }
-
-    /**
-     * Constructs a new exception with the specified cause.
-     *
-     * @param cause cause
-     */
-    public NotFoundException(Throwable cause) {
-        super(cause);
+    @Bean
+    public Audit audit(final AuditFactory auditFactory) {
+        logger.info("Initializing Audit");
+        return auditFactory.getAudit();
     }
 }

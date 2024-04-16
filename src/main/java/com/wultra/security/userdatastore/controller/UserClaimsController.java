@@ -15,8 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.userclaims;
+package com.wultra.security.userdatastore.controller;
 
+import com.wultra.security.userdatastore.model.error.ClaimNotFoundException;
+import com.wultra.security.userdatastore.model.error.EncryptionException;
+import com.wultra.security.userdatastore.model.error.InvalidRequestException;
+import com.wultra.security.userdatastore.service.UserClaimsService;
 import io.getlime.core.rest.model.base.response.ErrorResponse;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
@@ -59,14 +63,14 @@ class UserClaimsController {
     }
 
     /**
-     * Exception handler for {@link NotFoundException}.
+     * Exception handler for {@link ClaimNotFoundException}.
      *
      * @param e Exception.
      * @return Response with error details.
      */
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(ClaimNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNotFoundException(final NotFoundException e) {
+    public ErrorResponse handleNotFoundException(final ClaimNotFoundException e) {
         logger.warn("Error occurred when processing request object.", e);
         return new ErrorResponse("NOT_FOUND", e.getMessage());
     }
