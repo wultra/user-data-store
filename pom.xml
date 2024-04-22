@@ -26,7 +26,7 @@
         <powerauth-crypto.version>1.8.0-SNAPSHOT</powerauth-crypto.version>
 
         <bc.version>1.78</bc.version>
-        <springdoc-openapi-starter-webmvc-ui.version>2.3.0</springdoc-openapi-starter-webmvc-ui.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
         <logstash.version>7.4</logstash.version>
     </properties>
 
