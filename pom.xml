@@ -25,7 +25,6 @@
         <wultra-core.version>1.10.0-SNAPSHOT</wultra-core.version>
         <powerauth-crypto.version>1.8.0-SNAPSHOT</powerauth-crypto.version>
 
-        <bc.version>1.78.1</bc.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
         <logstash.version>7.4</logstash.version>
     </properties>
@@ -104,13 +103,6 @@
             <groupId>io.getlime.security</groupId>
             <artifactId>powerauth-java-crypto</artifactId>
             <version>${powerauth-crypto.version}</version>
-        </dependency>
-
-        <!-- Bouncy Castle -->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk18on</artifactId>
-            <version>${bc.version}</version>
         </dependency>
 
         <!-- Logging -->
