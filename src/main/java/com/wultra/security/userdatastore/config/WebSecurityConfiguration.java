@@ -30,7 +30,8 @@ import org.springframework.security.web.SecurityFilterChain;
 /**
  * Security Web configuration class.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
+ * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Configuration
 @EnableWebSecurity
@@ -50,7 +51,15 @@ public class WebSecurityConfiguration {
                             .hasRole("WRITE")
                         .requestMatchers(HttpMethod.POST, "/public/**")
                             .hasRole("WRITE")
+                        .requestMatchers(HttpMethod.DELETE, "/admin/**")
+                            .hasRole("WRITE")
+                        .requestMatchers(HttpMethod.POST, "/admin/**")
+                            .hasRole("WRITE")
+                        .requestMatchers(HttpMethod.PUT, "/admin/**")
+                            .hasRole("WRITE")
                         .requestMatchers(HttpMethod.GET, "/private/**")
+                            .hasRole("READ")
+                        .requestMatchers(HttpMethod.GET, "/**")
                             .hasRole("READ")
                         .anyRequest()
                             .permitAll()

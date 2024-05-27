@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.model.entity.UserClaimsEntity;
-import com.wultra.security.userdatastore.model.error.ClaimNotFoundException;
+import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.error.InvalidRequestException;
 import com.wultra.security.userdatastore.model.repository.UserClaimsRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -37,10 +37,10 @@ import java.time.LocalDateTime;
 /**
  * Service for user claims.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
+ * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Service
-@Transactional
 @Slf4j
 public class UserClaimsService {
 
@@ -64,7 +64,7 @@ public class UserClaimsService {
         final String claims = userClaimsRepository.findById(userId)
                 .map(encryptionService::decryptClaims)
                 .orElseThrow(() ->
-                        new ClaimNotFoundException("Claims for user ID: '%s' not found".formatted(userId)));
+                        new ResourceNotFoundException("Claims for user ID: '%s' not found".formatted(userId)));
         audit("Retrieved claims of user ID: {}", userId);
         try {
             return objectMapper.readValue(claims, new TypeReference<>() {});
@@ -73,6 +73,7 @@ public class UserClaimsService {
         }
     }
 
+    @Transactional
     public void createOrUpdateUserClaims(final String userId, final Object claims) {
         final String claimsAsString;
         try {
@@ -96,6 +97,7 @@ public class UserClaimsService {
                 });
     }
 
+    @Transactional
     public void deleteUserClaims(final String userId) {
         final UserClaimsEntity user = userClaimsRepository.getReferenceById(userId);
         userClaimsRepository.delete(user);

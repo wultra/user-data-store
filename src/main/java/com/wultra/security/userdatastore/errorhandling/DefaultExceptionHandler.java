@@ -17,7 +17,11 @@
  */
 package com.wultra.security.userdatastore.errorhandling;
 
+import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
+import com.wultra.security.userdatastore.model.error.EncryptionException;
+import com.wultra.security.userdatastore.model.error.InvalidRequestException;
 import io.getlime.core.rest.model.base.response.ErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,7 +33,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 /**
  * Exception handler.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
+ * @author Roman Strobl, roman.strobl@wulra.com
  */
 @ControllerAdvice
 @Slf4j
@@ -48,4 +53,44 @@ class DefaultExceptionHandler {
         logger.debug("Exception detail: ", e);
         return new ErrorResponse("ERROR_NOT_FOUND", "Resource not found.");
     }
+
+    /**
+     * Exception handler for {@link EncryptionException}.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(EncryptionException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleEncryptionException(final EncryptionException e) {
+        logger.warn("Error occurred when processing request object.", e);
+        return new ErrorResponse("ENCRYPTION_ERROR", e.getMessage());
+    }
+
+    /**
+     * Exception handler for {@link InvalidRequestException} or {@link ConstraintViolationException}.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler({InvalidRequestException.class, ConstraintViolationException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidRequestException(final RuntimeException e) {
+        logger.warn("Error occurred when processing request object.", e);
+        return new ErrorResponse("INVALID_REQUEST", e.getMessage());
+    }
+
+    /**
+     * Exception handler for {@link ResourceNotFoundException}.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleNotFoundException(final ResourceNotFoundException e) {
+        logger.warn("Error occurred when processing request object.", e);
+        return new ErrorResponse("NOT_FOUND", e.getMessage());
+    }
+
 }

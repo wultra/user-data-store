@@ -17,26 +17,21 @@
  */
 package com.wultra.security.userdatastore.controller;
 
-import com.wultra.security.userdatastore.model.error.ClaimNotFoundException;
-import com.wultra.security.userdatastore.model.error.EncryptionException;
-import com.wultra.security.userdatastore.model.error.InvalidRequestException;
 import com.wultra.security.userdatastore.service.UserClaimsService;
-import io.getlime.core.rest.model.base.response.ErrorResponse;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * REST controller providing API for CRUD of user claims.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
+ * @author Roman Strobl, roman.strobl@wultra.com
  */
 @RestController
 @Validated
@@ -47,45 +42,6 @@ class UserClaimsController {
 
     UserClaimsController(UserClaimsService userClaimsService) {
         this.userClaimsService = userClaimsService;
-    }
-
-    /**
-     * Exception handler for {@link InvalidRequestException} or {@link ConstraintViolationException}.
-     *
-     * @param e Exception.
-     * @return Response with error details.
-     */
-    @ExceptionHandler({InvalidRequestException.class, ConstraintViolationException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInvalidRequestException(final RuntimeException e) {
-        logger.warn("Error occurred when processing request object.", e);
-        return new ErrorResponse("INVALID_REQUEST", e.getMessage());
-    }
-
-    /**
-     * Exception handler for {@link ClaimNotFoundException}.
-     *
-     * @param e Exception.
-     * @return Response with error details.
-     */
-    @ExceptionHandler(ClaimNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNotFoundException(final ClaimNotFoundException e) {
-        logger.warn("Error occurred when processing request object.", e);
-        return new ErrorResponse("NOT_FOUND", e.getMessage());
-    }
-
-    /**
-     * Exception handler for {@link EncryptionException}.
-     *
-     * @param e Exception.
-     * @return Response with error details.
-     */
-    @ExceptionHandler(EncryptionException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleEncryptionException(final EncryptionException e) {
-        logger.warn("Error occurred when processing request object.", e);
-        return new ErrorResponse("ENCRYPTION_ERROR", e.getMessage());
     }
 
     /**

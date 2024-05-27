@@ -17,12 +17,16 @@
  */
 package com.wultra.security.userdatastore.service;
 
-import com.wultra.security.userdatastore.model.entity.EncryptionMode;
-import com.wultra.security.userdatastore.model.entity.UserClaimsEntity;
+import com.wultra.security.userdatastore.model.entity.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.Security;
 import java.util.Base64;
 
@@ -105,5 +109,60 @@ class EncryptionServiceTest {
 
         final String result = tested.decryptClaims(entity);
         assertEquals("{\"name\": \"Alice Adams\"}", result);
+    }
+
+    @Test
+    void testEncryption_document_data() {
+        final EncryptionService tested = new EncryptionService("MTIzNDU2Nzg5MDEyMzQ1Ng==");
+        final DocumentEntity entity = new DocumentEntity();
+        entity.setUserId("alice.adams");
+        tested.encryptDocumentData(entity, "{\"name\": \"Alice Adams\"}");
+
+        assertNotEquals("{\"name\": \"Alice Adams\"}", entity.getDocumentData());
+        Base64.getDecoder().decode(entity.getDocumentData()); // would throw IllegalArgumentException if it is not in valid Base64
+        assertEquals(EncryptionMode.AES_HMAC, entity.getEncryptionMode());
+
+        final String result = tested.decryptDocumentData(entity);
+        assertEquals("{\"name\": \"Alice Adams\"}", result);
+    }
+
+    @Test
+    void testEncryption_photo() throws IOException {
+        final EncryptionService tested = new EncryptionService("MTIzNDU2Nzg5MDEyMzQ1Ng==");
+        final DocumentEntity documentEntity = new DocumentEntity();
+        documentEntity.setUserId("alice.adams");
+        final PhotoEntity photoEntity = new PhotoEntity();
+        photoEntity.setDocument(documentEntity);
+        final BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", baos);
+        final byte[] imageData = baos.toByteArray();
+        final String encodedData = Base64.getEncoder().encodeToString(imageData);
+
+        tested.encryptPhoto(photoEntity, encodedData);
+
+        assertNotEquals(encodedData, photoEntity.getPhotoData());
+        assertEquals(EncryptionMode.AES_HMAC, photoEntity.getEncryptionMode());
+
+        final String result = tested.decryptPhoto(photoEntity);
+        assertEquals(encodedData, result);
+    }
+
+    @Test
+    void testEncryption_attachment() {
+        final EncryptionService tested = new EncryptionService("MTIzNDU2Nzg5MDEyMzQ1Ng==");
+        final DocumentEntity documentEntity = new DocumentEntity();
+        documentEntity.setUserId("alice.adams");
+        final AttachmentEntity attachmentEntity = new AttachmentEntity();
+        attachmentEntity.setDocument(documentEntity);
+        final String encodedData = Base64.getEncoder().encodeToString("Sample text document".getBytes(StandardCharsets.UTF_8));
+
+        tested.encryptAttachment(attachmentEntity, encodedData);
+
+        assertNotEquals(encodedData, attachmentEntity.getAttachmentData());
+        assertEquals(EncryptionMode.AES_HMAC, attachmentEntity.getEncryptionMode());
+
+        final String result = tested.decryptAttachment(attachmentEntity);
+        assertEquals(encodedData, result);
     }
 }

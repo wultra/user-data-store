@@ -18,16 +18,17 @@
 package com.wultra.security.userdatastore.model.error;
 
 /**
- * Exception to be thrown when the requested claim is not found.
+ * Exception to be thrown when the requested resource is not found.
  *
  * @author Lubos Racansky, lubos.racansky@wultra.com
+ * @author Roman Strobl, roman.strobl@wultra.com
  */
-public class ClaimNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends RuntimeException {
 
     /**
      * No-arg constructor.
      */
-    public ClaimNotFoundException() {
+    public ResourceNotFoundException() {
     }
 
     /**
@@ -35,7 +36,7 @@ public class ClaimNotFoundException extends RuntimeException {
      *
      * @param message message
      */
-    public ClaimNotFoundException(String message) {
+    public ResourceNotFoundException(String message) {
         super(message);
     }
 
@@ -44,7 +45,7 @@ public class ClaimNotFoundException extends RuntimeException {
      *
      * @param cause cause
      */
-    public ClaimNotFoundException(Throwable cause) {
+    public ResourceNotFoundException(Throwable cause) {
         super(cause);
     }
 }

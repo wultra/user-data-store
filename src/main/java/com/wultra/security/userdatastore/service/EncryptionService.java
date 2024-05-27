@@ -17,8 +17,7 @@
  */
 package com.wultra.security.userdatastore.service;
 
-import com.wultra.security.userdatastore.model.entity.EncryptionMode;
-import com.wultra.security.userdatastore.model.entity.UserClaimsEntity;
+import com.wultra.security.userdatastore.model.entity.*;
 import com.wultra.security.userdatastore.model.error.EncryptionException;
 import io.getlime.security.powerauth.crypto.lib.generator.KeyGenerator;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
@@ -44,6 +43,7 @@ import java.util.Base64;
  * Service for encryption and decryption database data.
  *
  * @author Lubos Racansky, lubos.racansky@wultra.com
+ * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Service
 @Slf4j
@@ -72,7 +72,49 @@ class EncryptionService {
         final EncryptionMode encryptionMode = entity.getEncryptionMode();
         return switch (encryptionMode) {
             case NO_ENCRYPTION -> entity.getClaims();
-            case AES_HMAC -> fromDBValue(entity);
+            case AES_HMAC -> fromDBValue(entity.getUserId(), entity.getClaims());
+        };
+    }
+
+    /**
+     * Decrypt document data of the given entity.
+     *
+     * @param entity document entity
+     * @return decrypted document data
+     */
+    public String decryptDocumentData(final DocumentEntity entity) {
+        final EncryptionMode encryptionMode = entity.getEncryptionMode();
+        return switch (encryptionMode) {
+            case NO_ENCRYPTION -> entity.getDocumentData();
+            case AES_HMAC -> fromDBValue(entity.getUserId(), entity.getDocumentData());
+        };
+    }
+
+    /**
+     * Decrypt photo data of the given entity.
+     *
+     * @param entity photo entity
+     * @return decrypted photo data
+     */
+    public String decryptPhoto(final PhotoEntity entity) {
+        final EncryptionMode encryptionMode = entity.getEncryptionMode();
+        return switch (encryptionMode) {
+            case NO_ENCRYPTION -> entity.getPhotoData();
+            case AES_HMAC -> fromDBValue(entity.getDocument().getUserId(), entity.getPhotoData());
+        };
+    }
+
+    /**
+     * Decrypt attachment data of the given entity.
+     *
+     * @param entity attachment entity
+     * @return decrypted attachment data
+     */
+    public String decryptAttachment(final AttachmentEntity entity) {
+        final EncryptionMode encryptionMode = entity.getEncryptionMode();
+        return switch (encryptionMode) {
+            case NO_ENCRYPTION -> entity.getAttachmentData();
+            case AES_HMAC -> fromDBValue(entity.getDocument().getUserId(), entity.getAttachmentData());
         };
     }
 
@@ -88,42 +130,87 @@ class EncryptionService {
             entity.setClaims(claims);
         } else {
             entity.setEncryptionMode(EncryptionMode.AES_HMAC);
-            entity.setClaims(toDBValue(entity, claims));
+            entity.setClaims(toDBValue(entity.getUserId(), claims.getBytes(StandardCharsets.UTF_8)));
         }
     }
 
-    private String toDBValue(final UserClaimsEntity entity, final String claims) {
-        final String userId = entity.getUserId();
+    /**
+     * Encrypt the document data and set to the given entity.
+     *
+     * @param entity document entity to be modified
+     * @param documentData document data to encrypt
+     */
+    public void encryptDocumentData(final DocumentEntity entity, final String documentData) {
+        if (!StringUtils.hasText(masterDbEncryptionKeyBase64)) {
+            entity.setEncryptionMode(EncryptionMode.NO_ENCRYPTION);
+            entity.setDocumentData(documentData);
+        } else {
+            entity.setEncryptionMode(EncryptionMode.AES_HMAC);
+            entity.setDocumentData(toDBValue(entity.getUserId(), documentData.getBytes(StandardCharsets.UTF_8)));
+        }
+    }
+
+    /**
+     * Encrypt the photo data and set to the given entity.
+     *
+     * @param entity photo entity to be modified
+     * @param photoData photo data to encrypt
+     */
+    public void encryptPhoto(final PhotoEntity entity, final String photoData) {
+        if (!StringUtils.hasText(masterDbEncryptionKeyBase64)) {
+            entity.setEncryptionMode(EncryptionMode.NO_ENCRYPTION);
+            entity.setPhotoData(photoData);
+        } else {
+            entity.setEncryptionMode(EncryptionMode.AES_HMAC);
+            entity.setPhotoData(toDBValue(entity.getDocument().getUserId(), photoData.getBytes(StandardCharsets.UTF_8)));
+        }
+    }
+
+    /**
+     * Encrypt the attachment data and set to the given entity.
+     *
+     * @param entity attachment entity to be modified
+     * @param attachmentData attachment data to encrypt
+     */
+    public void encryptAttachment(final AttachmentEntity entity, final String attachmentData) {
+        if (!StringUtils.hasText(masterDbEncryptionKeyBase64)) {
+            entity.setEncryptionMode(EncryptionMode.NO_ENCRYPTION);
+            entity.setAttachmentData(attachmentData);
+        } else {
+            entity.setEncryptionMode(EncryptionMode.AES_HMAC);
+            entity.setAttachmentData(toDBValue(entity.getDocument().getUserId(), attachmentData.getBytes(StandardCharsets.UTF_8)));
+        }
+    }
+
+    private String toDBValue(final String userId, final byte[] dataBytes) {
         final SecretKey secretKey = fetchDerivedKey(userId);
-        final byte[] claimsBytes = claims.getBytes(StandardCharsets.UTF_8);
 
         try {
             final byte[] iv = keyGenerator.generateRandomBytes(16);
-            final byte[] encrypted = aesEncryptionUtils.encrypt(claimsBytes, iv, secretKey);
+            final byte[] encrypted = aesEncryptionUtils.encrypt(dataBytes, iv, secretKey);
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             baos.write(iv);
             baos.write(encrypted);
             return Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (GenericCryptoException | CryptoProviderException | InvalidKeyException | IOException e) {
-            logger.error("Unable to decrypt claims for user ID: {}", userId, e);
-            throw new EncryptionException("Unable to decrypt claims for user ID: " + userId, e);
+            logger.error("Unable to encrypt claims for user ID: {}", userId, e);
+            throw new EncryptionException("Unable to encrypt claims for user ID: " + userId, e);
         }
     }
 
-    private String fromDBValue(final UserClaimsEntity entity) {
-        final String userId = entity.getUserId();
+    private String fromDBValue(final String userId, final String data) {
         final SecretKey secretKey = fetchDerivedKey(userId);
-        final byte[] claimsBytes = Base64.getDecoder().decode(entity.getClaims());
+        final byte[] dataBytes = Base64.getDecoder().decode(data);
 
-        if (claimsBytes.length < 16) {
+        if (dataBytes.length < 16) {
             throw new EncryptionException("Invalid encrypted private key format - the byte array is too short");
         }
 
         // IV is present in first 16 bytes
-        final byte[] iv = Arrays.copyOfRange(claimsBytes, 0, 16);
+        final byte[] iv = Arrays.copyOfRange(dataBytes, 0, 16);
 
         // Encrypted claims is present after IV
-        final byte[] encryptedClaims = Arrays.copyOfRange(claimsBytes, 16, claimsBytes.length);
+        final byte[] encryptedClaims = Arrays.copyOfRange(dataBytes, 16, dataBytes.length);
 
         try {
             final byte[] decryptedClaims = aesEncryptionUtils.decrypt(encryptedClaims, iv, secretKey);
@@ -133,6 +220,7 @@ class EncryptionService {
             throw new EncryptionException("Unable to decrypt claims for user ID: " + userId, e);
         }
     }
+
 
     private SecretKey fetchDerivedKey(final String userId) {
         if (!StringUtils.hasText(masterDbEncryptionKeyBase64)) {
