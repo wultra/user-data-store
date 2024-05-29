@@ -4,6 +4,11 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
     <changeSet id="1" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="uds_document"/>
+            </not>
+        </preConditions>
         <createTable tableName="uds_document">
             <column name="id" type="VARCHAR(36)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -33,6 +38,11 @@
     </changeSet>
 
     <changeSet id="2" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="uds_document_history"/>
+            </not>
+        </preConditions>
         <createTable tableName="uds_document_history">
             <column name="id" type="INTEGER">
                 <constraints primaryKey="true" nullable="false"/>
@@ -61,6 +71,11 @@
     </changeSet>
 
     <changeSet id="3" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="uds_photo"/>
+            </not>
+        </preConditions>
         <createTable tableName="uds_photo">
             <column name="id" type="VARCHAR(36)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -84,6 +99,11 @@
     </changeSet>
 
     <changeSet id="4" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_uds_photo_document_id" />
+            </not>
+        </preConditions>
         <addForeignKeyConstraint
                 baseTableName="uds_photo"
                 baseColumnNames="document_id"
@@ -93,6 +113,11 @@
     </changeSet>
 
     <changeSet id="5" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="uds_attachment"/>
+            </not>
+        </preConditions>
         <createTable tableName="uds_attachment">
             <column name="id" type="VARCHAR(36)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -116,6 +141,11 @@
     </changeSet>
 
     <changeSet id="6" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_uds_attachment_document_id" />
+            </not>
+        </preConditions>
         <addForeignKeyConstraint
                 baseTableName="uds_attachment"
                 baseColumnNames="document_id"
