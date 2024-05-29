@@ -51,7 +51,6 @@ class AttachmentController {
         this.attachmentService = attachmentService;
     }
 
-
     /**
      * Return attachments for the given user.
      *
