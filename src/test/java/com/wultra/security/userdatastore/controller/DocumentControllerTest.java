@@ -133,9 +133,10 @@ class DocumentControllerTest {
                 "birthdate", "1975-12-31",
                 "https://claims.example.com/department", "engineering"
         ));
-        final var documentCreateRequest = new DocumentCreateRequest("profile", "claims",
+        final var documentCreateRequest = new DocumentCreateRequest("alice", "profile", "claims",
                 "83692", null, documentData);
         final Map<String, Object> requestBody = Map.of(
+                "userId", "alice",
                 "documentType", "profile",
                 "dataType", "claims",
                 "documentDataId", "83692",
@@ -150,7 +151,7 @@ class DocumentControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is("OK")));
 
-        verify(service).createDocument("alice", documentCreateRequest);
+        verify(service).createDocument(documentCreateRequest);
     }
 
     @WithMockUser(roles = "READ")
@@ -172,9 +173,10 @@ class DocumentControllerTest {
                 "birthdate", "1976-12-31",
                 "https://claims.example.com/department", "engineering"
         ));
-        final var documentUpdateRequest = new DocumentUpdateRequest("1", "profile", "claims",
+        final var documentUpdateRequest = new DocumentUpdateRequest("alice","1", "profile", "claims",
                 "83692", null, documentData);
         final Map<String, Object> requestBody = Map.of(
+                "userId", "alice",
                 "id", "1",
                 "documentType", "profile",
                 "dataType", "claims",
@@ -190,7 +192,7 @@ class DocumentControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is("OK")));
 
-        verify(service).updateDocument("alice", documentUpdateRequest);
+        verify(service).updateDocument(documentUpdateRequest);
     }
 
     @WithMockUser(roles = "READ")

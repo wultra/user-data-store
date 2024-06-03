@@ -74,7 +74,7 @@ class DocumentController {
     /**
      * Create a document for the given user.
      *
-     * @param userId user identifier
+     * @param request Document create request
      * @return user documents
      */
     @Operation(
@@ -82,16 +82,16 @@ class DocumentController {
             description = "Create a documents for the given user."
     )
     @PostMapping("/admin/documents")
-    public ObjectResponse<DocumentCreateResponse> createDocument(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final DocumentCreateRequest request) {
-        logger.info("Creating document for user ID: {}", userId);
-        final DocumentCreateResponse response = documentService.createDocument(userId, request);
+    public ObjectResponse<DocumentCreateResponse> createDocument(@RequestBody final DocumentCreateRequest request) {
+        logger.info("Creating document for user ID: {}", request.userId());
+        final DocumentCreateResponse response = documentService.createDocument(request);
         return new ObjectResponse<>(response);
     }
 
     /**
      * Update a document for the given user.
      *
-     * @param userId user identifier
+     * @param request Document update request
      * @return user documents
      */
     @Operation(
@@ -99,9 +99,9 @@ class DocumentController {
             description = "Update a document for the given user."
     )
     @PutMapping("/admin/documents")
-    public Response updateDocument(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final DocumentUpdateRequest request) {
-        logger.info("Updating document for user ID: {}", userId);
-        documentService.updateDocument(userId, request);
+    public Response updateDocument(@RequestBody final DocumentUpdateRequest request) {
+        logger.info("Updating document for user ID: {}", request.userId());
+        documentService.updateDocument(request);
         return new Response();
     }
 

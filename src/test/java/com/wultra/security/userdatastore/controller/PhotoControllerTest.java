@@ -129,7 +129,7 @@ class PhotoControllerTest {
     @WithMockUser(roles = "WRITE")
     @Test
     void testPost() throws Exception {
-        final var photoCreateRequest = new PhotoCreateRequest("person", encodedPhoto, null);
+        final var photoCreateRequest = new PhotoCreateRequest("alice", "1","person", encodedPhoto, null);
 
         final String requestBodyJson = new ObjectMapper().writeValueAsString(photoCreateRequest);
         mvc.perform(post("/admin/photos?userId=alice&documentId=1")
@@ -139,7 +139,7 @@ class PhotoControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is("OK")));
 
-        verify(service).createPhoto("alice", "1", photoCreateRequest);
+        verify(service).createPhoto(photoCreateRequest);
     }
 
     @WithMockUser(roles = "READ")

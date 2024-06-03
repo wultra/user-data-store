@@ -74,7 +74,7 @@ class AttachmentController {
     /**
      * Create an attachment for the given user and document.
      *
-     * @param userId user identifier
+     * @param request Create attachment request
      * @return attachment create response
      */
     @Operation(
@@ -82,9 +82,9 @@ class AttachmentController {
             description = "Create an attachment for the given user and document."
     )
     @PostMapping("/admin/attachments")
-    public ObjectResponse<AttachmentCreateResponse> createAttachment(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId, @RequestBody final AttachmentCreateRequest request) {
-        logger.info("Creating attachment for user ID: {}", userId);
-        final AttachmentCreateResponse response = attachmentService.createAttachment(userId, documentId, request);
+    public ObjectResponse<AttachmentCreateResponse> createAttachment(@RequestBody final AttachmentCreateRequest request) {
+        logger.info("Creating attachment for user ID: {}", request.userId());
+        final AttachmentCreateResponse response = attachmentService.createAttachment(request);
         return new ObjectResponse<>(response);
     }
 

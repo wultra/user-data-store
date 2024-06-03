@@ -17,6 +17,8 @@
  */
 package com.wultra.security.userdatastore.model.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
@@ -29,8 +31,15 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public record PhotoCreateRequest(
 
+        @NotBlank @Size(max = 255)
+        String userId,
+        @NotBlank @Size(max = 36)
+        String documentId,
+        @NotBlank @Size(max = 32)
         String photoType,
+        @NotBlank
         String photoData,
+        @Size(max = 255)
         String externalId
 
 ) { }

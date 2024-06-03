@@ -126,7 +126,7 @@ class AttachmentControllerTest {
     @WithMockUser(roles = "WRITE")
     @Test
     void testPost() throws Exception {
-        final var attachmentCreateRequest = new AttachmentCreateRequest("text", attachmentData, null);
+        final var attachmentCreateRequest = new AttachmentCreateRequest("alice", "1","text", attachmentData, null);
 
         final String requestBodyJson = new ObjectMapper().writeValueAsString(attachmentCreateRequest);
         mvc.perform(post("/admin/attachments?userId=alice&documentId=1")
@@ -136,7 +136,7 @@ class AttachmentControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is("OK")));
 
-        verify(service).createAttachment("alice", "1", attachmentCreateRequest);
+        verify(service).createAttachment(attachmentCreateRequest);
     }
 
     @WithMockUser(roles = "READ")

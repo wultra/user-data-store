@@ -75,7 +75,7 @@ class PhotoController {
     /**
      * Create a photo for the given user and document.
      *
-     * @param userId user identifier
+     * @param request Photo create request
      * @return photo create response
      */
     @Operation(
@@ -83,9 +83,9 @@ class PhotoController {
             description = "Create a photo for the given user and document."
     )
     @PostMapping("/admin/photos")
-    public ObjectResponse<PhotoCreateResponse> createPhoto(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId, @RequestBody final PhotoCreateRequest request) {
-        logger.info("Creating photo for user ID: {}", userId);
-        final PhotoCreateResponse response = photoService.createPhoto(userId, documentId, request);
+    public ObjectResponse<PhotoCreateResponse> createPhoto(@RequestBody final PhotoCreateRequest request) {
+        logger.info("Creating photo for user ID: {}", request.userId());
+        final PhotoCreateResponse response = photoService.createPhoto(request);
         return new ObjectResponse<>(response);
     }
 

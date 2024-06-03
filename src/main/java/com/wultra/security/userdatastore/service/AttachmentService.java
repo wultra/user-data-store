@@ -57,7 +57,8 @@ public class AttachmentService {
     private final AttachmentConverter attachmentConverter;
 
     @Transactional
-    public AttachmentCreateResponse createAttachment(final String userId, final String documentId, final AttachmentCreateRequest request) {
+    public AttachmentCreateResponse createAttachment(final AttachmentCreateRequest request) {
+        final String documentId = request.documentId();
         final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
         if (documentEntityOptional.isEmpty()) {
             throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));

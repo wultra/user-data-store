@@ -77,7 +77,8 @@ public class DocumentService {
     }
 
     @Transactional
-    public DocumentCreateResponse createDocument(final String userId, final DocumentCreateRequest request) {
+    public DocumentCreateResponse createDocument(final DocumentCreateRequest request) {
+        final String userId = request.userId();
         logger.debug("Creating document for user ID: {}", userId);
         final DocumentEntity documentEntity = new DocumentEntity();
         documentEntity.setId(UUID.randomUUID().toString());
@@ -100,7 +101,8 @@ public class DocumentService {
     }
 
     @Transactional
-    public Response updateDocument(final String userId, final DocumentUpdateRequest request) {
+    public Response updateDocument(final DocumentUpdateRequest request) {
+        final String userId = request.userId();
         logger.debug("Updating document for user ID: {}", userId);
         final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(request.id());
         if (documentEntityOptional.isEmpty()) {

@@ -83,7 +83,9 @@ public class PhotoService {
     }
 
     @Transactional
-    public PhotoCreateResponse createPhoto(final String userId, final String documentId, final PhotoCreateRequest request) {
+    public PhotoCreateResponse createPhoto(final PhotoCreateRequest request) {
+        final String userId = request.userId();
+        final String documentId = request.documentId();
         final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
         if (documentEntityOptional.isEmpty()) {
             throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
