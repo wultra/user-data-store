@@ -52,6 +52,7 @@ public class UserClaimsEntity {
     @Column(nullable = false)
     private LocalDateTime timestampCreated = LocalDateTime.now();
 
+    @Column
     private LocalDateTime timestampLastUpdated;
 
     @Override

@@ -62,9 +62,10 @@ public class PhotoEntity implements Serializable {
     @Column(name = "encryption_mode", nullable = false)
     private EncryptionMode encryptionMode;
 
-    @Column(nullable = false)
+    @Column(name = "timestamp_created", nullable = false)
     private LocalDateTime timestampCreated = LocalDateTime.now();
 
+    @Column(name = "timestamp_last_updated")
     private LocalDateTime timestampLastUpdated;
 
     @Override

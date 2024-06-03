@@ -28,22 +28,25 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * Entity for user documents.
+ * Entity for user document history.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Entity
-@Table(name = "uds_document")
+@Table(name = "uds_document_history")
 @Getter
 @Setter
-public class DocumentEntity implements Serializable {
+public class DocumentHistoryEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -383789783213592918L;
+    private static final long serialVersionUID = -6085099307796424549L;
 
     @Id
     @Column(name = "id", nullable = false)
     private String id;
+
+    @Column(name = "document_id", nullable = false)
+    private String documentId;
 
     @Column(name = "user_id", nullable = false)
     private String userId;
@@ -77,13 +80,13 @@ public class DocumentEntity implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || !this.getClass().equals(ProxyUtils.getUserClass(o))) return false;
-        DocumentEntity that = (DocumentEntity) o;
-        return userId.equals(that.userId) && documentType.equals(that.documentType) && dataType.equals(that.dataType) && documentDataId.equals(that.documentDataId);
+        DocumentHistoryEntity that = (DocumentHistoryEntity) o;
+        return documentId.equals(that.documentId) && userId.equals(that.userId) && documentType.equals(that.documentType) && dataType.equals(that.dataType) && documentDataId.equals(that.documentDataId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, documentType, dataType, documentDataId);
+        return Objects.hash(documentId, userId, documentType, dataType, documentDataId);
     }
 
 }
