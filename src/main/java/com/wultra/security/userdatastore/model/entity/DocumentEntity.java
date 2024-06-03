@@ -20,6 +20,7 @@ package com.wultra.security.userdatastore.model.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.util.ProxyUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -74,7 +75,7 @@ public class DocumentEntity implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !this.getClass().equals(ProxyUtils.getUserClass(o))) return false;
         DocumentEntity that = (DocumentEntity) o;
         return userId.equals(that.userId) && documentType.equals(that.documentType) && dataType.equals(that.dataType) && documentDataId.equals(that.documentDataId);
     }

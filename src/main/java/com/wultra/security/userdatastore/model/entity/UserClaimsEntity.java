@@ -20,6 +20,7 @@ package com.wultra.security.userdatastore.model.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.util.ProxyUtils;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -56,7 +57,8 @@ public class UserClaimsEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserClaimsEntity that)) return false;
+        if (o == null || !this.getClass().equals(ProxyUtils.getUserClass(o))) return false;
+        UserClaimsEntity that = (UserClaimsEntity) o;
         return userId.equals(that.userId);
     }
 

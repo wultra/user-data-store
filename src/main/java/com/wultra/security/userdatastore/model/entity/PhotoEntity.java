@@ -20,6 +20,7 @@ package com.wultra.security.userdatastore.model.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.util.ProxyUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -69,7 +70,7 @@ public class PhotoEntity implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !this.getClass().equals(ProxyUtils.getUserClass(o))) return false;
         PhotoEntity that = (PhotoEntity) o;
         return document.equals(that.document) && photoType.equals(that.photoType) && timestampCreated.equals(that.timestampCreated);
     }
