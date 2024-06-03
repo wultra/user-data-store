@@ -29,8 +29,8 @@ import com.wultra.security.userdatastore.model.request.DocumentUpdateRequest;
 import com.wultra.security.userdatastore.model.response.DocumentCreateResponse;
 import com.wultra.security.userdatastore.model.response.DocumentResponse;
 import io.getlime.core.rest.model.base.response.Response;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,20 +47,13 @@ import java.util.UUID;
  */
 @Service
 @Slf4j
+@AllArgsConstructor
 public class DocumentService {
 
     private final DocumentRepository documentRepository;
     private final Audit audit;
     private final EncryptionService encryptionService;
     private final DocumentConverter documentConverter;
-
-    @Autowired
-    DocumentService(final DocumentRepository documentRepository, final Audit audit, final EncryptionService encryptionService, final DocumentConverter documentConverter) {
-        this.documentRepository = documentRepository;
-        this.audit = audit;
-        this.encryptionService = encryptionService;
-        this.documentConverter = documentConverter;
-    }
 
     @Transactional(readOnly = true)
     public DocumentResponse fetchDocuments(final String userId, final String documentId) {

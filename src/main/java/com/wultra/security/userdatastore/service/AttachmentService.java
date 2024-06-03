@@ -21,21 +21,16 @@ import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.converter.AttachmentConverter;
 import com.wultra.security.userdatastore.model.dto.AttachmentDto;
-import com.wultra.security.userdatastore.model.dto.PhotoDto;
 import com.wultra.security.userdatastore.model.entity.AttachmentEntity;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
-import com.wultra.security.userdatastore.model.entity.PhotoEntity;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.AttachmentRepository;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import com.wultra.security.userdatastore.model.request.AttachmentCreateRequest;
-import com.wultra.security.userdatastore.model.request.PhotoCreateRequest;
 import com.wultra.security.userdatastore.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.model.response.AttachmentResponse;
-import com.wultra.security.userdatastore.model.response.PhotoCreateResponse;
-import com.wultra.security.userdatastore.model.response.PhotoResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +47,7 @@ import java.util.UUID;
  */
 @Service
 @Slf4j
+@AllArgsConstructor
 public class AttachmentService {
 
     private final AttachmentRepository attachmentRepository;
@@ -59,15 +55,6 @@ public class AttachmentService {
     private final Audit audit;
     private final EncryptionService encryptionService;
     private final AttachmentConverter attachmentConverter;
-
-    @Autowired
-    AttachmentService(final AttachmentRepository attachmentRepository, final DocumentRepository documentRepository, final Audit audit, final EncryptionService encryptionService, final AttachmentConverter attachmentConverter) {
-        this.attachmentRepository = attachmentRepository;
-        this.documentRepository = documentRepository;
-        this.audit = audit;
-        this.encryptionService = encryptionService;
-        this.attachmentConverter = attachmentConverter;
-    }
 
     @Transactional
     public AttachmentCreateResponse createAttachment(final String userId, final String documentId, final AttachmentCreateRequest request) {
@@ -91,6 +78,7 @@ public class AttachmentService {
         return response;
     }
 
+    @Transactional(readOnly = true)
     public List<AttachmentDto> fetchAttachments(final String userId, final String documentId) {
         if (documentId != null) {
             final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
@@ -115,6 +103,7 @@ public class AttachmentService {
         return response;
     }
 
+    @Transactional
     public void deleteAttachments(final String userId, final String documentId) {
         if (documentId == null) {
             attachmentRepository.deleteAllByUserId(userId);

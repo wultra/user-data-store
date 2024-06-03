@@ -20,7 +20,6 @@ package com.wultra.security.userdatastore.service;
 import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.converter.PhotoConverter;
-import com.wultra.security.userdatastore.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.model.dto.PhotoDto;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.entity.PhotoEntity;
@@ -28,11 +27,10 @@ import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import com.wultra.security.userdatastore.model.repository.PhotoRepository;
 import com.wultra.security.userdatastore.model.request.PhotoCreateRequest;
-import com.wultra.security.userdatastore.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.model.response.PhotoCreateResponse;
 import com.wultra.security.userdatastore.model.response.PhotoResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +47,7 @@ import java.util.UUID;
  */
 @Service
 @Slf4j
+@AllArgsConstructor
 public class PhotoService {
 
     private final PhotoRepository photoRepository;
@@ -56,15 +55,6 @@ public class PhotoService {
     private final Audit audit;
     private final EncryptionService encryptionService;
     private final PhotoConverter photoConverter;
-
-    @Autowired
-    PhotoService(final PhotoRepository photoRepository, final DocumentRepository documentRepository, final Audit audit, final EncryptionService encryptionService, final PhotoConverter photoConverter) {
-        this.photoRepository = photoRepository;
-        this.documentRepository = documentRepository;
-        this.audit = audit;
-        this.encryptionService = encryptionService;
-        this.photoConverter = photoConverter;
-    }
 
     @Transactional(readOnly = true)
     public PhotoResponse fetchPhotos(final String userId, final String documentId) {

@@ -23,11 +23,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.model.entity.UserClaimsEntity;
-import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.error.InvalidRequestException;
+import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.UserClaimsRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +42,7 @@ import java.time.LocalDateTime;
  */
 @Service
 @Slf4j
+@AllArgsConstructor
 public class UserClaimsService {
 
     private final UserClaimsRepository userClaimsRepository;
@@ -51,13 +52,6 @@ public class UserClaimsService {
     private final EncryptionService encryptionService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @Autowired
-    UserClaimsService(final UserClaimsRepository userClaimsRepository, final Audit audit, final EncryptionService encryptionService) {
-        this.userClaimsRepository = userClaimsRepository;
-        this.audit = audit;
-        this.encryptionService = encryptionService;
-    }
 
     @Transactional(readOnly = true)
     public Object fetchUserClaims(final String userId) {
