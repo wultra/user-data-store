@@ -63,6 +63,9 @@ public class DocumentEntity implements Serializable {
     @Column(name = "document_data", nullable = false)
     private String documentData;
 
+    @Column(name = "attributes", nullable = false)
+    private String attributes;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "encryption_mode", nullable = false)
     private EncryptionMode encryptionMode;

@@ -21,6 +21,7 @@ import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * User document model class.
@@ -38,6 +39,7 @@ public record DocumentDto(
         String documentDataId,
         String externalId,
         String documentData,
+        Map<String, Object> attributes,
         LocalDateTime timestampCreated,
         LocalDateTime timestampLastUpdated
 

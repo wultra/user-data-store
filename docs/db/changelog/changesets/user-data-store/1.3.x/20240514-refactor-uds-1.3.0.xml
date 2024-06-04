@@ -29,6 +29,9 @@
             <column name="document_data" type="TEXT">
                 <constraints nullable="false"/>
             </column>
+            <column name="attributes" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
             <column name="encryption_mode" type="VARCHAR(255)" defaultValue="NO_ENCRYPTION">
                 <constraints nullable="false"/>
             </column>
@@ -61,6 +64,9 @@
             </column>
             <column name="external_id" type="VARCHAR(255)"/>
             <column name="document_data" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attributes" type="TEXT">
                 <constraints nullable="false"/>
             </column>
             <column name="encryption_mode" type="VARCHAR(255)" defaultValue="NO_ENCRYPTION">

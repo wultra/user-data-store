@@ -22,6 +22,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.Map;
+
 /**
  * Request class for updating documents.
  *
@@ -44,6 +46,7 @@ public record DocumentUpdateRequest(
         @Size(max = 255)
         String externalId,
         @NotBlank
-        String documentData
+        String documentData,
+        Map<String, Object> attributes
 
 ) { }

@@ -17,9 +17,16 @@
  */
 package com.wultra.security.userdatastore.converter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wultra.security.userdatastore.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Converter for documents.
@@ -27,7 +34,10 @@ import org.springframework.stereotype.Component;
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Component
+@Slf4j
 public class DocumentConverter {
+
+    private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
      * Convert {@link DocumentDto} to {@link DocumentEntity}.
@@ -47,6 +57,7 @@ public class DocumentConverter {
         entity.setDocumentDataId(document.documentDataId());
         entity.setExternalId(document.externalId());
         entity.setDocumentData(document.documentData());
+        convertAntSetAttributes(document.attributes(), entity);
         entity.setTimestampCreated(document.timestampCreated());
         entity.setTimestampLastUpdated(document.timestampLastUpdated());
         return entity;
@@ -70,9 +81,36 @@ public class DocumentConverter {
                 .documentDataId(entity.getDocumentDataId())
                 .externalId(entity.getExternalId())
                 .documentData(entity.getDocumentData())
+                .attributes(convertAttributesToMap(entity.getAttributes()))
                 .timestampCreated(entity.getTimestampCreated())
                 .timestampLastUpdated(entity.getTimestampLastUpdated())
                 .build();
+    }
+
+    public void convertAntSetAttributes(final Map<String, Object> attributes, final DocumentEntity documentEntity) {
+        if (attributes == null) {
+            documentEntity.setAttributes("{}");
+        } else {
+            try {
+                documentEntity.setAttributes(OBJECT_MAPPER.writeValueAsString(attributes));
+            } catch (JsonProcessingException e) {
+                logger.warn("Invalid attributes, serialization error: ", e);
+                documentEntity.setAttributes("{}");
+            }
+        }
+    }
+
+    private Map<String, Object> convertAttributesToMap(final String attributes) {
+        if (attributes == null) {
+            return Collections.emptyMap();
+        } else {
+            try {
+                return OBJECT_MAPPER.readValue(attributes, new TypeReference<>(){});
+            } catch (JsonProcessingException e) {
+                logger.warn("Invalid attributes, deserialization error: ", e);
+                return Collections.emptyMap();
+            }
+        }
     }
 
 }

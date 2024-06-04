@@ -33,6 +33,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -134,13 +135,14 @@ class DocumentControllerTest {
                 "https://claims.example.com/department", "engineering"
         ));
         final var documentCreateRequest = new DocumentCreateRequest("alice", "profile", "claims",
-                "83692", null, documentData);
+                "83692", null, documentData, Collections.emptyMap());
         final Map<String, Object> requestBody = Map.of(
                 "userId", "alice",
                 "documentType", "profile",
                 "dataType", "claims",
                 "documentDataId", "83692",
-                "documentData", documentData
+                "documentData", documentData,
+                "attributes", Collections.emptyMap()
         );
 
         final String requestBodyJson = new ObjectMapper().writeValueAsString(requestBody);
@@ -174,14 +176,15 @@ class DocumentControllerTest {
                 "https://claims.example.com/department", "engineering"
         ));
         final var documentUpdateRequest = new DocumentUpdateRequest("alice","1", "profile", "claims",
-                "83692", null, documentData);
+                "83692", null, documentData, Collections.emptyMap());
         final Map<String, Object> requestBody = Map.of(
                 "userId", "alice",
                 "id", "1",
                 "documentType", "profile",
                 "dataType", "claims",
                 "documentDataId", "83692",
-                "documentData", documentData
+                "documentData", documentData,
+                "attributes", Collections.emptyMap()
         );
 
         final String requestBodyJson = new ObjectMapper().writeValueAsString(requestBody);
