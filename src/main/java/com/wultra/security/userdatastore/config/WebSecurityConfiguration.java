@@ -26,6 +26,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Security Web configuration class.
@@ -47,6 +48,13 @@ public class WebSecurityConfiguration {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(httpBasic -> httpBasic.realmName(realm))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/actuator/**"),
+                                new AntPathRequestMatcher("/swagger-resources/**"),
+                                new AntPathRequestMatcher("/swagger-ui/**"),
+                                new AntPathRequestMatcher("/webjars/**"),
+                                new AntPathRequestMatcher("/v3/api-docs/**"))
+                        .permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/public/**")
                             .hasRole("WRITE")
                         .requestMatchers(HttpMethod.POST, "/public/**")
