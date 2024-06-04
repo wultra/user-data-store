@@ -15,31 +15,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.model.request;
+package com.wultra.security.userdatastore.client.model.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.Map;
+
 /**
- * Request class for creating attachments.
+ * Request class for updating documents.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Builder
 @Jacksonized
-public record AttachmentCreateRequest(
+public record DocumentUpdateRequest(
 
         @NotBlank @Size(max = 255)
         String userId,
         @NotBlank @Size(max = 36)
-        String documentId,
+        String id,
         @NotBlank @Size(max = 32)
-        String attachmentType,
-        @NotBlank
-        String attachmentData,
+        String documentType,
+        @NotBlank @Size(max = 32)
+        String dataType,
+        @NotBlank @Size(max = 255)
+        String documentDataId,
         @Size(max = 255)
-        String externalId
+        String externalId,
+        @NotBlank
+        String documentData,
+        Map<String, Object> attributes
 
 ) { }

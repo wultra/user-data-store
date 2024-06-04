@@ -15,22 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.model.response;
+package com.wultra.security.userdatastore.client.model.request;
 
-import com.wultra.security.userdatastore.model.dto.DocumentDto;
-import com.wultra.security.userdatastore.model.dto.PhotoDto;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import java.util.ArrayList;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Builder;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Response class for listing photos.
+ * Request class for creating attachments.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class PhotoResponse extends ArrayList<PhotoDto> {
+@Builder
+@Jacksonized
+public record AttachmentCreateRequest(
 
-}
+        @NotBlank @Size(max = 255)
+        String userId,
+        @NotBlank @Size(max = 36)
+        String documentId,
+        @NotBlank @Size(max = 32)
+        String attachmentType,
+        @NotBlank
+        String attachmentData,
+        @Size(max = 255)
+        String externalId
+
+) { }

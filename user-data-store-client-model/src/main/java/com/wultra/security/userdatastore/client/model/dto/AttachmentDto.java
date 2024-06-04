@@ -15,31 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.model.dto;
+package com.wultra.security.userdatastore.client.model.dto;
 
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
- * User document model class.
+ * Document attachment model class.
  *
  * @author Roman Strobl; roman.strobl@wultra.com
  */
 @Builder
 @Jacksonized
-public record DocumentDto(
+public record AttachmentDto(
 
         String id,
         String userId,
-        String documentType,
-        String dataType,
-        String documentDataId,
+        String documentId,
         String externalId,
-        String documentData,
-        Map<String, Object> attributes,
+        String attachmentType,
+        String attachmentData,
         LocalDateTime timestampCreated,
         LocalDateTime timestampLastUpdated
 

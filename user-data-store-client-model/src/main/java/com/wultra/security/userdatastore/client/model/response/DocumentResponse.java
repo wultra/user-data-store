@@ -15,29 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.model.dto;
+package com.wultra.security.userdatastore.client.model.response;
 
-import lombok.Builder;
-import lombok.extern.jackson.Jacksonized;
+import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
- * Document attachment model class.
+ * Response class for listing documents.
  *
- * @author Roman Strobl; roman.strobl@wultra.com
+ * @author Roman Strobl, roman.strobl@wultra.com
  */
-@Builder
-@Jacksonized
-public record AttachmentDto(
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class DocumentResponse extends ArrayList<DocumentDto> {
 
-        String id,
-        String userId,
-        String documentId,
-        String externalId,
-        String attachmentType,
-        String attachmentData,
-        LocalDateTime timestampCreated,
-        LocalDateTime timestampLastUpdated
-
-) { }
+}

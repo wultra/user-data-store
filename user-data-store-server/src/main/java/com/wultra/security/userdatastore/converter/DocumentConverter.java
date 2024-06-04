@@ -20,7 +20,7 @@ package com.wultra.security.userdatastore.converter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wultra.security.userdatastore.model.dto.DocumentDto;
+import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

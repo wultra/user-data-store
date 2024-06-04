@@ -19,15 +19,15 @@ package com.wultra.security.userdatastore.service;
 
 import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
+import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
+import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
+import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
+import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.converter.DocumentConverter;
-import com.wultra.security.userdatastore.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
-import com.wultra.security.userdatastore.model.request.DocumentCreateRequest;
-import com.wultra.security.userdatastore.model.request.DocumentUpdateRequest;
-import com.wultra.security.userdatastore.model.response.DocumentCreateResponse;
-import com.wultra.security.userdatastore.model.response.DocumentResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -95,10 +95,7 @@ public class DocumentService {
         documentRepository.save(documentEntity);
         audit("Created document for user ID: {}", userId);
 
-        final DocumentCreateResponse response = new DocumentCreateResponse();
-        response.setId(documentEntity.getId());
-        response.setDocumentId(documentEntity.getDocumentDataId());
-        return response;
+        return new DocumentCreateResponse(documentEntity.getId(), documentEntity.getDocumentDataId());
     }
 
     @Transactional

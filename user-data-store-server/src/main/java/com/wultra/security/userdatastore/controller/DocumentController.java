@@ -17,11 +17,11 @@
  */
 package com.wultra.security.userdatastore.controller;
 
-import com.wultra.security.userdatastore.model.dto.DocumentDto;
-import com.wultra.security.userdatastore.model.request.DocumentCreateRequest;
-import com.wultra.security.userdatastore.model.request.DocumentUpdateRequest;
-import com.wultra.security.userdatastore.model.response.DocumentCreateResponse;
-import com.wultra.security.userdatastore.model.response.DocumentResponse;
+import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
+import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
+import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
+import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.service.DocumentService;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;

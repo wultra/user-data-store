@@ -18,10 +18,10 @@
 package com.wultra.security.userdatastore.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
+import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
+import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
 import com.wultra.security.userdatastore.config.WebSecurityConfiguration;
-import com.wultra.security.userdatastore.model.dto.PhotoDto;
-import com.wultra.security.userdatastore.model.request.PhotoCreateRequest;
-import com.wultra.security.userdatastore.model.response.PhotoResponse;
 import com.wultra.security.userdatastore.service.PhotoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

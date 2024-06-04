@@ -18,10 +18,10 @@
 package com.wultra.security.userdatastore.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
+import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
+import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.config.WebSecurityConfiguration;
-import com.wultra.security.userdatastore.model.dto.AttachmentDto;
-import com.wultra.security.userdatastore.model.request.AttachmentCreateRequest;
-import com.wultra.security.userdatastore.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.service.AttachmentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

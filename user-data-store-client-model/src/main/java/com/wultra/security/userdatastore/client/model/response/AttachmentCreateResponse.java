@@ -15,19 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.model.response;
+package com.wultra.security.userdatastore.client.model.response;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Response class for creating photos.
+ * Response class for creating attachments.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-@Data
-public class PhotoCreateResponse {
+@Builder
+@Jacksonized
+public record AttachmentCreateResponse(
 
-    private String id;
-    private String documentId;
+        String id,
+        String documentId
 
-}
+) { }

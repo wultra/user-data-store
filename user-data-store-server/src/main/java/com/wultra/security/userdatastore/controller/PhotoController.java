@@ -17,12 +17,10 @@
  */
 package com.wultra.security.userdatastore.controller;
 
-import com.wultra.security.userdatastore.model.dto.PhotoDto;
-import com.wultra.security.userdatastore.model.request.DocumentCreateRequest;
-import com.wultra.security.userdatastore.model.request.PhotoCreateRequest;
-import com.wultra.security.userdatastore.model.response.DocumentCreateResponse;
-import com.wultra.security.userdatastore.model.response.PhotoCreateResponse;
-import com.wultra.security.userdatastore.model.response.PhotoResponse;
+import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
+import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
+import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
+import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
 import com.wultra.security.userdatastore.service.PhotoService;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;

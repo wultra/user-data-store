@@ -15,19 +15,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.model.response;
+package com.wultra.security.userdatastore.client.model.dto;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.extern.jackson.Jacksonized;
+
+import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
- * Response class for creating attachments.
+ * User document model class.
  *
- * @author Roman Strobl, roman.strobl@wultra.com
+ * @author Roman Strobl; roman.strobl@wultra.com
  */
-@Data
-public class AttachmentCreateResponse {
+@Builder
+@Jacksonized
+public record DocumentDto(
 
-    private String id;
-    private String documentId;
+        String id,
+        String userId,
+        String documentType,
+        String dataType,
+        String documentDataId,
+        String externalId,
+        String documentData,
+        Map<String, Object> attributes,
+        LocalDateTime timestampCreated,
+        LocalDateTime timestampLastUpdated
 
-}
+) { }

@@ -19,16 +19,16 @@ package com.wultra.security.userdatastore.service;
 
 import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
+import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
+import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
+import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
+import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.converter.AttachmentConverter;
-import com.wultra.security.userdatastore.model.dto.AttachmentDto;
 import com.wultra.security.userdatastore.model.entity.AttachmentEntity;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.AttachmentRepository;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
-import com.wultra.security.userdatastore.model.request.AttachmentCreateRequest;
-import com.wultra.security.userdatastore.model.response.AttachmentCreateResponse;
-import com.wultra.security.userdatastore.model.response.AttachmentResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -78,10 +78,7 @@ public class AttachmentService {
 
         attachmentRepository.save(attachmentEntity);
 
-        final AttachmentCreateResponse response = new AttachmentCreateResponse();
-        response.setId(attachmentEntity.getId());
-        response.setDocumentId(documentEntity.getId());
-        return response;
+        return new AttachmentCreateResponse(attachmentEntity.getId(), documentEntity.getId());
     }
 
     @Transactional(readOnly = true)

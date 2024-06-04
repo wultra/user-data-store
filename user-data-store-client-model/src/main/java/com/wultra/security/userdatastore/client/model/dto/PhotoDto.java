@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.model.dto;
+package com.wultra.security.userdatastore.client.model.dto;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
