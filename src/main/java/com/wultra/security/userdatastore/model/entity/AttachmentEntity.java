@@ -49,6 +49,9 @@ public class AttachmentEntity implements Serializable {
     @JoinColumn(name = "document_id", referencedColumnName = "id", nullable = false)
     private DocumentEntity document;
 
+    @Column(name = "user_id", nullable = false)
+    private String userId;
+
     @Column(name = "external_id")
     private String externalId;
 
@@ -62,9 +65,10 @@ public class AttachmentEntity implements Serializable {
     @Column(name = "encryption_mode", nullable = false)
     private EncryptionMode encryptionMode;
 
-    @Column(nullable = false)
+    @Column(name = "timestamp_created", nullable = false)
     private LocalDateTime timestampCreated = LocalDateTime.now();
 
+    @Column(name = "timestamp_last_updated")
     private LocalDateTime timestampLastUpdated;
 
     @Override

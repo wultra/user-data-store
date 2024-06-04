@@ -58,15 +58,20 @@ public class AttachmentService {
 
     @Transactional
     public AttachmentCreateResponse createAttachment(final AttachmentCreateRequest request) {
+        final String userId = request.userId();
         final String documentId = request.documentId();
         final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
         if (documentEntityOptional.isEmpty()) {
             throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
         }
         final DocumentEntity documentEntity = documentEntityOptional.get();
+        if (!documentEntity.getUserId().equals(userId)) {
+            throw new ResourceNotFoundException("User reference not valid, ID: '%s'".formatted(userId));
+        }
         final AttachmentEntity attachmentEntity = new AttachmentEntity();
         attachmentEntity.setId(UUID.randomUUID().toString());
         attachmentEntity.setDocument(documentEntity);
+        attachmentEntity.setUserId(userId);
         attachmentEntity.setAttachmentType(request.attachmentType());
         attachmentEntity.setAttachmentData(request.attachmentData());
         attachmentEntity.setTimestampCreated(LocalDateTime.now());

@@ -97,6 +97,7 @@ public class PhotoService {
         final PhotoEntity photoEntity = new PhotoEntity();
         photoEntity.setId(UUID.randomUUID().toString());
         photoEntity.setDocument(documentEntity);
+        photoEntity.setUserId(userId);
         photoEntity.setPhotoType(request.photoType());
         photoEntity.setPhotoData(request.photoData());
         photoEntity.setTimestampCreated(LocalDateTime.now());

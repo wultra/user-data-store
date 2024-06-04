@@ -49,6 +49,9 @@ public class PhotoEntity implements Serializable {
     @JoinColumn(name = "document_id", referencedColumnName = "id", nullable = false)
     private DocumentEntity document;
 
+    @Column(name = "user_id")
+    private String userId;
+
     @Column(name = "external_id")
     private String externalId;
 
