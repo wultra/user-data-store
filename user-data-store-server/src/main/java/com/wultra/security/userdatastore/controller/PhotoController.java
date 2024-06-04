@@ -32,6 +32,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * REST controller providing API for CRUD for photos.
@@ -64,7 +65,7 @@ class PhotoController {
     @GetMapping("/photos")
     public ObjectResponse<PhotoResponse> fetchPhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
         logger.info("Fetching photos for document ID: {}", documentId);
-        final List<PhotoDto> photos = photoService.fetchPhotos(userId, documentId);
+        final List<PhotoDto> photos = photoService.fetchPhotos(userId, Optional.ofNullable(documentId));
         final PhotoResponse response = new PhotoResponse();
         response.addAll(photos);
         return new ObjectResponse<>(response);
@@ -101,7 +102,7 @@ class PhotoController {
     @DeleteMapping("/admin/photos")
     public Response deletePhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("Deleting photos for document ID: {}", documentId);
-        photoService.deletePhotos(userId, documentId);
+        photoService.deletePhotos(userId, Optional.ofNullable(documentId));
         return new Response();
     }
 

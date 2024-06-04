@@ -33,6 +33,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.security.SecureRandom;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
@@ -81,7 +82,7 @@ class AttachmentControllerTest {
                 .attachmentData(attachmentData)
                 .build();
         response.add(attachment);
-        when(service.fetchAttachments("alice", "1"))
+        when(service.fetchAttachments("alice", Optional.of("1")))
                 .thenReturn(response);
 
         mvc.perform(get("/attachments?userId=alice&documentId=1")
@@ -113,7 +114,7 @@ class AttachmentControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is("OK")));
 
-        verify(service).deleteAttachments("alice", "1");
+        verify(service).deleteAttachments("alice", Optional.of("1"));
     }
 
     @WithMockUser(roles = "READ")

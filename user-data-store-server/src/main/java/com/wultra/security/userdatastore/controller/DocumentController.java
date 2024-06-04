@@ -33,6 +33,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * REST controller providing API for CRUD for user documents.
@@ -64,7 +65,7 @@ class DocumentController {
     @GetMapping("/documents")
     public ObjectResponse<DocumentResponse> fetchDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("Fetching documents; user ID: {}, document ID: {}", userId, documentId);
-        final List<DocumentDto> documents = documentService.fetchDocuments(userId, documentId);
+        final List<DocumentDto> documents = documentService.fetchDocuments(userId, Optional.ofNullable(documentId));
         final DocumentResponse response = new DocumentResponse();
         response.addAll(documents);
         return new ObjectResponse<>(response);
@@ -118,7 +119,7 @@ class DocumentController {
     @DeleteMapping("/admin/documents")
     public Response deleteDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("Deleting documents; user ID: {}, document ID: {}", userId, documentId);
-        documentService.deleteDocuments(userId, documentId);
+        documentService.deleteDocuments(userId, Optional.ofNullable(documentId));
         return new Response();
     }
 

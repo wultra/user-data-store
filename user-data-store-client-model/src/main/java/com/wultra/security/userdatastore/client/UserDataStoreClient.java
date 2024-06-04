@@ -27,6 +27,8 @@ import io.getlime.core.rest.model.base.response.Response;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.Optional;
+
 /**
  * User Data Store client interface.
  *
@@ -34,25 +36,25 @@ import jakarta.validation.constraints.Size;
  */
 public interface UserDataStoreClient {
 
-        DocumentResponse fetchDocuments(String userId, String documentId);
+        DocumentResponse fetchDocuments(String userId, Optional<String> documentId);
 
         DocumentCreateResponse createDocument(DocumentCreateRequest request);
 
         void updateDocument(DocumentUpdateRequest request);
 
-        void deleteDocuments(String userId, String documentId);
+        void deleteDocuments(String userId, Optional<String> documentId);
 
-        PhotoResponse fetchPhotos(String userId, String documentId);
+        PhotoResponse fetchPhotos(String userId, Optional<String> documentId);
 
         PhotoCreateResponse createPhoto(PhotoCreateRequest request);
 
-        void deletePhotos(String userId, String documentId);
+        void deletePhotos(String userId, Optional<String> documentId);
 
-        AttachmentResponse fetchAttachments(String userId, String documentId);
+        AttachmentResponse fetchAttachments(String userId, Optional<String> documentId);
 
         AttachmentCreateResponse createAttachment(AttachmentCreateRequest request);
 
-        void deleteAttachments(String userId, String documentId);
+        void deleteAttachments(String userId, Optional<String> documentId);
 
 }
 

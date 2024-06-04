@@ -37,6 +37,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
@@ -84,7 +85,7 @@ class PhotoControllerTest {
                 .photoData(encodedPhoto)
                 .build();
         response.add(photo);
-        when(service.fetchPhotos("alice", "1"))
+        when(service.fetchPhotos("alice", Optional.of("1")))
                 .thenReturn(response);
 
         mvc.perform(get("/photos?userId=alice&documentId=1")
@@ -116,7 +117,7 @@ class PhotoControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is("OK")));
 
-        verify(service).deletePhotos("alice", "1");
+        verify(service).deletePhotos("alice", Optional.of("1"));
     }
 
     @WithMockUser(roles = "READ")

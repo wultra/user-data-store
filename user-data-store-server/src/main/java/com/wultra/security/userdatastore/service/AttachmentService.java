@@ -82,9 +82,9 @@ public class AttachmentService {
     }
 
     @Transactional(readOnly = true)
-    public List<AttachmentDto> fetchAttachments(final String userId, final String documentId) {
-        if (documentId != null) {
-            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
+    public List<AttachmentDto> fetchAttachments(final String userId, final Optional<String> documentId) {
+        if (documentId.isPresent()) {
+            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
             if (documentEntityOptional.isEmpty()) {
                 return new AttachmentResponse();
             }
@@ -92,7 +92,7 @@ public class AttachmentService {
             final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserIdAndDocument(userId, documentEntity);
             attachmentEntities.forEach(encryptionService::decryptAttachment);
             final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
-            audit("Retrieved attachments for document ID: {}", documentId);
+            audit("Retrieved attachments for document ID: {}", documentId.get());
             final AttachmentResponse response = new AttachmentResponse();
             response.addAll(attachments);
             return response;
@@ -107,19 +107,19 @@ public class AttachmentService {
     }
 
     @Transactional
-    public void deleteAttachments(final String userId, final String documentId) {
-        if (documentId == null) {
+    public void deleteAttachments(final String userId, final Optional<String> documentId) {
+        if (documentId.isPresent()) {
             attachmentRepository.deleteAllByUserId(userId);
             audit("Deleted attachments for user ID: {}", userId);
             return;
         }
-        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
+        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
         if (documentEntityOptional.isEmpty()) {
             return;
         }
 
         attachmentRepository.deleteAllByUserIdAndDocument(userId, documentEntityOptional.get());
-        audit("Deleted attachments for document ID: {}", documentId);
+        audit("Deleted attachments for document ID: {}", documentId.get());
     }
 
     private void audit(final String message, final String userId) {

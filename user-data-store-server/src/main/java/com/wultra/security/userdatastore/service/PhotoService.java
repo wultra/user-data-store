@@ -57,9 +57,9 @@ public class PhotoService {
     private final PhotoConverter photoConverter;
 
     @Transactional(readOnly = true)
-    public PhotoResponse fetchPhotos(final String userId, final String documentId) {
-        if (documentId != null) {
-            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
+    public PhotoResponse fetchPhotos(final String userId, final Optional<String> documentId) {
+        if (documentId.isPresent()) {
+            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
             if (documentEntityOptional.isEmpty()) {
                 return new PhotoResponse();
             }
@@ -67,7 +67,7 @@ public class PhotoService {
             final List<PhotoEntity> photoEntities = photoRepository.findAllByUserIdAndDocument(userId, documentEntity);
             photoEntities.forEach(encryptionService::decryptPhoto);
             final List<PhotoDto> photos = photoEntities.stream().map(photoConverter::toPhoto).toList();
-            audit("Retrieved photos for document ID: {}", documentId);
+            audit("Retrieved photos for document ID: {}", documentId.get());
             final PhotoResponse response = new PhotoResponse();
             response.addAll(photos);
             return response;
@@ -108,19 +108,19 @@ public class PhotoService {
     }
 
     @Transactional
-    public void deletePhotos(final String userId, final String documentId) {
-        if (documentId == null) {
+    public void deletePhotos(final String userId, final Optional<String> documentId) {
+        if (documentId.isPresent()) {
             photoRepository.deleteAllByUserId(userId);
             audit("Deleted photos for user ID: {}", userId);
             return;
         }
-        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
+        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
         if (documentEntityOptional.isEmpty()) {
             return;
         }
 
         photoRepository.deleteAllByUserIdAndDocument(userId, documentEntityOptional.get());
-        audit("Deleted photos for document ID: {}", documentId);
+        audit("Deleted photos for document ID: {}", documentId.get());
     }
 
 

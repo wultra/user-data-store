@@ -56,11 +56,11 @@ public class DocumentService {
     private final DocumentConverter documentConverter;
 
     @Transactional(readOnly = true)
-    public DocumentResponse fetchDocuments(final String userId, final String documentId) {
-        if (documentId != null) {
-            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
+    public DocumentResponse fetchDocuments(final String userId, final Optional<String> documentId) {
+        if (documentId.isPresent()) {
+            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
             if (documentEntityOptional.isEmpty()) {
-                throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
+                throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId.get()));
             }
             final DocumentDto document = documentConverter.toDocument(documentEntityOptional.get());
             final DocumentResponse response = new DocumentResponse();
@@ -125,11 +125,11 @@ public class DocumentService {
     }
 
     @Transactional
-    public void deleteDocuments(final String userId, final String documentId) {
-        if (documentId != null) {
-            int count = documentRepository.deleteAllByUserIdAndId(userId, documentId);
+    public void deleteDocuments(final String userId, final Optional<String> documentId) {
+        if (documentId.isPresent()) {
+            int count = documentRepository.deleteAllByUserIdAndId(userId, documentId.get());
             if (count == 1) {
-                audit("Deleted document with ID: {}", documentId);
+                audit("Deleted document with ID: {}", documentId.get());
             }
             return;
         }

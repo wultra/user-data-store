@@ -32,6 +32,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * REST controller providing API for CRUD for attachments.
@@ -63,7 +64,7 @@ class AttachmentController {
     @GetMapping("/attachments")
     public ObjectResponse<AttachmentResponse> fetchAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
         logger.info("Fetching photos for document ID: {}", documentId);
-        final List<AttachmentDto> attachments = attachmentService.fetchAttachments(userId, documentId);
+        final List<AttachmentDto> attachments = attachmentService.fetchAttachments(userId, Optional.ofNullable(documentId));
         final AttachmentResponse response = new AttachmentResponse();
         response.addAll(attachments);
         return new ObjectResponse<>(response);
@@ -100,7 +101,7 @@ class AttachmentController {
     @DeleteMapping("/admin/attachments")
     public Response deleteAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("Deleting attachments for document ID: {}", documentId);
-        attachmentService.deleteAttachments(userId, documentId);
+        attachmentService.deleteAttachments(userId, Optional.ofNullable(documentId));
         return new Response();
     }
 

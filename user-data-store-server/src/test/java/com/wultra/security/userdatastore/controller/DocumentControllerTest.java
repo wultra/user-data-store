@@ -36,6 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -77,7 +78,7 @@ class DocumentControllerTest {
                 ))))
                 .build();
         response.add(document);
-        when(service.fetchDocuments("alice", null))
+        when(service.fetchDocuments("alice", Optional.empty()))
                 .thenReturn(response);
 
         mvc.perform(get("/documents?userId=alice")
@@ -114,7 +115,7 @@ class DocumentControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is("OK")));
 
-        verify(service).deleteDocuments("alice", null);
+        verify(service).deleteDocuments("alice", Optional.empty());
     }
 
     @WithMockUser(roles = "READ")

@@ -24,6 +24,8 @@ import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequ
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
 import com.wultra.security.userdatastore.client.model.response.*;
 
+import java.util.Optional;
+
 /**
  * Class implementing a User Data Store REST client.
  *
@@ -34,7 +36,7 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
 
 
     @Override
-    public DocumentResponse fetchDocuments(String userId, String documentId) {
+    public DocumentResponse fetchDocuments(String userId, Optional<String> documentId) {
         return null;
     }
 
@@ -49,12 +51,12 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
-    public void deleteDocuments(String userId, String documentId) {
+    public void deleteDocuments(String userId, Optional<String> documentId) {
 
     }
 
     @Override
-    public PhotoResponse fetchPhotos(String userId, String documentId) {
+    public PhotoResponse fetchPhotos(String userId, Optional<String> documentId) {
         return null;
     }
 
@@ -64,12 +66,12 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
-    public void deletePhotos(String userId, String documentId) {
+    public void deletePhotos(String userId, Optional<String> documentId) {
 
     }
 
     @Override
-    public AttachmentResponse fetchAttachments(String userId, String documentId) {
+    public AttachmentResponse fetchAttachments(String userId, Optional<String> documentId) {
         return null;
     }
 
@@ -79,7 +81,7 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
-    public void deleteAttachments(String userId, String documentId) {
+    public void deleteAttachments(String userId, Optional<String> documentId) {
 
     }
 }
