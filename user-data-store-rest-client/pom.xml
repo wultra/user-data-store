@@ -43,6 +43,11 @@
             <artifactId>rest-client-base</artifactId>
             <version>${wultra-core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.wultra.security</groupId>
+            <artifactId>user-data-store-client-model</artifactId>
+            <version>1.3.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

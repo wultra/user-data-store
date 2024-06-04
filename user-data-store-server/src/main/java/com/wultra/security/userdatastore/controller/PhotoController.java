@@ -62,7 +62,7 @@ class PhotoController {
             description = "Return photos for the given user and document."
     )
     @GetMapping("/photos")
-    public ObjectResponse<PhotoResponse> userPhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
+    public ObjectResponse<PhotoResponse> fetchPhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
         logger.info("Fetching photos for document ID: {}", documentId);
         final List<PhotoDto> photos = photoService.fetchPhotos(userId, documentId);
         final PhotoResponse response = new PhotoResponse();

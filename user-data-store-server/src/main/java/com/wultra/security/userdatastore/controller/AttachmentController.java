@@ -61,7 +61,7 @@ class AttachmentController {
             description = "Return attachments for the given user and document."
     )
     @GetMapping("/attachments")
-    public ObjectResponse<AttachmentResponse> userAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
+    public ObjectResponse<AttachmentResponse> fetchAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
         logger.info("Fetching photos for document ID: {}", documentId);
         final List<AttachmentDto> attachments = attachmentService.fetchAttachments(userId, documentId);
         final AttachmentResponse response = new AttachmentResponse();

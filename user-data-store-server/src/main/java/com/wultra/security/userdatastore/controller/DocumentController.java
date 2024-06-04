@@ -63,7 +63,7 @@ class DocumentController {
             description = "Return documents for the given user."
     )
     @GetMapping("/documents")
-    public ObjectResponse<DocumentResponse> userDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
+    public ObjectResponse<DocumentResponse> fetchDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("Fetching documents; user ID: {}, document ID: {}", userId, documentId);
         final List<DocumentDto> documents = documentService.fetchDocuments(userId, documentId);
         final DocumentResponse response = new DocumentResponse();
@@ -117,7 +117,7 @@ class DocumentController {
             description = "Delete documents for the given user."
     )
     @DeleteMapping("/admin/documents")
-    public Response deleteUserDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
+    public Response deleteDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("Deleting documents; user ID: {}, document ID: {}", userId, documentId);
         documentService.deleteDocuments(userId, documentId);
         return new Response();

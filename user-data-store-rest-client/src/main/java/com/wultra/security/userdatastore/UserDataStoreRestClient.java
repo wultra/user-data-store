@@ -15,13 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.client;
+package com.wultra.security.userdatastore;
+
+import com.wultra.security.userdatastore.client.UserDataStoreClient;
 
 /**
- * User Data Store client interface.
+ * Class implementing a PowerAuth REST client.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
+ *
  */
-public interface UserDataStoreClient {
+public class UserDataStoreRestClient implements UserDataStoreClient {
+
 
 }
