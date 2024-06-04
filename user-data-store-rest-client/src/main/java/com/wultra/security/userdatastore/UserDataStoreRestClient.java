@@ -18,9 +18,14 @@
 package com.wultra.security.userdatastore;
 
 import com.wultra.security.userdatastore.client.UserDataStoreClient;
+import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
+import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
+import com.wultra.security.userdatastore.client.model.response.*;
 
 /**
- * Class implementing a PowerAuth REST client.
+ * Class implementing a User Data Store REST client.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  *
@@ -28,4 +33,53 @@ import com.wultra.security.userdatastore.client.UserDataStoreClient;
 public class UserDataStoreRestClient implements UserDataStoreClient {
 
 
+    @Override
+    public DocumentResponse fetchDocuments(String userId, String documentId) {
+        return null;
+    }
+
+    @Override
+    public DocumentCreateResponse createDocument(DocumentCreateRequest request) {
+        return null;
+    }
+
+    @Override
+    public void updateDocument(DocumentUpdateRequest request) {
+
+    }
+
+    @Override
+    public void deleteDocuments(String userId, String documentId) {
+
+    }
+
+    @Override
+    public PhotoResponse fetchPhotos(String userId, String documentId) {
+        return null;
+    }
+
+    @Override
+    public PhotoCreateResponse createPhoto(PhotoCreateRequest request) {
+        return null;
+    }
+
+    @Override
+    public void deletePhotos(String userId, String documentId) {
+
+    }
+
+    @Override
+    public AttachmentResponse fetchAttachments(String userId, String documentId) {
+        return null;
+    }
+
+    @Override
+    public AttachmentCreateResponse createAttachment(AttachmentCreateRequest request) {
+        return null;
+    }
+
+    @Override
+    public void deleteAttachments(String userId, String documentId) {
+
+    }
 }

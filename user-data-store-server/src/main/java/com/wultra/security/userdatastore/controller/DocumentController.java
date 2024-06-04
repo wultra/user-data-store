@@ -50,7 +50,6 @@ class DocumentController {
         this.documentService = documentService;
     }
 
-
     /**
      * Return documents for the given user.
      *
