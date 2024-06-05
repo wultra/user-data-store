@@ -76,9 +76,6 @@ public class DocumentHistoryEntity implements Serializable {
     @Column(name = "timestamp_created", nullable = false)
     private LocalDateTime timestampCreated = LocalDateTime.now();
 
-    @Column(name = "timestamp_last_updated")
-    private LocalDateTime timestampLastUpdated;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

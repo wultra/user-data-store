@@ -26,7 +26,9 @@ import com.wultra.security.userdatastore.client.model.response.DocumentCreateRes
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.converter.DocumentConverter;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
+import com.wultra.security.userdatastore.model.entity.DocumentHistoryEntity;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
+import com.wultra.security.userdatastore.model.repository.DocumentHistoryRepository;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import io.getlime.core.rest.model.base.response.Response;
 import lombok.AllArgsConstructor;
@@ -52,6 +54,7 @@ import java.util.UUID;
 public class DocumentService {
 
     private final DocumentRepository documentRepository;
+    private final DocumentHistoryRepository documentHistoryRepository;
     private final Audit audit;
     private final EncryptionService encryptionService;
     private final DocumentConverter documentConverter;
@@ -77,7 +80,7 @@ public class DocumentService {
     public DocumentCreateResponse createDocument(final DocumentCreateRequest request) {
         final String userId = request.userId();
         logger.debug("Creating document for user ID: {}", userId);
-        final DocumentEntity documentEntity = new DocumentEntity();
+        DocumentEntity documentEntity = new DocumentEntity();
         documentEntity.setId(UUID.randomUUID().toString());
         documentEntity.setUserId(userId);
         documentEntity.setDocumentType(request.documentType());
@@ -89,7 +92,8 @@ public class DocumentService {
         final LocalDateTime timestamp = LocalDateTime.now();
         documentEntity.setTimestampCreated(timestamp);
 
-        documentRepository.save(documentEntity);
+        documentEntity = documentRepository.save(documentEntity);
+        updateDocumentHistory(documentEntity);
         audit("Created document for user ID: {}", userId);
 
         return new DocumentCreateResponse(documentEntity.getId(), documentEntity.getDocumentDataId());
@@ -103,7 +107,7 @@ public class DocumentService {
         if (documentEntityOptional.isEmpty()) {
             throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(request.id()));
         }
-        final DocumentEntity documentEntity = documentEntityOptional.get();
+        DocumentEntity documentEntity = documentEntityOptional.get();
         documentEntity.setId(UUID.randomUUID().toString());
         documentEntity.setUserId(userId);
         documentEntity.setDocumentType(request.documentType());
@@ -116,6 +120,7 @@ public class DocumentService {
         documentEntity.setTimestampLastUpdated(timestamp);
 
         documentRepository.save(documentEntity);
+        updateDocumentHistory(documentEntity);
         audit("Updated document for user ID: {}", userId);
 
         return new Response();
@@ -142,5 +147,21 @@ public class DocumentService {
                 .param("actorId", loggedUsername)
                 .build();
         audit.info(message, auditDetail, userId);
+    }
+
+    private void updateDocumentHistory(final DocumentEntity documentEntity) {
+        final DocumentHistoryEntity historyEntity = new DocumentHistoryEntity();
+        historyEntity.setId(UUID.randomUUID().toString());
+        historyEntity.setDocumentId(documentEntity.getId());
+        historyEntity.setUserId(documentEntity.getUserId());
+        historyEntity.setDocumentType(documentEntity.getDocumentType());
+        historyEntity.setDataType(documentEntity.getDataType());
+        historyEntity.setDocumentDataId(documentEntity.getDocumentDataId());
+        historyEntity.setExternalId(documentEntity.getExternalId());
+        historyEntity.setDocumentData(documentEntity.getDocumentData());
+        historyEntity.setEncryptionMode(documentEntity.getEncryptionMode());
+        historyEntity.setAttributes(documentEntity.getAttributes());
+        historyEntity.setTimestampCreated(LocalDateTime.now());
+        documentHistoryRepository.save(historyEntity);
     }
 }
