@@ -95,8 +95,8 @@ public class PhotoService {
         photoEntity.setDocument(documentEntity);
         photoEntity.setUserId(userId);
         photoEntity.setPhotoType(request.photoType());
-        photoEntity.setPhotoData(request.photoData());
         photoEntity.setTimestampCreated(LocalDateTime.now());
+        encryptionService.encryptPhoto(photoEntity, request.photoData());
 
         photoRepository.save(photoEntity);
 
