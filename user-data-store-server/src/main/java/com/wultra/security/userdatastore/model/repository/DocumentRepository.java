@@ -18,7 +18,6 @@
 package com.wultra.security.userdatastore.model.repository;
 
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
-import com.wultra.security.userdatastore.model.entity.UserClaimsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

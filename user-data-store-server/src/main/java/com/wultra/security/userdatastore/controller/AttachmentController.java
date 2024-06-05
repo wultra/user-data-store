@@ -17,11 +17,11 @@
  */
 package com.wultra.security.userdatastore.controller;
 
-import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
 import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
 import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.service.AttachmentService;
+import io.getlime.core.rest.model.base.request.ObjectRequest;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -79,9 +78,9 @@ class AttachmentController {
             description = "Create an attachment for the given user and document."
     )
     @PostMapping("/admin/attachments")
-    public ObjectResponse<AttachmentCreateResponse> createAttachment(@RequestBody final AttachmentCreateRequest request) {
-        logger.info("Creating attachment for user ID: {}", request.userId());
-        final AttachmentCreateResponse response = attachmentService.createAttachment(request);
+    public ObjectResponse<AttachmentCreateResponse> createAttachment(@RequestBody final ObjectRequest<AttachmentCreateRequest> request) {
+        logger.info("Creating attachment for user ID: {}", request.getRequestObject().userId());
+        final AttachmentCreateResponse response = attachmentService.createAttachment(request.getRequestObject());
         return new ObjectResponse<>(response);
     }
 

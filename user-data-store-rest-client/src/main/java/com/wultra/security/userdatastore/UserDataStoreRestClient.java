@@ -79,8 +79,8 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
             }
             proxyBuilder.build();
         }
-        if (config.getPowerAuthClientToken() != null) {
-            builder.httpBasicAuth().username(config.getPowerAuthClientToken()).password(config.getPowerAuthClientSecret()).build();
+        if (config.getHttpBasicUsername() != null) {
+            builder.httpBasicAuth().username(config.getHttpBasicUsername()).password(config.getHttpBasicPassword()).build();
         }
         if (config.getDefaultHttpHeaders() != null) {
             builder.defaultHttpHeaders(config.getDefaultHttpHeaders());
@@ -199,12 +199,12 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
 
     @Override
     public DocumentCreateResponse createDocument(DocumentCreateRequest request) throws UserDataStoreClientException {
-        return post("/documents", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, DocumentCreateResponse.class);
+        return post("/admin/documents", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, DocumentCreateResponse.class);
     }
 
     @Override
     public void updateDocument(DocumentUpdateRequest request) throws UserDataStoreClientException {
-        put("/documents", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, Response.class);
+        put("/admin/documents", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, Response.class);
     }
 
     @Override
@@ -212,7 +212,7 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
         documentId.ifPresent(s -> queryParams.put("documentId", Collections.singletonList(s)));
-        delete("/documents", queryParams, EMPTY_MULTI_MAP, DocumentResponse.class);
+        delete("/admin/documents", queryParams, EMPTY_MULTI_MAP, DocumentResponse.class);
     }
 
     @Override
@@ -225,7 +225,7 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
 
     @Override
     public PhotoCreateResponse createPhoto(PhotoCreateRequest request) throws UserDataStoreClientException {
-        return post("/photos", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, PhotoCreateResponse.class);
+        return post("/admin/photos", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, PhotoCreateResponse.class);
     }
 
     @Override
@@ -233,7 +233,7 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
         documentId.ifPresent(s -> queryParams.put("documentId", Collections.singletonList(s)));
-        delete("/photos", queryParams, EMPTY_MULTI_MAP, DocumentResponse.class);
+        delete("/admin/photos", queryParams, EMPTY_MULTI_MAP, DocumentResponse.class);
     }
 
     @Override
@@ -241,13 +241,13 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
         documentId.ifPresent(s -> queryParams.put("documentId", Collections.singletonList(s)));
-        return get("/attachments", queryParams, EMPTY_MULTI_MAP, AttachmentResponse.class);
+        return get("/admin/attachments", queryParams, EMPTY_MULTI_MAP, AttachmentResponse.class);
 
     }
 
     @Override
     public AttachmentCreateResponse createAttachment(AttachmentCreateRequest request) throws UserDataStoreClientException {
-        return post("/attachments", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, AttachmentCreateResponse.class);
+        return post("/admin/attachments", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, AttachmentCreateResponse.class);
     }
 
     @Override
@@ -255,6 +255,6 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
         documentId.ifPresent(s -> queryParams.put("documentId", Collections.singletonList(s)));
-        delete("/attachments", queryParams, EMPTY_MULTI_MAP, DocumentResponse.class);
+        delete("/admin/attachments", queryParams, EMPTY_MULTI_MAP, DocumentResponse.class);
     }
 }

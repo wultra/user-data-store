@@ -39,8 +39,8 @@ public class UserDataStoreRestClientConfiguration {
     private int proxyPort;
     private String proxyUsername;
     private String proxyPassword;
-    private String powerAuthClientToken;
-    private String powerAuthClientSecret;
+    private String httpBasicUsername;
+    private String httpBasicPassword;
     private boolean acceptInvalidSslCertificate;
     private HttpHeaders defaultHttpHeaders;
     private ExchangeFilterFunction filter;
@@ -161,32 +161,32 @@ public class UserDataStoreRestClientConfiguration {
      * Get HTTP basic authentication username.
      * @return HTTP basic authentication username.
      */
-    public String getPowerAuthClientToken() {
-        return powerAuthClientToken;
+    public String getHttpBasicUsername() {
+        return httpBasicUsername;
     }
 
     /**
      * Set HTTP basic authentication username.
-     * @param powerAuthClientToken HTTP basic authentication username.
+     * @param httpBasicUsername HTTP basic authentication username.
      */
-    public void setPowerAuthClientToken(String powerAuthClientToken) {
-        this.powerAuthClientToken = powerAuthClientToken;
+    public void setHttpBasicUsername(String httpBasicUsername) {
+        this.httpBasicUsername = httpBasicUsername;
     }
 
     /**
      * Get HTTP basic authentication password.
      * @return HTTP basic authentication password.
      */
-    public String getPowerAuthClientSecret() {
-        return powerAuthClientSecret;
+    public String getHttpBasicPassword() {
+        return httpBasicPassword;
     }
 
     /**
      * Set HTTP basic authentication password.
-     * @param powerAuthClientSecret HTTP basic authentication password.
+     * @param httpBasicPassword HTTP basic authentication password.
      */
-    public void setPowerAuthClientSecret(String powerAuthClientSecret) {
-        this.powerAuthClientSecret = powerAuthClientSecret;
+    public void setHttpBasicPassword(String httpBasicPassword) {
+        this.httpBasicPassword = httpBasicPassword;
     }
 
     /**

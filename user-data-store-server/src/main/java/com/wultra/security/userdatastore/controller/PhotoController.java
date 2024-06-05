@@ -17,11 +17,11 @@
  */
 package com.wultra.security.userdatastore.controller;
 
-import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
 import com.wultra.security.userdatastore.service.PhotoService;
+import io.getlime.core.rest.model.base.request.ObjectRequest;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -80,9 +79,9 @@ class PhotoController {
             description = "Create a photo for the given user and document."
     )
     @PostMapping("/admin/photos")
-    public ObjectResponse<PhotoCreateResponse> createPhoto(@RequestBody final PhotoCreateRequest request) {
-        logger.info("Creating photo for user ID: {}", request.userId());
-        final PhotoCreateResponse response = photoService.createPhoto(request);
+    public ObjectResponse<PhotoCreateResponse> createPhoto(@RequestBody final ObjectRequest<PhotoCreateRequest> request) {
+        logger.info("Creating photo for user ID: {}", request.getRequestObject().userId());
+        final PhotoCreateResponse response = photoService.createPhoto(request.getRequestObject());
         return new ObjectResponse<>(response);
     }
 

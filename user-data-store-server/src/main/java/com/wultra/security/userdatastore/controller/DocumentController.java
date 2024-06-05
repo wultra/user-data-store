@@ -17,12 +17,12 @@
  */
 package com.wultra.security.userdatastore.controller;
 
-import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.service.DocumentService;
+import io.getlime.core.rest.model.base.request.ObjectRequest;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -80,9 +79,9 @@ class DocumentController {
             description = "Create a documents for the given user."
     )
     @PostMapping("/admin/documents")
-    public ObjectResponse<DocumentCreateResponse> createDocument(@RequestBody final DocumentCreateRequest request) {
-        logger.info("Creating document for user ID: {}", request.userId());
-        final DocumentCreateResponse response = documentService.createDocument(request);
+    public ObjectResponse<DocumentCreateResponse> createDocument(@RequestBody final ObjectRequest<DocumentCreateRequest> request) {
+        logger.info("Creating document for user ID: {}", request.getRequestObject().userId());
+        final DocumentCreateResponse response = documentService.createDocument(request.getRequestObject());
         return new ObjectResponse<>(response);
     }
 
@@ -97,9 +96,9 @@ class DocumentController {
             description = "Update a document for the given user."
     )
     @PutMapping("/admin/documents")
-    public Response updateDocument(@RequestBody final DocumentUpdateRequest request) {
-        logger.info("Updating document for user ID: {}", request.userId());
-        documentService.updateDocument(request);
+    public Response updateDocument(@RequestBody final ObjectRequest<DocumentUpdateRequest> request) {
+        logger.info("Updating document for user ID: {}", request.getRequestObject().userId());
+        documentService.updateDocument(request.getRequestObject());
         return new Response();
     }
 

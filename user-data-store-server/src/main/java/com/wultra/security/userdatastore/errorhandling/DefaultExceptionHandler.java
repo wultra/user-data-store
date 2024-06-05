@@ -17,9 +17,9 @@
  */
 package com.wultra.security.userdatastore.errorhandling;
 
-import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.error.EncryptionException;
 import com.wultra.security.userdatastore.model.error.InvalidRequestException;
+import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import io.getlime.core.rest.model.base.response.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;

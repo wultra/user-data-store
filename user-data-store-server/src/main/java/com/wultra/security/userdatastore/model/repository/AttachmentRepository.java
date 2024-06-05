@@ -19,7 +19,6 @@ package com.wultra.security.userdatastore.model.repository;
 
 import com.wultra.security.userdatastore.model.entity.AttachmentEntity;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
-import com.wultra.security.userdatastore.model.entity.PhotoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

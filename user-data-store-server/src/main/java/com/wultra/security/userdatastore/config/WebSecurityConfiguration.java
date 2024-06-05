@@ -70,7 +70,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/**")
                             .hasRole("READ")
                         .anyRequest()
-                            .permitAll()
+                            .authenticated()
                 ).build();
     }
 

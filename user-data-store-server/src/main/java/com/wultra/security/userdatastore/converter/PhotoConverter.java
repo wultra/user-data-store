@@ -18,7 +18,6 @@
 package com.wultra.security.userdatastore.converter;
 
 import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
-import com.wultra.security.userdatastore.model.entity.AttachmentEntity;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.entity.PhotoEntity;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
