@@ -17,15 +17,12 @@
  */
 package com.wultra.security.userdatastore.client;
 
+import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
 import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
 import com.wultra.security.userdatastore.client.model.response.*;
-import io.getlime.core.rest.model.base.response.ObjectResponse;
-import io.getlime.core.rest.model.base.response.Response;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import java.util.Optional;
 
@@ -36,25 +33,97 @@ import java.util.Optional;
  */
 public interface UserDataStoreClient {
 
-        DocumentResponse fetchDocuments(String userId, Optional<String> documentId);
+    /**
+     * Fetch documents.
+     *
+     * @param userId     User identifier.
+     * @param documentId Optional document identifier.
+     * @return Documents.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    DocumentResponse fetchDocuments(String userId, Optional<String> documentId) throws UserDataStoreClientException;
 
-        DocumentCreateResponse createDocument(DocumentCreateRequest request);
+    /**
+     * Create a document.
+     *
+     * @param request Document create request.
+     * @return Document create response.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    DocumentCreateResponse createDocument(DocumentCreateRequest request) throws UserDataStoreClientException;
 
-        void updateDocument(DocumentUpdateRequest request);
+    /**
+     * Update a document.
+     *
+     * @param request Document update request.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void updateDocument(DocumentUpdateRequest request) throws UserDataStoreClientException;
 
-        void deleteDocuments(String userId, Optional<String> documentId);
+    /**
+     * Delete documents.
+     *
+     * @param userId     User identifier.
+     * @param documentId Optional document identifier.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void deleteDocuments(String userId, Optional<String> documentId) throws UserDataStoreClientException;
 
-        PhotoResponse fetchPhotos(String userId, Optional<String> documentId);
+    /**
+     * Fetch photos.
+     *
+     * @param userId     User identifier.
+     * @param documentId Document identifier.
+     * @return Photo response.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    PhotoResponse fetchPhotos(String userId, Optional<String> documentId) throws UserDataStoreClientException;
 
-        PhotoCreateResponse createPhoto(PhotoCreateRequest request);
+    /**
+     * Create a photo.
+     *
+     * @param request Photo create request.
+     * @return Photo create response.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    PhotoCreateResponse createPhoto(PhotoCreateRequest request) throws UserDataStoreClientException;
 
-        void deletePhotos(String userId, Optional<String> documentId);
+    /**
+     * Delete photos.
+     *
+     * @param userId     User identifier.
+     * @param documentId Optional document identifier.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void deletePhotos(String userId, Optional<String> documentId) throws UserDataStoreClientException;
 
-        AttachmentResponse fetchAttachments(String userId, Optional<String> documentId);
+    /**
+     * Fetch attachments.
+     *
+     * @param userId     User identifier.
+     * @param documentId Optional document identifier.
+     * @return Attachment response.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    AttachmentResponse fetchAttachments(String userId, Optional<String> documentId) throws UserDataStoreClientException;
 
-        AttachmentCreateResponse createAttachment(AttachmentCreateRequest request);
+    /**
+     * Create an attachment.
+     *
+     * @param request Attachment create request.
+     * @return Attachment create response.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    AttachmentCreateResponse createAttachment(AttachmentCreateRequest request) throws UserDataStoreClientException;
 
-        void deleteAttachments(String userId, Optional<String> documentId);
+    /**
+     * Delete attachments.
+     *
+     * @param userId     User identifier.
+     * @param documentId Optional document identifier.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void deleteAttachments(String userId, Optional<String> documentId) throws UserDataStoreClientException;
 
 }
 
