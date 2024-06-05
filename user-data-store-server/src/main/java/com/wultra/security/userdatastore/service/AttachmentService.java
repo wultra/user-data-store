@@ -74,8 +74,8 @@ public class AttachmentService {
         attachmentEntity.setDocument(documentEntity);
         attachmentEntity.setUserId(userId);
         attachmentEntity.setAttachmentType(request.attachmentType());
-        attachmentEntity.setAttachmentData(request.attachmentData());
         attachmentEntity.setTimestampCreated(LocalDateTime.now());
+        encryptionService.encryptAttachment(attachmentEntity, request.attachmentData());
 
         attachmentRepository.save(attachmentEntity);
 
