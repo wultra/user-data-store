@@ -37,6 +37,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
@@ -77,14 +78,13 @@ class PhotoControllerTest {
     @WithMockUser(roles = "READ")
     @Test
     void testGet() throws Exception {
-        PhotoResponse response = new PhotoResponse();
         PhotoDto photo = PhotoDto.builder()
                 .userId("alice")
                 .documentId("1")
                 .photoType("person")
                 .photoData(encodedPhoto)
                 .build();
-        response.add(photo);
+        PhotoResponse response = new PhotoResponse(Collections.singletonList(photo));
         when(service.fetchPhotos("alice", Optional.of("1")))
                 .thenReturn(response);
 
@@ -94,10 +94,10 @@ class PhotoControllerTest {
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is("OK")))
-                .andExpect(jsonPath("$.responseObject[0].userId", is("alice")))
-                .andExpect(jsonPath("$.responseObject[0].documentId", is("1")))
-                .andExpect(jsonPath("$.responseObject[0].photoType", is("person")))
-                .andExpect(jsonPath("$.responseObject[0].photoData", is("iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAANElEQVR4Xu3BAQ0AAADCoPdPbQ43oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfgx1lAABHywbagAAAABJRU5ErkJggg==")));
+                .andExpect(jsonPath("$.responseObject.photos[0].userId", is("alice")))
+                .andExpect(jsonPath("$.responseObject.photos[0].documentId", is("1")))
+                .andExpect(jsonPath("$.responseObject.photos[0].photoType", is("person")))
+                .andExpect(jsonPath("$.responseObject.photos[0].photoData", is("iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAANElEQVR4Xu3BAQ0AAADCoPdPbQ43oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfgx1lAABHywbagAAAABJRU5ErkJggg==")));
     }
 
     @WithMockUser(roles = "WRITE")

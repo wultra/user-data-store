@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,25 +62,20 @@ public class PhotoService {
         if (documentId.isPresent()) {
             final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
             if (documentEntityOptional.isEmpty()) {
-                return new PhotoResponse();
+                return new PhotoResponse(Collections.emptyList());
             }
             final DocumentEntity documentEntity = documentEntityOptional.get();
             final List<PhotoEntity> photoEntities = photoRepository.findAllByUserIdAndDocument(userId, documentEntity);
             photoEntities.forEach(encryptionService::decryptPhoto);
             final List<PhotoDto> photos = photoEntities.stream().map(photoConverter::toPhoto).toList();
             audit("Retrieved photos for document ID: {}", documentId.get());
-            final PhotoResponse response = new PhotoResponse();
-            response.addAll(photos);
-            return response;
+            return new PhotoResponse(photos);
         }
         final List<PhotoEntity> photoEntities = photoRepository.findAllByUserId(userId);
         photoEntities.forEach(encryptionService::decryptPhoto);
         final List<PhotoDto> photos = photoEntities.stream().map(photoConverter::toPhoto).toList();
         audit("Retrieved photos for user ID: {}", userId);
-        final PhotoResponse response = new PhotoResponse();
-        response.addAll(photos);
-        return response;
-
+        return new PhotoResponse(photos);
     }
 
     @Transactional

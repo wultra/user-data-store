@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -63,17 +64,13 @@ public class DocumentService {
                 throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId.get()));
             }
             final DocumentDto document = documentConverter.toDocument(documentEntityOptional.get());
-            final DocumentResponse response = new DocumentResponse();
-            response.add(document);
-            return response;
+            return new DocumentResponse(Collections.singletonList(document));
         }
         final List<DocumentEntity> documentEntities = documentRepository.findAllByUserId(userId);
         documentEntities.forEach(encryptionService::decryptDocumentData);
         final List<DocumentDto> documents = documentEntities.stream().map(documentConverter::toDocument).toList();
         audit("Retrieved documents of user ID: {}", userId);
-        final DocumentResponse response = new DocumentResponse();
-        response.addAll(documents);
-        return response;
+        return new DocumentResponse(documents);
     }
 
     @Transactional

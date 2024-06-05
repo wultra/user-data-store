@@ -18,18 +18,20 @@
 package com.wultra.security.userdatastore.client.model.response;
 
 import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Builder;
+import lombok.extern.jackson.Jacksonized;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Response class for listing documents.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class DocumentResponse extends ArrayList<DocumentDto> {
+@Builder
+@Jacksonized
+public record DocumentResponse(
 
-}
+        List<DocumentDto> documents
+
+) {}

@@ -33,6 +33,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.security.SecureRandom;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
@@ -74,14 +75,13 @@ class AttachmentControllerTest {
     @WithMockUser(roles = "READ")
     @Test
     void testGet() throws Exception {
-        AttachmentResponse response = new AttachmentResponse();
         AttachmentDto attachment = AttachmentDto.builder()
                 .userId("alice")
                 .documentId("1")
                 .attachmentType("text")
                 .attachmentData(attachmentData)
                 .build();
-        response.add(attachment);
+        AttachmentResponse response = new AttachmentResponse(Collections.singletonList(attachment));
         when(service.fetchAttachments("alice", Optional.of("1")))
                 .thenReturn(response);
 
@@ -91,10 +91,10 @@ class AttachmentControllerTest {
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is("OK")))
-                .andExpect(jsonPath("$.responseObject[0].userId", is("alice")))
-                .andExpect(jsonPath("$.responseObject[0].documentId", is("1")))
-                .andExpect(jsonPath("$.responseObject[0].attachmentType", is("text")))
-                .andExpect(jsonPath("$.responseObject[0].attachmentData", is(attachmentData)));
+                .andExpect(jsonPath("$.responseObject.attachments[0].userId", is("alice")))
+                .andExpect(jsonPath("$.responseObject.attachments[0].documentId", is("1")))
+                .andExpect(jsonPath("$.responseObject.attachments[0].attachmentType", is("text")))
+                .andExpect(jsonPath("$.responseObject.attachments[0].attachmentData", is(attachmentData)));
     }
 
     @WithMockUser(roles = "WRITE")

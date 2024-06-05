@@ -65,10 +65,8 @@ class PhotoController {
     @GetMapping("/photos")
     public ObjectResponse<PhotoResponse> fetchPhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
         logger.info("Fetching photos for document ID: {}", documentId);
-        final List<PhotoDto> photos = photoService.fetchPhotos(userId, Optional.ofNullable(documentId));
-        final PhotoResponse response = new PhotoResponse();
-        response.addAll(photos);
-        return new ObjectResponse<>(response);
+        final PhotoResponse photos = photoService.fetchPhotos(userId, Optional.ofNullable(documentId));
+        return new ObjectResponse<>(photos);
     }
 
     /**

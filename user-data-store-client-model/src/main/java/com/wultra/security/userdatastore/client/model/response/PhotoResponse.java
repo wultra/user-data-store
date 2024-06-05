@@ -18,18 +18,22 @@
 package com.wultra.security.userdatastore.client.model.response;
 
 import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Builder;
+import lombok.extern.jackson.Jacksonized;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Response class for listing photos.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class PhotoResponse extends ArrayList<PhotoDto> {
+@Builder
+@Jacksonized
+public record PhotoResponse(
 
+        List<PhotoDto> photos
+
+) {
 }
+

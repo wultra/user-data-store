@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -82,28 +83,24 @@ public class AttachmentService {
     }
 
     @Transactional(readOnly = true)
-    public List<AttachmentDto> fetchAttachments(final String userId, final Optional<String> documentId) {
+    public AttachmentResponse fetchAttachments(final String userId, final Optional<String> documentId) {
         if (documentId.isPresent()) {
             final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
             if (documentEntityOptional.isEmpty()) {
-                return new AttachmentResponse();
+                return new AttachmentResponse(Collections.emptyList());
             }
             final DocumentEntity documentEntity = documentEntityOptional.get();
             final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserIdAndDocument(userId, documentEntity);
             attachmentEntities.forEach(encryptionService::decryptAttachment);
             final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
             audit("Retrieved attachments for document ID: {}", documentId.get());
-            final AttachmentResponse response = new AttachmentResponse();
-            response.addAll(attachments);
-            return response;
+            return new AttachmentResponse(attachments);
         }
         final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserId(userId);
         attachmentEntities.forEach(encryptionService::decryptAttachment);
         final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
         audit("Retrieved attachments for user ID: {}", userId);
-        final AttachmentResponse response = new AttachmentResponse();
-        response.addAll(attachments);
-        return response;
+        return new AttachmentResponse(attachments);
     }
 
     @Transactional

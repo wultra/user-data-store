@@ -63,7 +63,6 @@ class DocumentControllerTest {
     @WithMockUser(roles = "READ")
     @Test
     void testGet() throws Exception {
-        DocumentResponse response = new DocumentResponse();
         DocumentDto document = DocumentDto.builder()
                 .userId("alice")
                 .documentType("profile")
@@ -77,7 +76,7 @@ class DocumentControllerTest {
                         "https://claims.example.com/department", "engineering"
                 ))))
                 .build();
-        response.add(document);
+        DocumentResponse response = new DocumentResponse(Collections.singletonList(document));
         when(service.fetchDocuments("alice", Optional.empty()))
                 .thenReturn(response);
 
@@ -87,15 +86,15 @@ class DocumentControllerTest {
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is("OK")))
-                .andExpect(jsonPath("$.responseObject[0].userId", is("alice")))
-                .andExpect(jsonPath("$.responseObject[0].documentType", is("profile")))
-                .andExpect(jsonPath("$.responseObject[0].dataType", is("claims")))
-                .andExpect(jsonPath("$.responseObject[0].documentDataId", is("83692")))
-                .andExpect(jsonPath("$.responseObject[0].documentData", containsString("\"sub\":\"83692\"")))
-                .andExpect(jsonPath("$.responseObject[0].documentData", containsString("\"name\":\"Alice Adams\"")))
-                .andExpect(jsonPath("$.responseObject[0].documentData", containsString("\"email\":\"alice@example.com\"")))
-                .andExpect(jsonPath("$.responseObject[0].documentData", containsString("\"birthdate\":\"1975-12-31\"")))
-                .andExpect(jsonPath("$.responseObject[0].documentData", containsString("\"https://claims.example.com/department\":\"engineering\"")));
+                .andExpect(jsonPath("$.responseObject.documents[0].userId", is("alice")))
+                .andExpect(jsonPath("$.responseObject.documents[0].documentType", is("profile")))
+                .andExpect(jsonPath("$.responseObject.documents[0].dataType", is("claims")))
+                .andExpect(jsonPath("$.responseObject.documents[0].documentDataId", is("83692")))
+                .andExpect(jsonPath("$.responseObject.documents[0].documentData", containsString("\"sub\":\"83692\"")))
+                .andExpect(jsonPath("$.responseObject.documents[0].documentData", containsString("\"name\":\"Alice Adams\"")))
+                .andExpect(jsonPath("$.responseObject.documents[0].documentData", containsString("\"email\":\"alice@example.com\"")))
+                .andExpect(jsonPath("$.responseObject.documents[0].documentData", containsString("\"birthdate\":\"1975-12-31\"")))
+                .andExpect(jsonPath("$.responseObject.documents[0].documentData", containsString("\"https://claims.example.com/department\":\"engineering\"")));
     }
 
    @WithMockUser(roles = "WRITE")

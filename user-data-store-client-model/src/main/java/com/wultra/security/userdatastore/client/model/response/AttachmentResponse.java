@@ -18,18 +18,20 @@
 package com.wultra.security.userdatastore.client.model.response;
 
 import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Builder;
+import lombok.extern.jackson.Jacksonized;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Response class for listing attachments.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class AttachmentResponse extends ArrayList<AttachmentDto> {
+@Builder
+@Jacksonized
+public record AttachmentResponse(
 
-}
+        List<AttachmentDto> attachments
+
+) {}
