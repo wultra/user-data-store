@@ -23,6 +23,7 @@ import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRe
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.config.WebSecurityConfiguration;
 import com.wultra.security.userdatastore.service.AttachmentService;
+import io.getlime.core.rest.model.base.request.ObjectRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -129,8 +130,8 @@ class AttachmentControllerTest {
     void testPost() throws Exception {
         final var attachmentCreateRequest = new AttachmentCreateRequest("alice", "1","text", attachmentData, null);
 
-        final String requestBodyJson = new ObjectMapper().writeValueAsString(attachmentCreateRequest);
-        mvc.perform(post("/admin/attachments?userId=alice&documentId=1")
+        final String requestBodyJson = new ObjectMapper().writeValueAsString(new ObjectRequest<>(attachmentCreateRequest));
+        mvc.perform(post("/admin/attachments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBodyJson))
                 .andExpect(content()

@@ -23,6 +23,7 @@ import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
 import com.wultra.security.userdatastore.config.WebSecurityConfiguration;
 import com.wultra.security.userdatastore.service.PhotoService;
+import io.getlime.core.rest.model.base.request.ObjectRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -132,8 +133,8 @@ class PhotoControllerTest {
     void testPost() throws Exception {
         final var photoCreateRequest = new PhotoCreateRequest("alice", "1","person", encodedPhoto, null);
 
-        final String requestBodyJson = new ObjectMapper().writeValueAsString(photoCreateRequest);
-        mvc.perform(post("/admin/photos?userId=alice&documentId=1")
+        final String requestBodyJson = new ObjectMapper().writeValueAsString(new ObjectRequest<>(photoCreateRequest));
+        mvc.perform(post("/admin/photos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBodyJson))
                 .andExpect(content()

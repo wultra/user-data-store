@@ -24,6 +24,7 @@ import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequ
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.config.WebSecurityConfiguration;
 import com.wultra.security.userdatastore.service.DocumentService;
+import io.getlime.core.rest.model.base.request.ObjectRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -145,8 +146,8 @@ class DocumentControllerTest {
                 "attributes", Collections.emptyMap()
         );
 
-        final String requestBodyJson = new ObjectMapper().writeValueAsString(requestBody);
-        mvc.perform(post("/admin/documents?userId=alice")
+        final String requestBodyJson = new ObjectMapper().writeValueAsString(new ObjectRequest<>(documentCreateRequest));
+        mvc.perform(post("/admin/documents")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBodyJson))
                 .andExpect(content()
@@ -159,7 +160,7 @@ class DocumentControllerTest {
     @WithMockUser(roles = "READ")
     @Test
     void testPost_wrongRoles() throws Exception {
-        mvc.perform(post("/admin/documents?userId=alice")
+        mvc.perform(post("/admin/documents")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isForbidden());
@@ -187,8 +188,8 @@ class DocumentControllerTest {
                 "attributes", Collections.emptyMap()
         );
 
-        final String requestBodyJson = new ObjectMapper().writeValueAsString(requestBody);
-        mvc.perform(put("/admin/documents?userId=alice")
+        final String requestBodyJson = new ObjectMapper().writeValueAsString(new ObjectRequest<>(documentUpdateRequest));
+        mvc.perform(put("/admin/documents")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBodyJson))
                 .andExpect(content()
@@ -201,7 +202,7 @@ class DocumentControllerTest {
     @WithMockUser(roles = "READ")
     @Test
     void testPut_wrongRoles() throws Exception {
-        mvc.perform(put("/admin/documents?userId=alice")
+        mvc.perform(put("/admin/documents")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isForbidden());
