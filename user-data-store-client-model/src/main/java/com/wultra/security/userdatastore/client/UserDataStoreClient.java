@@ -41,7 +41,7 @@ public interface UserDataStoreClient {
      * @return Documents.
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
-    DocumentResponse fetchDocuments(String userId, Optional<String> documentId) throws UserDataStoreClientException;
+    DocumentResponse fetchDocuments(String userId, String documentId) throws UserDataStoreClientException;
 
     /**
      * Create a document.
@@ -67,7 +67,7 @@ public interface UserDataStoreClient {
      * @param documentId Optional document identifier.
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
-    void deleteDocuments(String userId, Optional<String> documentId) throws UserDataStoreClientException;
+    void deleteDocuments(String userId, String documentId) throws UserDataStoreClientException;
 
     /**
      * Fetch photos.
@@ -77,7 +77,7 @@ public interface UserDataStoreClient {
      * @return Photo response.
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
-    PhotoResponse fetchPhotos(String userId, Optional<String> documentId) throws UserDataStoreClientException;
+    PhotoResponse fetchPhotos(String userId, String documentId) throws UserDataStoreClientException;
 
     /**
      * Create a photo.
@@ -95,7 +95,7 @@ public interface UserDataStoreClient {
      * @param documentId Optional document identifier.
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
-    void deletePhotos(String userId, Optional<String> documentId) throws UserDataStoreClientException;
+    void deletePhotos(String userId, String documentId) throws UserDataStoreClientException;
 
     /**
      * Fetch attachments.
@@ -105,7 +105,7 @@ public interface UserDataStoreClient {
      * @return Attachment response.
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
-    AttachmentResponse fetchAttachments(String userId, Optional<String> documentId) throws UserDataStoreClientException;
+    AttachmentResponse fetchAttachments(String userId, String documentId) throws UserDataStoreClientException;
 
     /**
      * Create an attachment.
@@ -123,7 +123,7 @@ public interface UserDataStoreClient {
      * @param documentId Optional document identifier.
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
-    void deleteAttachments(String userId, Optional<String> documentId) throws UserDataStoreClientException;
+    void deleteAttachments(String userId, String documentId) throws UserDataStoreClientException;
 
 }
 

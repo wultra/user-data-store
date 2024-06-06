@@ -20,6 +20,7 @@ package com.wultra.security.userdatastore.restclient;
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.UserDataStoreRestClientConfiguration;
 import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
+import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
@@ -78,7 +79,7 @@ class DocumentRestClientTest {
         assertNotNull(response.id());
         assertNotNull(response.documentDataId());
 
-        DocumentResponse documentResponse = restClient.fetchDocuments("alice", Optional.of(response.id()));
+        DocumentResponse documentResponse = restClient.fetchDocuments("alice", response.id());
         assertEquals(1, documentResponse.documents().size());
         DocumentDto document = documentResponse.documents().get(0);
         assertNotNull(document.id());
@@ -95,7 +96,7 @@ class DocumentRestClientTest {
         DocumentUpdateRequest updateRequest = new DocumentUpdateRequest("bob", document.id(), "test_type2", "test_data_type2", "2", "3", "test_data2", attributes);
         restClient.updateDocument(updateRequest);
 
-        DocumentResponse documentResponse2 = restClient.fetchDocuments("bob", Optional.of(response.id()));
+        DocumentResponse documentResponse2 = restClient.fetchDocuments("bob", response.id());
         assertEquals(1, documentResponse2.documents().size());
         DocumentDto document2 = documentResponse2.documents().get(0);
         assertNotNull(document2.id());
@@ -106,5 +107,9 @@ class DocumentRestClientTest {
         assertEquals("3", document2.externalId());
         assertEquals("test_data2", document2.documentData());
         assertEquals(1, document2.attributes().size());
+
+        restClient.deleteDocuments("bob", response.id());
+
+        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchDocuments("bob", response.id()));
     }
 }

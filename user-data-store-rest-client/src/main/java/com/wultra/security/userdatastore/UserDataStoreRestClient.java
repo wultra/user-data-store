@@ -190,10 +190,10 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
-    public DocumentResponse fetchDocuments(String userId, Optional<String> documentId) throws UserDataStoreClientException {
+    public DocumentResponse fetchDocuments(String userId, String documentId) throws UserDataStoreClientException {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
-        documentId.ifPresent(s -> queryParams.put("documentId", Collections.singletonList(s)));
+        queryParams.put("documentId", Collections.singletonList(documentId));
         return get("/documents", queryParams, EMPTY_MULTI_MAP, DocumentResponse.class);
     }
 
@@ -208,18 +208,18 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
-    public void deleteDocuments(String userId, Optional<String> documentId) throws UserDataStoreClientException {
+    public void deleteDocuments(String userId, String documentId) throws UserDataStoreClientException {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
-        documentId.ifPresent(s -> queryParams.put("documentId", Collections.singletonList(s)));
+        queryParams.put("documentId", Collections.singletonList(documentId));
         delete("/admin/documents", queryParams, EMPTY_MULTI_MAP, DocumentResponse.class);
     }
 
     @Override
-    public PhotoResponse fetchPhotos(String userId, Optional<String> documentId) throws UserDataStoreClientException {
+    public PhotoResponse fetchPhotos(String userId, String documentId) throws UserDataStoreClientException {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
-        documentId.ifPresent(s -> queryParams.put("documentId", Collections.singletonList(s)));
+        queryParams.put("documentId", Collections.singletonList(documentId));
         return get("/photos", queryParams, EMPTY_MULTI_MAP, PhotoResponse.class);
     }
 
@@ -229,18 +229,18 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
-    public void deletePhotos(String userId, Optional<String> documentId) throws UserDataStoreClientException {
+    public void deletePhotos(String userId, String documentId) throws UserDataStoreClientException {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
-        documentId.ifPresent(s -> queryParams.put("documentId", Collections.singletonList(s)));
+        queryParams.put("documentId", Collections.singletonList(documentId));
         delete("/admin/photos", queryParams, EMPTY_MULTI_MAP, DocumentResponse.class);
     }
 
     @Override
-    public AttachmentResponse fetchAttachments(String userId, Optional<String> documentId) throws UserDataStoreClientException {
+    public AttachmentResponse fetchAttachments(String userId, String documentId) throws UserDataStoreClientException {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
-        documentId.ifPresent(s -> queryParams.put("documentId", Collections.singletonList(s)));
+        queryParams.put("documentId", Collections.singletonList(documentId));
         return get("/admin/attachments", queryParams, EMPTY_MULTI_MAP, AttachmentResponse.class);
 
     }
@@ -251,10 +251,10 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
-    public void deleteAttachments(String userId, Optional<String> documentId) throws UserDataStoreClientException {
+    public void deleteAttachments(String userId, String documentId) throws UserDataStoreClientException {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
-        documentId.ifPresent(s -> queryParams.put("documentId", Collections.singletonList(s)));
+        queryParams.put("documentId", Collections.singletonList(documentId));
         delete("/admin/attachments", queryParams, EMPTY_MULTI_MAP, DocumentResponse.class);
     }
 }
