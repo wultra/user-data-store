@@ -37,7 +37,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Attachment REST API test.
+ * Attachments REST API test.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */

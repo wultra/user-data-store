@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Attachment REST API test.
+ * Photos REST API test.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */

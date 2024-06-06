@@ -125,5 +125,27 @@ public interface UserDataStoreClient {
      */
     void deleteAttachments(String userId, String documentId) throws UserDataStoreClientException;
 
+    /**
+     * Fetch user claims.
+     * @param userId User identifier.
+     * @return User claims.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    Object fetchClaims(String userId) throws UserDataStoreClientException;
+
+    /**
+     * Store user claims.
+     * @param userId User identifier.
+     * @param claims User claims.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void storeClaims(String userId, Object claims) throws UserDataStoreClientException;
+
+    /**
+     * Delete user claims.
+     * @param userId User identifier.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void deleteClaims(String userId) throws UserDataStoreClientException;
 }
 

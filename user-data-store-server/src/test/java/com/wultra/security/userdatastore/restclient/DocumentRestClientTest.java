@@ -35,12 +35,11 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Document REST API test.
+ * Documents REST API test.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */

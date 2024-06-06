@@ -95,6 +95,7 @@ public class UserClaimsService {
                     entity.setDocumentType(CLAIMS_DOCUMENT_TYPE);
                     entity.setDataType(CLAIMS_DATA_TYPE);
                     entity.setDocumentDataId(CLAIMS_DOCUMENT_DATA_ID);
+                    entity.setAttributes("{}");
                     entity.setTimestampCreated(LocalDateTime.now());
                     encryptionService.encryptDocumentData(entity, claimsAsString);
 
