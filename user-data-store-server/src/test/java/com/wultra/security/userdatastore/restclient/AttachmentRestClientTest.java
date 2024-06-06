@@ -64,7 +64,7 @@ class AttachmentRestClientTest {
         DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test", "1", null, "test_data", Collections.emptyMap());
         DocumentCreateResponse response = restClient.createDocument(request);
         assertNotNull(response.id());
-        assertNotNull(response.documentId());
+        assertNotNull(response.documentDataId());
         AttachmentCreateRequest attachmentRequest = new AttachmentCreateRequest("alice", response.id(), "test", "test_data", null);
         AttachmentCreateResponse attachmentResponse = restClient.createAttachment(attachmentRequest);
         assertNotNull(attachmentResponse.id());

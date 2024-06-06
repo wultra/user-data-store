@@ -19,10 +19,8 @@ package com.wultra.security.userdatastore.restclient;
 
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.UserDataStoreRestClientConfiguration;
-import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
-import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
 import org.junit.jupiter.api.BeforeAll;
@@ -66,7 +64,7 @@ class PhotoRestClientTest {
         DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test", "1", null, "test_data", Collections.emptyMap());
         DocumentCreateResponse response = restClient.createDocument(request);
         assertNotNull(response.id());
-        assertNotNull(response.documentId());
+        assertNotNull(response.documentDataId());
         PhotoCreateRequest photoRequest = new PhotoCreateRequest("alice", response.id(), "test", "test_data", null);
         PhotoCreateResponse photoResponse = restClient.createPhoto(photoRequest);
         assertNotNull(photoResponse.id());

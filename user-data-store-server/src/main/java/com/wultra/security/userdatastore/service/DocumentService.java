@@ -108,11 +108,11 @@ public class DocumentService {
             throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(request.id()));
         }
         DocumentEntity documentEntity = documentEntityOptional.get();
-        documentEntity.setId(UUID.randomUUID().toString());
         documentEntity.setUserId(userId);
         documentEntity.setDocumentType(request.documentType());
         documentEntity.setDataType(request.dataType());
         documentEntity.setDocumentDataId(request.documentDataId());
+        documentEntity.setExternalId(request.externalId());
         encryptionService.encryptDocumentData(documentEntity, request.documentData());
         documentConverter.convertAntSetAttributes(request.attributes(), documentEntity);
 

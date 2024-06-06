@@ -19,8 +19,11 @@ package com.wultra.security.userdatastore.restclient;
 
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.UserDataStoreRestClientConfiguration;
+import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
+import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -29,8 +32,11 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Document REST API test.
@@ -59,9 +65,46 @@ class DocumentRestClientTest {
 
     @Test
     void testPost() throws Exception {
-        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test", "1", null, "test_data", Collections.emptyMap());
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test_type", "1", null, "test_data", Collections.emptyMap());
         DocumentCreateResponse response = restClient.createDocument(request);
         assertNotNull(response.id());
-        assertNotNull(response.documentId());
+        assertNotNull(response.documentDataId());
+    }
+
+    @Test
+    void testLifeCycle() throws Exception {
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test_type", "test_data_type", "1", null, "test_data", Collections.emptyMap());
+        DocumentCreateResponse response = restClient.createDocument(request);
+        assertNotNull(response.id());
+        assertNotNull(response.documentDataId());
+
+        DocumentResponse documentResponse = restClient.fetchDocuments("alice", Optional.of(response.id()));
+        assertEquals(1, documentResponse.documents().size());
+        DocumentDto document = documentResponse.documents().get(0);
+        assertNotNull(document.id());
+        assertEquals("alice", document.userId());
+        assertEquals("test_type", document.documentType());
+        assertEquals("test_data_type", document.dataType());
+        assertEquals("1", document.documentDataId());
+        assertNull(document.externalId());
+        assertEquals("test_data", document.documentData());
+        assertEquals(Collections.emptyMap(), document.attributes());
+
+        Map<String, Object> attributes = new LinkedHashMap<>();
+        attributes.put("test", "test");
+        DocumentUpdateRequest updateRequest = new DocumentUpdateRequest("bob", document.id(), "test_type2", "test_data_type2", "2", "3", "test_data2", attributes);
+        restClient.updateDocument(updateRequest);
+
+        DocumentResponse documentResponse2 = restClient.fetchDocuments("bob", Optional.of(response.id()));
+        assertEquals(1, documentResponse2.documents().size());
+        DocumentDto document2 = documentResponse2.documents().get(0);
+        assertNotNull(document2.id());
+        assertEquals("bob", document2.userId());
+        assertEquals("test_type2", document2.documentType());
+        assertEquals("test_data_type2", document2.dataType());
+        assertEquals("2", document2.documentDataId());
+        assertEquals("3", document2.externalId());
+        assertEquals("test_data2", document2.documentData());
+        assertEquals(1, document2.attributes().size());
     }
 }

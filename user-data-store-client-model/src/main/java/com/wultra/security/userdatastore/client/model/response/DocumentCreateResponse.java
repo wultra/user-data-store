@@ -30,6 +30,6 @@ import lombok.extern.jackson.Jacksonized;
 public record DocumentCreateResponse (
 
         String id,
-        String documentId
+        String documentDataId
 
 ) {}
