@@ -241,7 +241,7 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
         queryParams.put("documentId", Collections.singletonList(documentId));
-        return get("/admin/attachments", queryParams, EMPTY_MULTI_MAP, AttachmentResponse.class);
+        return get("/attachments", queryParams, EMPTY_MULTI_MAP, AttachmentResponse.class);
 
     }
 

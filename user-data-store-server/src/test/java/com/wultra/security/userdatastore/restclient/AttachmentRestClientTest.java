@@ -19,9 +19,11 @@ package com.wultra.security.userdatastore.restclient;
 
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.UserDataStoreRestClientConfiguration;
+import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
 import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
+import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -32,7 +34,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Attachment REST API test.
@@ -69,5 +71,32 @@ class AttachmentRestClientTest {
         AttachmentCreateResponse attachmentResponse = restClient.createAttachment(attachmentRequest);
         assertNotNull(attachmentResponse.id());
         assertNotNull(attachmentResponse.documentId());
+    }
+
+    @Test
+    void testLifeCycle() throws Exception {
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test_type", "test_data_type", "1", null, "test_data", Collections.emptyMap());
+        DocumentCreateResponse response = restClient.createDocument(request);
+        assertNotNull(response.id());
+        assertNotNull(response.documentDataId());
+
+        AttachmentCreateRequest attachmentRequest = new AttachmentCreateRequest("alice", response.id(), "test_type", "test_data", null);
+        AttachmentCreateResponse attachmentResponse = restClient.createAttachment(attachmentRequest);
+        assertNotNull(attachmentResponse.id());
+        assertNotNull(attachmentResponse.documentId());
+
+        AttachmentResponse fetchResponse = restClient.fetchAttachments("alice", attachmentResponse.documentId());
+        assertEquals(1, fetchResponse.attachments().size());
+        AttachmentDto attachment = fetchResponse.attachments().get(0);
+        assertNotNull(attachment.id());
+        assertEquals(response.id(), attachment.documentId());
+        assertEquals("test_type", attachment.attachmentType());
+        assertEquals("test_data", attachment.attachmentData());
+        assertNull(attachment.externalId());
+
+        restClient.deleteAttachments("alice", attachmentResponse.documentId());
+
+        AttachmentResponse fetchResponse2 = restClient.fetchAttachments("alice", attachmentResponse.documentId());
+        assertEquals(0, fetchResponse2.attachments().size());
     }
 }
