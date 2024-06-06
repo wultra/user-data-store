@@ -57,7 +57,7 @@ public class DocumentHistoryEntity implements Serializable {
     @Column(name = "data_type", nullable = false)
     private String dataType;
 
-    @Column(name = "document_data_id", nullable = false)
+    @Column(name = "document_data_id")
     private String documentDataId;
 
     @Column(name = "external_id")

@@ -22,10 +22,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
-import com.wultra.security.userdatastore.model.entity.UserClaimsEntity;
+import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.error.InvalidRequestException;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
-import com.wultra.security.userdatastore.model.repository.UserClaimsRepository;
+import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Service for user claims.
@@ -45,18 +47,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserClaimsService {
 
-    private final UserClaimsRepository userClaimsRepository;
+    private static final String CLAIMS_DOCUMENT_TYPE = "profile";
+    private static final String CLAIMS_DATA_TYPE = "claims";
+    private static final String CLAIMS_DOCUMENT_DATA_ID = null;
 
+    private final DocumentRepository documentRepository;
     private final Audit audit;
-
     private final EncryptionService encryptionService;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Transactional(readOnly = true)
     public Object fetchUserClaims(final String userId) {
-        final String claims = userClaimsRepository.findById(userId)
-                .map(encryptionService::decryptClaims)
+        final String claims = documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE)
+                .stream()
+                .map(encryptionService::decryptDocumentData)
+                .findFirst()
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Claims for user ID: '%s' not found".formatted(userId)));
         audit("Retrieved claims of user ID: {}", userId);
@@ -75,26 +80,33 @@ public class UserClaimsService {
         } catch (JsonProcessingException e) {
             throw new InvalidRequestException(e);
         }
-        userClaimsRepository.findById(userId).ifPresentOrElse(entity -> {
+        documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE).stream().findAny()
+                .ifPresentOrElse(entity -> {
                     logger.debug("Updating claims of user ID: {}", userId);
-                    encryptionService.encryptClaims(entity, claimsAsString);
+                    encryptionService.encryptDocumentData(entity, claimsAsString);
                     entity.setTimestampLastUpdated(LocalDateTime.now());
                     audit("Updated claims of user ID: {}", userId);
                 },
                 () -> {
                     logger.debug("Creating new claims of user ID: {}", userId);
-                    final UserClaimsEntity entity = new UserClaimsEntity();
+                    final DocumentEntity entity = new DocumentEntity();
+                    entity.setId(UUID.randomUUID().toString());
                     entity.setUserId(userId);
-                    encryptionService.encryptClaims(entity, claimsAsString);
-                    userClaimsRepository.saveAndFlush(entity);
+                    entity.setDocumentType(CLAIMS_DOCUMENT_TYPE);
+                    entity.setDataType(CLAIMS_DATA_TYPE);
+                    entity.setDocumentDataId(CLAIMS_DOCUMENT_DATA_ID);
+                    entity.setTimestampCreated(LocalDateTime.now());
+                    encryptionService.encryptDocumentData(entity, claimsAsString);
+
+                    documentRepository.save(entity);
                     audit("Created claims for user ID: {}", userId);
                 });
     }
 
     @Transactional
     public void deleteUserClaims(final String userId) {
-        final UserClaimsEntity user = userClaimsRepository.getReferenceById(userId);
-        userClaimsRepository.delete(user);
+        final List<DocumentEntity> toDelete = documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE);
+        documentRepository.deleteAll(toDelete);
         audit("Deleted claims of user ID: {}", userId);
     }
 

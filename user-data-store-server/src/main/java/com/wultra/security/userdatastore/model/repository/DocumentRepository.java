@@ -33,6 +33,8 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, String
 
     List<DocumentEntity> findAllByUserId(String userId);
 
+    List<DocumentEntity> findAllByUserIdAndDataType(String userId, String dataType);
+
     int deleteAllByUserId(String userId);
 
     int deleteAllByUserIdAndId(String userId, String id);
