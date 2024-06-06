@@ -19,10 +19,12 @@ package com.wultra.security.userdatastore.restclient;
 
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.UserDataStoreRestClientConfiguration;
+import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
+import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -32,7 +34,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Attachment REST API test.
@@ -69,5 +72,32 @@ class PhotoRestClientTest {
         PhotoCreateResponse photoResponse = restClient.createPhoto(photoRequest);
         assertNotNull(photoResponse.id());
         assertNotNull(photoResponse.documentId());
+    }
+
+    @Test
+    void testLifeCycle() throws Exception {
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test_type", "test_data_type", "1", null, "test_data", Collections.emptyMap());
+        DocumentCreateResponse response = restClient.createDocument(request);
+        assertNotNull(response.id());
+        assertNotNull(response.documentDataId());
+
+        PhotoCreateRequest PhotoRequest = new PhotoCreateRequest("alice", response.id(), "test_type", "test_data", null);
+        PhotoCreateResponse PhotoResponse = restClient.createPhoto(PhotoRequest);
+        assertNotNull(PhotoResponse.id());
+        assertNotNull(PhotoResponse.documentId());
+
+        PhotoResponse fetchResponse = restClient.fetchPhotos("alice", PhotoResponse.documentId());
+        assertEquals(1, fetchResponse.photos().size());
+        PhotoDto Photo = fetchResponse.photos().get(0);
+        assertNotNull(Photo.id());
+        assertEquals(response.id(), Photo.documentId());
+        assertEquals("test_type", Photo.photoType());
+        assertEquals("test_data", Photo.photoData());
+        assertNull(Photo.externalId());
+
+        restClient.deletePhotos("alice", PhotoResponse.documentId());
+
+        PhotoResponse fetchResponse2 = restClient.fetchPhotos("alice", PhotoResponse.documentId());
+        assertEquals(0, fetchResponse2.photos().size());
     }
 }
