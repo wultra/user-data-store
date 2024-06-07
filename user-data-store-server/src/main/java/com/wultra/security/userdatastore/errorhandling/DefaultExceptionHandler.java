@@ -62,7 +62,7 @@ class DefaultExceptionHandler {
      */
     @ExceptionHandler(EncryptionException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleEncryptionException(final EncryptionException e) {
+    public @ResponseBody ErrorResponse handleEncryptionException(final EncryptionException e) {
         logger.warn("Error occurred when processing request object.", e);
         return new ErrorResponse("ENCRYPTION_ERROR", e.getMessage());
     }
@@ -75,7 +75,7 @@ class DefaultExceptionHandler {
      */
     @ExceptionHandler({InvalidRequestException.class, ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInvalidRequestException(final RuntimeException e) {
+    public @ResponseBody ErrorResponse handleInvalidRequestException(final RuntimeException e) {
         logger.warn("Error occurred when processing request object.", e);
         return new ErrorResponse("INVALID_REQUEST", e.getMessage());
     }
@@ -88,7 +88,7 @@ class DefaultExceptionHandler {
      */
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNotFoundException(final ResourceNotFoundException e) {
+    public @ResponseBody ErrorResponse handleNotFoundException(final ResourceNotFoundException e) {
         logger.warn("Error occurred when processing request object.", e);
         return new ErrorResponse("NOT_FOUND", e.getMessage());
     }
