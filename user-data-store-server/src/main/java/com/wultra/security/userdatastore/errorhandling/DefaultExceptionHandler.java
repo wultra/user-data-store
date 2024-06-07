@@ -37,6 +37,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
  * @author Roman Strobl, roman.strobl@wulra.com
  */
 @ControllerAdvice
+@ResponseBody
 @Slf4j
 class DefaultExceptionHandler {
 
@@ -48,7 +49,7 @@ class DefaultExceptionHandler {
      */
     @ExceptionHandler(NoResourceFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public @ResponseBody ErrorResponse handleNoResourceFoundException(final NoResourceFoundException e) {
+    public ErrorResponse handleNoResourceFoundException(final NoResourceFoundException e) {
         logger.warn("Error occurred when calling an API: {}", e.getMessage());
         logger.debug("Exception detail: ", e);
         return new ErrorResponse("ERROR_NOT_FOUND", "Resource not found.");
@@ -62,7 +63,7 @@ class DefaultExceptionHandler {
      */
     @ExceptionHandler(EncryptionException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public @ResponseBody ErrorResponse handleEncryptionException(final EncryptionException e) {
+    public ErrorResponse handleEncryptionException(final EncryptionException e) {
         logger.warn("Error occurred when processing request object.", e);
         return new ErrorResponse("ENCRYPTION_ERROR", e.getMessage());
     }
@@ -75,7 +76,7 @@ class DefaultExceptionHandler {
      */
     @ExceptionHandler({InvalidRequestException.class, ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody ErrorResponse handleInvalidRequestException(final RuntimeException e) {
+    public ErrorResponse handleInvalidRequestException(final RuntimeException e) {
         logger.warn("Error occurred when processing request object.", e);
         return new ErrorResponse("INVALID_REQUEST", e.getMessage());
     }
@@ -88,7 +89,7 @@ class DefaultExceptionHandler {
      */
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody ErrorResponse handleNotFoundException(final ResourceNotFoundException e) {
+    public ErrorResponse handleNotFoundException(final ResourceNotFoundException e) {
         logger.warn("Error occurred when processing request object.", e);
         return new ErrorResponse("NOT_FOUND", e.getMessage());
     }
