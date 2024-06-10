@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,7 @@ class AttachmentController {
 
     private final AttachmentService attachmentService;
 
+    @Autowired
     AttachmentController(AttachmentService attachmentService) {
         this.attachmentService = attachmentService;
     }

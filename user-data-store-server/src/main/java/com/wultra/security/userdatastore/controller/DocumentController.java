@@ -29,6 +29,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +47,7 @@ class DocumentController {
 
     private final DocumentService documentService;
 
+    @Autowired
     DocumentController(DocumentService documentService) {
         this.documentService = documentService;
     }
