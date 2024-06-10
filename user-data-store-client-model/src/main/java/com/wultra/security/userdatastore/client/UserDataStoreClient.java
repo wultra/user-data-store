@@ -24,8 +24,6 @@ import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequ
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
 import com.wultra.security.userdatastore.client.model.response.*;
 
-import java.util.Optional;
-
 /**
  * User Data Store client interface.
  *
@@ -131,7 +129,8 @@ public interface UserDataStoreClient {
      * @return User claims.
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
-    Object fetchClaims(String userId) throws UserDataStoreClientException;
+    @Deprecated
+    Object fetchUserClaims(String userId) throws UserDataStoreClientException;
 
     /**
      * Store user claims.
@@ -139,13 +138,49 @@ public interface UserDataStoreClient {
      * @param claims User claims.
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
-    void storeClaims(String userId, Object claims) throws UserDataStoreClientException;
+    @Deprecated
+    void storeUserClaims(String userId, Object claims) throws UserDataStoreClientException;
 
     /**
      * Delete user claims.
      * @param userId User identifier.
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
-    void deleteClaims(String userId) throws UserDataStoreClientException;
+    @Deprecated
+    void deleteUserClaims(String userId) throws UserDataStoreClientException;
+
+    /**
+     * Fetch claim(s).
+     * @param userId User identifier.
+     * @param claim Optional claim to filter by claim name.
+     * @return User claims.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    Object fetchClaims(String userId, String claim) throws UserDataStoreClientException;
+
+    /**
+     * Store claim.
+     * @param userId User identifier.
+     * @param claim Claim name.
+     * @param value Claim value.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void storeClaim(String userId, String claim, Object value) throws UserDataStoreClientException;
+
+    /**
+     * Store claims.
+     * @param userId User identifier.
+     * @param value Claims.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void storeClaims(String userId, Object value) throws UserDataStoreClientException;
+
+    /**
+     * Delete claim(s).
+     * @param userId User identifier.
+     * @param claim Optional claim to delete.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void deleteClaims(String userId, String claim) throws UserDataStoreClientException;
 }
 

@@ -30,17 +30,18 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * User claims REST API test.
+ * Claim REST API test.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserClaimsRestClientTest {
+class ClaimsRestClientTest {
 
     private static final String USER_DATA_STORE_REST_URL = "http://localhost:%d/user-data-store-server";
 
@@ -60,12 +61,10 @@ class UserClaimsRestClientTest {
     @Test
     @SuppressWarnings("unchecked")
     void testPost() throws Exception {
-        Map<String, String> claims = new LinkedHashMap<>();
-        claims.put("claim1", "value1");
-        claims.put("claim2", "value2");
-        restClient.storeUserClaims("alice", claims);
+        restClient.storeClaim("alice", "claim1", "value1");
+        restClient.storeClaim("alice", "claim2", "value2");
 
-        Map<String, String> claimsRetrieved = (Map<String, String>) restClient.fetchUserClaims("alice");
+        Map<String, String> claimsRetrieved = (Map<String, String>) restClient.fetchClaims("alice", null);
         assertEquals(2, claimsRetrieved.size());
         assertEquals("value1", claimsRetrieved.get("claim1"));
         assertEquals("value2", claimsRetrieved.get("claim2"));
@@ -73,13 +72,36 @@ class UserClaimsRestClientTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void testLifeCycle() throws Exception {
+    void testLifeCycleIndividualClaims() throws Exception {
+        restClient.storeClaim("alice", "claim1", "value1");
+        restClient.storeClaim("alice", "claim2", "value2");
+
+        Map<String, String> claimsRetrieved = (Map<String, String>) restClient.fetchClaims("alice", null);
+        assertEquals(2, claimsRetrieved.size());
+        assertEquals("value1", claimsRetrieved.get("claim1"));
+        assertEquals("value2", claimsRetrieved.get("claim2"));
+
+        restClient.storeClaim("alice", "claim2", "value1");
+        restClient.storeClaim("alice", "claim1", "value2");
+
+        Map<String, String> claimsRetrieved2 = (Map<String, String>) restClient.fetchUserClaims("alice");
+        assertEquals(2, claimsRetrieved2.size());
+        assertEquals("value2", claimsRetrieved2.get("claim1"));
+        assertEquals("value1", claimsRetrieved2.get("claim2"));
+
+        restClient.deleteClaims("alice", null);
+        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchUserClaims("alice"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testLifeCycleAllClaims() throws Exception {
         Map<String, String> claims = new LinkedHashMap<>();
         claims.put("claim1", "value1");
         claims.put("claim2", "value2");
-        restClient.storeUserClaims("alice", claims);
+        restClient.storeClaims("alice", claims);
 
-        Map<String, String> claimsRetrieved = (Map<String, String>) restClient.fetchUserClaims("alice");
+        Map<String, String> claimsRetrieved = (Map<String, String>) restClient.fetchClaims("alice", null);
         assertEquals(2, claimsRetrieved.size());
         assertEquals("value1", claimsRetrieved.get("claim1"));
         assertEquals("value2", claimsRetrieved.get("claim2"));
@@ -87,14 +109,14 @@ class UserClaimsRestClientTest {
         Map<String, String> claims2 = new LinkedHashMap<>();
         claims2.put("claim1", "value2");
         claims2.put("claim2", "value1");
-        restClient.storeUserClaims("alice", claims2);
+        restClient.storeClaims("alice", claims2);
 
-        Map<String, String> claimsRetrieved2 = (Map<String, String>) restClient.fetchUserClaims("alice");
+        Map<String, String> claimsRetrieved2 = (Map<String, String>) restClient.fetchClaims("alice", null);
         assertEquals(2, claimsRetrieved2.size());
         assertEquals("value2", claimsRetrieved2.get("claim1"));
         assertEquals("value1", claimsRetrieved2.get("claim2"));
 
-        restClient.deleteUserClaims("alice");
-        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchUserClaims("alice"));
+        restClient.deleteClaims("alice", null);
+        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchClaims("alice", null));
     }
 }

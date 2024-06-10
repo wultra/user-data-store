@@ -60,7 +60,7 @@ public class ClaimsService {
         if (claim.isEmpty()) {
             audit("Retrieved claims of user ID: {}", userId, null);
             try {
-                return objectMapper.readValue(claims, new TypeReference<>() {});
+                return objectMapper.<Map<String, Object>>readValue(claims, new TypeReference<>() {});
             } catch (JsonProcessingException e) {
                 throw new InvalidRequestException(e);
             }
@@ -75,7 +75,7 @@ public class ClaimsService {
     }
 
     @Transactional
-    public void createOrUpdateClaims(final String userId, final String claim, final Object value) {
+    public void createOrUpdateClaim(final String userId, final String claim, final String value) {
         documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE).stream().findAny()
                 .ifPresentOrElse(entity -> {
                     logger.debug("Updating claims of user ID: {}, stored claim: {}", userId, claim);
@@ -115,6 +115,38 @@ public class ClaimsService {
                     documentRepository.save(entity);
                     audit("Created claims for user ID: {}, stored claim: ", userId, claim);
                 });
+    }
+
+    @Transactional
+    public void createOrUpdateClaims(final String userId, final Object claims) {
+        final String claimsAsString;
+        try {
+            claimsAsString = objectMapper.writeValueAsString(claims);
+        } catch (JsonProcessingException e) {
+            throw new InvalidRequestException(e);
+        }
+        documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE).stream().findAny()
+                .ifPresentOrElse(entity -> {
+                            logger.debug("Updating claims of user ID: {}", userId);
+                            encryptionService.encryptDocumentData(entity, claimsAsString);
+                            entity.setTimestampLastUpdated(LocalDateTime.now());
+                            audit("Updated claims of user ID: {}", userId, null);
+                        },
+                        () -> {
+                            logger.debug("Creating new claims of user ID: {}", userId);
+                            final DocumentEntity entity = new DocumentEntity();
+                            entity.setId(UUID.randomUUID().toString());
+                            entity.setUserId(userId);
+                            entity.setDocumentType(CLAIMS_DOCUMENT_TYPE);
+                            entity.setDataType(CLAIMS_DATA_TYPE);
+                            entity.setDocumentDataId(CLAIMS_DOCUMENT_DATA_ID);
+                            entity.setAttributes("{}");
+                            entity.setTimestampCreated(LocalDateTime.now());
+                            encryptionService.encryptDocumentData(entity, claimsAsString);
+
+                            documentRepository.save(entity);
+                            audit("Created claims for user ID: {}", userId, null);
+                        });
     }
 
     @Transactional

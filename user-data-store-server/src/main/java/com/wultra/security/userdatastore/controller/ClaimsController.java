@@ -58,14 +58,14 @@ class ClaimsController {
             description = "Return claims for the given user."
     )
     @GetMapping("/claims")
-    public ObjectResponse<Object> fetchClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam String claim) {
+    public ObjectResponse<Object> fetchClaim(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
         logger.info("Fetching claim of user ID: {}, claim: {}", userId, claim);
         final Object claims = claimsService.fetchClaims(userId, Optional.ofNullable(claim));
         return new ObjectResponse<>(claims);
     }
 
     /**
-     * Create claims for the given user or update the exiting ones.
+     * Create claim for the given user or update an exiting one.
      *
      * @param userId user identifier
      * @param claim claim to be stored
@@ -73,13 +73,31 @@ class ClaimsController {
      * @return response status
      */
     @Operation(
+            summary = "Create or update a claim",
+            description = "Create claim for the given user or update an exiting one."
+    )
+    @PostMapping("/admin/claim")
+    public Response storeClaim(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) String claim, @RequestBody final String value) {
+        logger.info("Creating or updating claim of user ID: {}, claim: {} ", userId, claim);
+        claimsService.createOrUpdateClaim(userId, claim, value);
+        return new Response();
+    }
+
+    /**
+     * Create claims for the given user or update the exiting ones.
+     *
+     * @param userId user identifier
+     * @param claims claims
+     * @return response status
+     */
+    @Operation(
             summary = "Create or update claims",
             description = "Create claims for the given user or update the exiting ones."
     )
     @PostMapping("/admin/claims")
-    public Response storeClaim(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) String claim, @RequestBody final Object value) {
-        logger.info("Creating or updating claim of user ID: {}, claim: {} ", userId, claim);
-        claimsService.createOrUpdateClaims(userId, claim, value);
+    public Response storeClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
+        logger.info("Creating or updating claim of user ID: {}", claims);
+        claimsService.createOrUpdateClaims(userId, claims);
         return new Response();
     }
 
@@ -94,7 +112,7 @@ class ClaimsController {
             description = "Delete claims of the given user."
     )
     @DeleteMapping("/admin/claims")
-    public Response deleteClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam String claim) {
+    public Response deleteClaim(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
         logger.info("Updating claims of user ID: {}, deleted claim: {}", userId, claim);
         claimsService.deleteClaims(userId, claim);
         return new Response();
