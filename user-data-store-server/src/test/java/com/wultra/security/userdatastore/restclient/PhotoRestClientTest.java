@@ -60,7 +60,8 @@ class PhotoRestClientTest {
         config.setHttpBasicAuthEnabled(true);
         config.setHttpBasicAuthUsername("admin");
         config.setHttpBasicAuthPassword("admin");
-        restClient = new UserDataStoreRestClient(USER_DATA_STORE_REST_URL.formatted(serverPort), config);
+        config.setBaseUrl(USER_DATA_STORE_REST_URL.formatted(serverPort));
+        restClient = new UserDataStoreRestClient(config);
     }
 
     @Test

@@ -60,37 +60,23 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
      * @param baseUrl BASE URL of REST endpoints.
      */
     public UserDataStoreRestClient(String baseUrl) throws UserDataStoreClientException {
-        this(baseUrl, new RestClientConfiguration());
+        final RestClientConfiguration config = new RestClientConfiguration();
+        config.setBaseUrl(baseUrl);
+        try {
+            restClient = new DefaultRestClient(config);
+        } catch (RestClientException ex) {
+            throw new UserDataStoreClientException("REST client initialization failed, error: " + ex.getMessage(), ex);
+        }
     }
 
     /**
      * PowerAuth REST client constructor.
      *
-     * @param baseUrl Base URL of REST endpoints.
+     * @param config REST client configuration.
      */
-    public UserDataStoreRestClient(String baseUrl, RestClientConfiguration config) throws UserDataStoreClientException {
-        final DefaultRestClient.Builder builder = DefaultRestClient.builder().baseUrl(baseUrl)
-                .acceptInvalidCertificate(config.isAcceptInvalidSslCertificate())
-                .connectionTimeout(config.getConnectionTimeout())
-                .maxInMemorySize(config.getMaxInMemorySize());
-        if (config.isProxyEnabled()) {
-            final DefaultRestClient.ProxyBuilder proxyBuilder = builder.proxy().host(config.getProxyHost()).port(config.getProxyPort());
-            if (config.getProxyUsername() != null) {
-                proxyBuilder.username(config.getProxyUsername()).password(config.getProxyPassword());
-            }
-            proxyBuilder.build();
-        }
-        if (config.getHttpBasicAuthUsername() != null) {
-            builder.httpBasicAuth().username(config.getHttpBasicAuthUsername()).password(config.getHttpBasicAuthPassword()).build();
-        }
-        if (config.getDefaultHttpHeaders() != null) {
-            builder.defaultHttpHeaders(config.getDefaultHttpHeaders());
-        }
-        if (config.getFilter() != null) {
-            builder.filter(config.getFilter());
-        }
+    public UserDataStoreRestClient(RestClientConfiguration config) throws UserDataStoreClientException {
         try {
-            restClient = builder.build();
+            restClient = new DefaultRestClient(config);
         } catch (RestClientException ex) {
             throw new UserDataStoreClientException("REST client initialization failed, error: " + ex.getMessage(), ex);
         }
