@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wultra.core.rest.client.base.DefaultRestClient;
 import com.wultra.core.rest.client.base.RestClient;
+import com.wultra.core.rest.client.base.RestClientConfiguration;
 import com.wultra.core.rest.client.base.RestClientException;
 import com.wultra.security.userdatastore.client.UserDataStoreClient;
 import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
@@ -59,7 +60,7 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
      * @param baseUrl BASE URL of REST endpoints.
      */
     public UserDataStoreRestClient(String baseUrl) throws UserDataStoreClientException {
-        this(baseUrl, new UserDataStoreRestClientConfiguration());
+        this(baseUrl, new RestClientConfiguration());
     }
 
     /**
@@ -67,11 +68,11 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
      *
      * @param baseUrl Base URL of REST endpoints.
      */
-    public UserDataStoreRestClient(String baseUrl, UserDataStoreRestClientConfiguration config) throws UserDataStoreClientException {
+    public UserDataStoreRestClient(String baseUrl, RestClientConfiguration config) throws UserDataStoreClientException {
         final DefaultRestClient.Builder builder = DefaultRestClient.builder().baseUrl(baseUrl)
-                .acceptInvalidCertificate(config.getAcceptInvalidSslCertificate())
-                .connectionTimeout(config.getConnectTimeout())
-                .maxInMemorySize(config.getMaxMemorySize());
+                .acceptInvalidCertificate(config.isAcceptInvalidSslCertificate())
+                .connectionTimeout(config.getConnectionTimeout())
+                .maxInMemorySize(config.getMaxInMemorySize());
         if (config.isProxyEnabled()) {
             final DefaultRestClient.ProxyBuilder proxyBuilder = builder.proxy().host(config.getProxyHost()).port(config.getProxyPort());
             if (config.getProxyUsername() != null) {
@@ -79,8 +80,8 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
             }
             proxyBuilder.build();
         }
-        if (config.getHttpBasicUsername() != null) {
-            builder.httpBasicAuth().username(config.getHttpBasicUsername()).password(config.getHttpBasicPassword()).build();
+        if (config.getHttpBasicAuthUsername() != null) {
+            builder.httpBasicAuth().username(config.getHttpBasicAuthUsername()).password(config.getHttpBasicAuthPassword()).build();
         }
         if (config.getDefaultHttpHeaders() != null) {
             builder.defaultHttpHeaders(config.getDefaultHttpHeaders());

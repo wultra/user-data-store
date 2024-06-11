@@ -17,8 +17,8 @@
  */
 package com.wultra.security.userdatastore.restclient;
 
+import com.wultra.core.rest.client.base.RestClientConfiguration;
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
-import com.wultra.security.userdatastore.UserDataStoreRestClientConfiguration;
 import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
@@ -57,9 +57,10 @@ class DocumentRestClientTest {
 
     @BeforeAll
     void initRestClient() throws Exception {
-        UserDataStoreRestClientConfiguration config = new UserDataStoreRestClientConfiguration();
-        config.setHttpBasicUsername("admin");
-        config.setHttpBasicPassword("admin");
+        RestClientConfiguration config = new RestClientConfiguration();
+        config.setHttpBasicAuthEnabled(true);
+        config.setHttpBasicAuthUsername("admin");
+        config.setHttpBasicAuthPassword("admin");
         restClient = new UserDataStoreRestClient(USER_DATA_STORE_REST_URL.formatted(serverPort), config);
     }
 
