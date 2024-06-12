@@ -57,7 +57,7 @@ public class DocumentConverter {
         entity.setDocumentDataId(document.documentDataId());
         entity.setExternalId(document.externalId());
         entity.setDocumentData(document.documentData());
-        convertAntSetAttributes(document.attributes(), entity);
+        convertAndSetAttributes(document.attributes(), entity);
         entity.setTimestampCreated(document.timestampCreated());
         entity.setTimestampLastUpdated(document.timestampLastUpdated());
         return entity;
@@ -87,7 +87,7 @@ public class DocumentConverter {
                 .build();
     }
 
-    public void convertAntSetAttributes(final Map<String, Object> attributes, final DocumentEntity documentEntity) {
+    public void convertAndSetAttributes(final Map<String, Object> attributes, final DocumentEntity documentEntity) {
         if (attributes == null) {
             documentEntity.setAttributes("{}");
         } else {

@@ -87,7 +87,7 @@ public class DocumentService {
         documentEntity.setDataType(request.dataType());
         documentEntity.setDocumentDataId(request.documentDataId());
         encryptionService.encryptDocumentData(documentEntity, request.documentData());
-        documentConverter.convertAntSetAttributes(request.attributes(), documentEntity);
+        documentConverter.convertAndSetAttributes(request.attributes(), documentEntity);
 
         final LocalDateTime timestamp = LocalDateTime.now();
         documentEntity.setTimestampCreated(timestamp);
@@ -114,7 +114,7 @@ public class DocumentService {
         documentEntity.setDocumentDataId(request.documentDataId());
         documentEntity.setExternalId(request.externalId());
         encryptionService.encryptDocumentData(documentEntity, request.documentData());
-        documentConverter.convertAntSetAttributes(request.attributes(), documentEntity);
+        documentConverter.convertAndSetAttributes(request.attributes(), documentEntity);
 
         final LocalDateTime timestamp = LocalDateTime.now();
         documentEntity.setTimestampLastUpdated(timestamp);
