@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="1" logicalFilePath="user-data-store/1.0.x/20231003-add-tag-1.0.0.xml" author="Lubos Racansky">
+    <changeSet id="1" logicalFilePath="user-data-store/1.0.x/20231003-add-tag-1.0.0" author="Lubos Racansky">
         <tagDatabase tag="user-data-store/1.0.0"/>
     </changeSet>
 
