@@ -106,17 +106,16 @@ public class AttachmentService {
     @Transactional
     public void deleteAttachments(final String userId, final Optional<String> documentId) {
         if (documentId.isPresent()) {
-            attachmentRepository.deleteAllByUserId(userId);
-            audit("Deleted attachments for user ID: {}", userId);
+            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
+            if (documentEntityOptional.isEmpty()) {
+                return;
+            }
+            attachmentRepository.deleteAllByUserIdAndDocument(userId, documentEntityOptional.get());
+            audit("Deleted attachments for document ID: {}", documentId.get());
             return;
         }
-        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
-        if (documentEntityOptional.isEmpty()) {
-            return;
-        }
-
-        attachmentRepository.deleteAllByUserIdAndDocument(userId, documentEntityOptional.get());
-        audit("Deleted attachments for document ID: {}", documentId.get());
+        attachmentRepository.deleteAllByUserId(userId);
+        audit("Deleted attachments for user ID: {}", userId);
     }
 
     private void audit(final String message, final String userId) {

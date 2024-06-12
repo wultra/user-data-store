@@ -106,17 +106,17 @@ public class PhotoService {
     @Transactional
     public void deletePhotos(final String userId, final Optional<String> documentId) {
         if (documentId.isPresent()) {
-            photoRepository.deleteAllByUserId(userId);
-            audit("Deleted photos for user ID: {}", userId);
-            return;
-        }
-        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
-        if (documentEntityOptional.isEmpty()) {
-            return;
-        }
+            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
+            if (documentEntityOptional.isEmpty()) {
+                return;
+            }
 
-        photoRepository.deleteAllByUserIdAndDocument(userId, documentEntityOptional.get());
-        audit("Deleted photos for document ID: {}", documentId.get());
+            photoRepository.deleteAllByUserIdAndDocument(userId, documentEntityOptional.get());
+            audit("Deleted photos for document ID: {}", documentId.get());
+            return;
+        }
+        photoRepository.deleteAllByUserId(userId);
+        audit("Deleted photos for user ID: {}", userId);
     }
 
 
