@@ -189,7 +189,7 @@ public class ClaimsService {
     private void audit(final String message, final String userId, final String claim) {
         final String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         final AuditDetail auditDetail = AuditDetail.builder()
-                .type("userClaims")
+                .type("claims")
                 .param("userId", userId)
                 .param("claim", claim)
                 .param("actorId", loggedUsername)
