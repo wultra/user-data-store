@@ -159,15 +159,6 @@ public interface UserDataStoreClient {
     Object fetchClaims(String userId, String claim) throws UserDataStoreClientException;
 
     /**
-     * Store claim.
-     * @param userId User identifier.
-     * @param claim Claim name.
-     * @param value Claim value.
-     * @throws UserDataStoreClientException Thrown in case REST API call fails.
-     */
-    void storeClaim(String userId, String claim, Object value) throws UserDataStoreClientException;
-
-    /**
      * Store claims.
      * @param userId User identifier.
      * @param value Claims.

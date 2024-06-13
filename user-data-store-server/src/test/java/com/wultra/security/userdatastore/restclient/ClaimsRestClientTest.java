@@ -63,36 +63,15 @@ class ClaimsRestClientTest {
     @Test
     @SuppressWarnings("unchecked")
     void testPost() throws Exception {
-        restClient.storeClaim("alice", "claim1", "value1");
-        restClient.storeClaim("alice", "claim2", "value2");
+        Map<String, String> claims = new LinkedHashMap<>();
+        claims.put("claim1", "value1");
+        claims.put("claim2", "value2");
+        restClient.storeClaims("alice", claims);
 
         Map<String, String> claimsRetrieved = (Map<String, String>) restClient.fetchClaims("alice", null);
         assertEquals(2, claimsRetrieved.size());
         assertEquals("value1", claimsRetrieved.get("claim1"));
         assertEquals("value2", claimsRetrieved.get("claim2"));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void testLifeCycleIndividualClaims() throws Exception {
-        restClient.storeClaim("alice", "claim1", "value1");
-        restClient.storeClaim("alice", "claim2", "value2");
-
-        Map<String, String> claimsRetrieved = (Map<String, String>) restClient.fetchClaims("alice", null);
-        assertEquals(2, claimsRetrieved.size());
-        assertEquals("value1", claimsRetrieved.get("claim1"));
-        assertEquals("value2", claimsRetrieved.get("claim2"));
-
-        restClient.storeClaim("alice", "claim2", "value1");
-        restClient.storeClaim("alice", "claim1", "value2");
-
-        Map<String, String> claimsRetrieved2 = (Map<String, String>) restClient.fetchUserClaims("alice");
-        assertEquals(2, claimsRetrieved2.size());
-        assertEquals("value2", claimsRetrieved2.get("claim1"));
-        assertEquals("value1", claimsRetrieved2.get("claim2"));
-
-        restClient.deleteClaims("alice", null);
-        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchUserClaims("alice"));
     }
 
     @Test

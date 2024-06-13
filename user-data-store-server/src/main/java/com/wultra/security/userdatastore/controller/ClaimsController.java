@@ -65,25 +65,6 @@ class ClaimsController {
     }
 
     /**
-     * Create claim for the given user or update an exiting one.
-     *
-     * @param userId user identifier
-     * @param claim claim to be stored
-     * @param value claim value
-     * @return response status
-     */
-    @Operation(
-            summary = "Create or update a claim",
-            description = "Create claim for the given user or update an exiting one."
-    )
-    @PostMapping("/admin/claim")
-    public Response storeClaim(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) String claim, @RequestBody final String value) {
-        logger.info("Creating or updating claim of user ID: {}, claim: {} ", userId, claim);
-        claimsService.createOrUpdateClaim(userId, claim, value);
-        return new Response();
-    }
-
-    /**
      * Create claims for the given user or update the exiting ones.
      *
      * @param userId user identifier
