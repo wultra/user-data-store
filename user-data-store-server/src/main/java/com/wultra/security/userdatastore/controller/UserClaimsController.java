@@ -22,6 +22,7 @@ import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ class UserClaimsController {
             description = "Return claims for the given user."
     )
     @GetMapping("/private/user-claims")
-    public ObjectResponse<Object> fetchClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
+    public ObjectResponse<Object> fetchClaims(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId) {
         logger.info("Fetching claims of user ID: {}", userId);
         final Object userClaims = userClaimsService.fetchUserClaims(userId);
         return new ObjectResponse<>(userClaims);
@@ -75,7 +76,7 @@ class UserClaimsController {
             description = "Create claims for the given user or update the exiting ones."
     )
     @PostMapping("/public/user-claims")
-    public Response storeClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
+    public Response storeClaims(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
         logger.info("Creating or updating claims of user ID: {}", userId);
         userClaimsService.createOrUpdateUserClaims(userId, claims);
         return new Response();
@@ -92,7 +93,7 @@ class UserClaimsController {
             description = "Delete claims of the given user."
     )
     @DeleteMapping("/public/user-claims")
-    public Response deleteClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
+    public Response deleteClaims(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId) {
         logger.info("Deleting claims of user ID: {}", userId);
         userClaimsService.deleteUserClaims(userId);
         return new Response();

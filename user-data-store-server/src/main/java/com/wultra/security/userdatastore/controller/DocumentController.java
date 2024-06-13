@@ -27,6 +27,7 @@ import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,7 @@ class DocumentController {
             description = "Return documents for the given user."
     )
     @GetMapping("/documents")
-    public ObjectResponse<DocumentResponse> fetchDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
+    public ObjectResponse<DocumentResponse> fetchDocuments(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("Fetching documents; user ID: {}, document ID: {}", userId, documentId);
         final DocumentResponse documents = documentService.fetchDocuments(userId, Optional.ofNullable(documentId));
         return new ObjectResponse<>(documents);
@@ -116,7 +117,7 @@ class DocumentController {
             description = "Delete documents for the given user."
     )
     @DeleteMapping("/admin/documents")
-    public Response deleteDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
+    public Response deleteDocuments(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("Deleting documents; user ID: {}, document ID: {}", userId, documentId);
         documentService.deleteDocuments(userId, Optional.ofNullable(documentId));
         return new Response();
