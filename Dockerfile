@@ -37,7 +37,7 @@ RUN apt-get -y update  \
 COPY docs/db/changelog $LB_HOME/db/changelog
 
 # Deploy and run applications
-COPY target/user-data-store.war user-data-store.war
+COPY user-data-store-server/target/user-data-store-server.war user-data-store-server.war
 
 # Docker configuration
 EXPOSE 8080

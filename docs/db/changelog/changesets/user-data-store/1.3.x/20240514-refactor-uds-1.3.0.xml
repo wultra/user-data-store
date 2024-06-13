@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="1" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="uds_document"/>
+            </not>
+        </preConditions>
+        <createTable tableName="uds_document">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_type" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data_type" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_data_id" type="VARCHAR(255)"/>
+            <column name="external_id" type="VARCHAR(255)"/>
+            <column name="document_data" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attributes" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="encryption_mode" type="VARCHAR(255)" defaultValue="NO_ENCRYPTION">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="timestamp_last_updated" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="uds_document_history"/>
+            </not>
+        </preConditions>
+        <createTable tableName="uds_document_history">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="document_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_type" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data_type" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_data_id" type="VARCHAR(255)"/>
+            <column name="external_id" type="VARCHAR(255)"/>
+            <column name="document_data" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attributes" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="encryption_mode" type="VARCHAR(255)" defaultValue="NO_ENCRYPTION">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="uds_photo"/>
+            </not>
+        </preConditions>
+        <createTable tableName="uds_photo">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="VARCHAR(255)"/>
+            <column name="photo_type" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="photo_data" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="encryption_mode" type="VARCHAR(255)" defaultValue="NO_ENCRYPTION">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="timestamp_last_updated" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_uds_photo_document_id" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint
+                baseTableName="uds_photo"
+                baseColumnNames="document_id"
+                constraintName="fk_uds_photo_document_id"
+                referencedTableName="uds_document"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="5" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="uds_attachment"/>
+            </not>
+        </preConditions>
+        <createTable tableName="uds_attachment">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="VARCHAR(255)"/>
+            <column name="attachment_type" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attachment_data" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="encryption_mode" type="VARCHAR(255)" defaultValue="NO_ENCRYPTION">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="timestamp_last_updated" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_uds_attachment_document_id" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint
+                baseTableName="uds_attachment"
+                baseColumnNames="document_id"
+                constraintName="fk_uds_attachment_document_id"
+                referencedTableName="uds_document"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

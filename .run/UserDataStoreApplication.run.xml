@@ -5,7 +5,7 @@
     <envs>
       <env name="USER_DATA_STORE_DATASOURCE_URL" value="jdbc:postgresql://localhost:5432/powerauth" />
     </envs>
-    <module name="user-data-store" />
+    <module name="user-data-store-server" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.wultra.security.userdatastore.UserDataStoreApplication" />
     <option name="VM_PARAMETERS" value="-Dserver.port=8091" />
     <method v="2">
