@@ -53,10 +53,11 @@ public interface UserDataStoreClient {
     /**
      * Update a document.
      *
+     * @param documentId Document identifier.
      * @param request Document update request.
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
-    void updateDocument(DocumentUpdateRequest request) throws UserDataStoreClientException;
+    void updateDocument(String documentId, DocumentUpdateRequest request) throws UserDataStoreClientException;
 
     /**
      * Delete documents.

@@ -100,12 +100,12 @@ public class DocumentService {
     }
 
     @Transactional
-    public Response updateDocument(final DocumentUpdateRequest request) {
+    public Response updateDocument(final String documentId, final DocumentUpdateRequest request) {
         final String userId = request.userId();
         logger.debug("Updating document for user ID: {}", userId);
-        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(request.id());
+        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
         if (documentEntityOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(request.id()));
+            throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
         }
         DocumentEntity documentEntity = documentEntityOptional.get();
         documentEntity.setUserId(userId);

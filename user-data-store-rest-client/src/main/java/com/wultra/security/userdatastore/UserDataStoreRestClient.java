@@ -192,8 +192,8 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
-    public void updateDocument(DocumentUpdateRequest request) throws UserDataStoreClientException {
-        put("/admin/documents", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, Response.class);
+    public void updateDocument(String documentId, DocumentUpdateRequest request) throws UserDataStoreClientException {
+        put("/admin/documents/" + documentId, request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, Response.class);
     }
 
     @Override

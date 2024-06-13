@@ -176,7 +176,7 @@ class DocumentControllerTest {
                 "birthdate", "1976-12-31",
                 "https://claims.example.com/department", "engineering"
         ));
-        final var documentUpdateRequest = new DocumentUpdateRequest("alice","1", "profile", "claims",
+        final var documentUpdateRequest = new DocumentUpdateRequest("alice", "profile", "claims",
                 "83692", null, documentData, Collections.emptyMap());
         final Map<String, Object> requestBody = Map.of(
                 "userId", "alice",
@@ -189,14 +189,14 @@ class DocumentControllerTest {
         );
 
         final String requestBodyJson = new ObjectMapper().writeValueAsString(new ObjectRequest<>(documentUpdateRequest));
-        mvc.perform(put("/admin/documents")
+        mvc.perform(put("/admin/documents/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBodyJson))
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status", is("OK")));
 
-        verify(service).updateDocument(documentUpdateRequest);
+        verify(service).updateDocument("1", documentUpdateRequest);
     }
 
     @WithMockUser(roles = "READ")

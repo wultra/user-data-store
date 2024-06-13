@@ -94,8 +94,8 @@ class DocumentRestClientTest {
 
         Map<String, Object> attributes = new LinkedHashMap<>();
         attributes.put("test", "test");
-        DocumentUpdateRequest updateRequest = new DocumentUpdateRequest("bob", document.id(), "test_type2", "test_data_type2", "2", "3", "test_data2", attributes);
-        restClient.updateDocument(updateRequest);
+        DocumentUpdateRequest updateRequest = new DocumentUpdateRequest("bob", "test_type2", "test_data_type2", "2", "3", "test_data2", attributes);
+        restClient.updateDocument(document.id(), updateRequest);
 
         DocumentResponse documentResponse2 = restClient.fetchDocuments("bob", response.id());
         assertEquals(1, documentResponse2.documents().size());

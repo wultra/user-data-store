@@ -36,8 +36,6 @@ public record DocumentUpdateRequest(
 
         @NotBlank @Size(max = 255)
         String userId,
-        @NotBlank @Size(max = 36)
-        String id,
         @NotBlank @Size(max = 32)
         String documentType,
         @NotBlank @Size(max = 32)

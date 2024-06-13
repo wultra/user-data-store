@@ -91,6 +91,7 @@ class DocumentController {
     /**
      * Update a document for the given user.
      *
+     * @param documentId Document identifier
      * @param request Document update request
      * @return user documents
      */
@@ -98,10 +99,10 @@ class DocumentController {
             summary = "Update a document",
             description = "Update a document for the given user."
     )
-    @PutMapping("/admin/documents")
-    public Response updateDocument(@RequestBody final ObjectRequest<DocumentUpdateRequest> request) {
+    @PutMapping("/admin/documents/{documentId}")
+    public Response updateDocument(@NotBlank @Size(max = 36) @PathVariable("documentId") String documentId, @RequestBody final ObjectRequest<DocumentUpdateRequest> request) {
         logger.info("Updating document for user ID: {}", request.getRequestObject().userId());
-        documentService.updateDocument(request.getRequestObject());
+        documentService.updateDocument(documentId, request.getRequestObject());
         return new Response();
     }
 
