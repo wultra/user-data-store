@@ -60,6 +60,7 @@
             <column name="data_type" type="VARCHAR(32)">
                 <constraints nullable="false"/>
             </column>
+            <column name="document_data_id" type="VARCHAR(255)"/>
             <column name="external_id" type="VARCHAR(255)"/>
             <column name="document_data" type="TEXT">
                 <constraints nullable="false"/>
