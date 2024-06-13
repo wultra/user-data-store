@@ -64,7 +64,7 @@ class PhotoController {
             description = "Return photos for the given user and document."
     )
     @GetMapping("/photos")
-    public ObjectResponse<PhotoResponse> fetchPhotos(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
+    public ObjectResponse<PhotoResponse> fetchPhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
         logger.info("Fetching photos for document ID: {}", documentId);
         final PhotoResponse photos = photoService.fetchPhotos(userId, Optional.ofNullable(documentId));
         return new ObjectResponse<>(photos);
@@ -99,7 +99,7 @@ class PhotoController {
             description = "Delete photos for the given user and document."
     )
     @DeleteMapping("/admin/photos")
-    public Response deletePhotos(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam(required = false) String documentId) {
+    public Response deletePhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("Deleting photos for document ID: {}", documentId);
         photoService.deletePhotos(userId, Optional.ofNullable(documentId));
         return new Response();

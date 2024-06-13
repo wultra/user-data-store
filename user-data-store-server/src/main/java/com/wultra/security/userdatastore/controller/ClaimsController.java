@@ -59,7 +59,7 @@ class ClaimsController {
             description = "Return claims for the given user."
     )
     @GetMapping("/claims")
-    public ObjectResponse<Object> fetchClaim(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
+    public ObjectResponse<Object> fetchClaim(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
         logger.info("Fetching claim of user ID: {}, claim: {}", userId, claim);
         final Object claims = claimsService.fetchClaims(userId, Optional.ofNullable(claim));
         return new ObjectResponse<>(claims);
@@ -77,7 +77,7 @@ class ClaimsController {
             description = "Create claims for the given user or update the exiting ones."
     )
     @PostMapping("/admin/claims")
-    public Response storeClaims(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
+    public Response storeClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
         logger.info("Creating or updating claim of user ID: {}", claims);
         claimsService.createOrUpdateClaims(userId, claims);
         return new Response();
@@ -94,7 +94,7 @@ class ClaimsController {
             description = "Delete claims of the given user."
     )
     @DeleteMapping("/admin/claims")
-    public Response deleteClaim(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
+    public Response deleteClaim(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
         logger.info("Updating claims of user ID: {}, deleted claim: {}", userId, claim);
         claimsService.deleteClaims(userId, claim);
         return new Response();

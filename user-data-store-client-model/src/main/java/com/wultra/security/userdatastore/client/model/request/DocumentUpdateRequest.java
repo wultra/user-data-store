@@ -34,19 +34,19 @@ import java.util.Map;
 @Jacksonized
 public record DocumentUpdateRequest(
 
-        @NotNull @NotBlank @Size(max = 255)
+        @NotBlank @Size(max = 255)
         String userId,
-        @NotNull @NotBlank @Size(max = 36)
+        @NotBlank @Size(max = 36)
         String id,
-        @NotNull @NotBlank @Size(max = 32)
+        @NotBlank @Size(max = 32)
         String documentType,
-        @NotNull @NotBlank @Size(max = 32)
+        @NotBlank @Size(max = 32)
         String dataType,
-        @NotNull @NotBlank @Size(max = 255)
+        @NotBlank @Size(max = 255)
         String documentDataId,
         @Size(max = 255)
         String externalId,
-        @NotNull @NotBlank
+        @NotBlank
         String documentData,
         Map<String, Object> attributes
 

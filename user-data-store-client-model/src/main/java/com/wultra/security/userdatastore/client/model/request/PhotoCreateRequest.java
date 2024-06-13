@@ -32,13 +32,13 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public record PhotoCreateRequest(
 
-        @NotNull @NotBlank @Size(max = 255)
+        @NotBlank @Size(max = 255)
         String userId,
-        @NotNull @NotBlank @Size(max = 36)
+        @NotBlank @Size(max = 36)
         String documentId,
-        @NotNull @NotBlank @Size(max = 32)
+        @NotBlank @Size(max = 32)
         String photoType,
-        @NotNull @NotBlank
+        @NotBlank
         String photoData,
         @Size(max = 255)
         String externalId

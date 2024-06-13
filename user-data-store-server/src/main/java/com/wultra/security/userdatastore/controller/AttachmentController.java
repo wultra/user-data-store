@@ -64,7 +64,7 @@ class AttachmentController {
             description = "Return attachments for the given user and document."
     )
     @GetMapping("/attachments")
-    public ObjectResponse<AttachmentResponse> fetchAttachments(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
+    public ObjectResponse<AttachmentResponse> fetchAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
         logger.info("Fetching photos for document ID: {}", documentId);
         final AttachmentResponse attachments = attachmentService.fetchAttachments(userId, Optional.ofNullable(documentId));
         return new ObjectResponse<>(attachments);
@@ -99,7 +99,7 @@ class AttachmentController {
             description = "Delete attachments for the given user and document."
     )
     @DeleteMapping("/admin/attachments")
-    public Response deleteAttachments(@NotNull @NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam(required = false) String documentId) {
+    public Response deleteAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("Deleting attachments for document ID: {}", documentId);
         attachmentService.deleteAttachments(userId, Optional.ofNullable(documentId));
         return new Response();
