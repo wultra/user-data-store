@@ -24,6 +24,7 @@ import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.error.InvalidRequestException;
+import com.wultra.security.userdatastore.model.error.ResourceAlreadyExistsException;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
@@ -58,7 +59,7 @@ public class ClaimsService {
     public Object fetchClaims(final String userId, final Optional<String> claim) {
         final String claims = readClaims(userId);
         if (claim.isEmpty()) {
-            audit("Retrieved claims of user ID: {}", userId, null);
+            audit("Retrieved claims of user ID: {}", userId);
             try {
                 return objectMapper.<Map<String, Object>>readValue(claims, new TypeReference<>() {});
             } catch (JsonProcessingException e) {
@@ -75,50 +76,7 @@ public class ClaimsService {
     }
 
     @Transactional
-    public void createOrUpdateClaim(final String userId, final String claim, final String value) {
-        documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE).stream().findAny()
-                .ifPresentOrElse(entity -> {
-                    logger.debug("Updating claims of user ID: {}, stored claim: {}", userId, claim);
-                    final String claims = encryptionService.decryptDocumentData(entity);
-                    final Map<String, Object> claimMap;
-                    try {
-                        claimMap = objectMapper.readValue(claims, new TypeReference<>() {});
-                        claimMap.put(claim, value);
-                        encryptionService.encryptDocumentData(entity, objectMapper.writeValueAsString(claimMap));
-                    } catch (JsonProcessingException e) {
-                        throw new InvalidRequestException(e);
-                    }
-                    entity.setTimestampLastUpdated(LocalDateTime.now());
-
-                    documentRepository.save(entity);
-                    audit("Updated claims of user ID: {}, stored claim: {}", userId, claim);
-                },
-                () -> {
-                    logger.debug("Creating new claims of user ID: {}, stored claim: {}", userId, claim);
-                    final DocumentEntity entity = new DocumentEntity();
-                    entity.setId(UUID.randomUUID().toString());
-                    entity.setUserId(userId);
-                    entity.setDocumentType(CLAIMS_DOCUMENT_TYPE);
-                    entity.setDataType(CLAIMS_DATA_TYPE);
-                    entity.setDocumentDataId(CLAIMS_DOCUMENT_DATA_ID);
-                    entity.setAttributes("{}");
-                    entity.setTimestampCreated(LocalDateTime.now());
-
-                    final Map<String, Object> claimMap = new LinkedHashMap<>();
-                    claimMap.put(claim, value);
-                    try {
-                        encryptionService.encryptDocumentData(entity, objectMapper.writeValueAsString(claimMap));
-                    } catch (JsonProcessingException e) {
-                        throw new InvalidRequestException(e);
-                    }
-
-                    documentRepository.save(entity);
-                    audit("Created claims for user ID: {}, stored claim: ", userId, claim);
-                });
-    }
-
-    @Transactional
-    public void createOrUpdateClaims(final String userId, final Object claims) {
+    public void createClaims(final String userId, final Object claims) {
         final String claimsAsString;
         try {
             claimsAsString = objectMapper.writeValueAsString(claims);
@@ -127,10 +85,7 @@ public class ClaimsService {
         }
         documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE).stream().findAny()
                 .ifPresentOrElse(entity -> {
-                            logger.debug("Updating claims of user ID: {}", userId);
-                            encryptionService.encryptDocumentData(entity, claimsAsString);
-                            entity.setTimestampLastUpdated(LocalDateTime.now());
-                            audit("Updated claims of user ID: {}", userId, null);
+                            throw new ResourceAlreadyExistsException("Claims for user '%s' already exist".formatted(userId));
                         },
                         () -> {
                             logger.debug("Creating new claims of user ID: {}", userId);
@@ -145,7 +100,27 @@ public class ClaimsService {
                             encryptionService.encryptDocumentData(entity, claimsAsString);
 
                             documentRepository.save(entity);
-                            audit("Created claims for user ID: {}", userId, null);
+                            audit("Created claims for user ID: {}", userId);
+                        });
+    }
+
+    @Transactional
+    public void updateClaims(final String userId, final Object claims) {
+        final String claimsAsString;
+        try {
+            claimsAsString = objectMapper.writeValueAsString(claims);
+        } catch (JsonProcessingException e) {
+            throw new InvalidRequestException(e);
+        }
+        documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE).stream().findAny()
+                .ifPresentOrElse(entity -> {
+                            logger.debug("Updating claims of user ID: {}", userId);
+                            encryptionService.encryptDocumentData(entity, claimsAsString);
+                            entity.setTimestampLastUpdated(LocalDateTime.now());
+                            audit("Updated claims of user ID: {}", userId);
+                        },
+                        () -> {
+                            throw new ResourceNotFoundException("Claims for user '%s' do not exist".formatted(userId));
                         });
     }
 
@@ -154,7 +129,7 @@ public class ClaimsService {
         if (claim.isEmpty()) {
             final List<DocumentEntity> toDelete = documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE);
             documentRepository.deleteAll(toDelete);
-            audit("Deleted claims of user ID: {}, claim: {}", userId, claim);
+            audit("Deleted claims of user ID: {}, claim: {}", userId);
             return;
         }
         documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE).stream().findAny()
@@ -184,6 +159,16 @@ public class ClaimsService {
                 .findFirst()
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Claims for user ID: '%s' not found".formatted(userId)));
+    }
+
+    private void audit(final String message, final String userId) {
+        final String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        final AuditDetail auditDetail = AuditDetail.builder()
+                .type("claims")
+                .param("userId", userId)
+                .param("actorId", loggedUsername)
+                .build();
+        audit.info(message, auditDetail, userId);
     }
 
     private void audit(final String message, final String userId, final String claim) {

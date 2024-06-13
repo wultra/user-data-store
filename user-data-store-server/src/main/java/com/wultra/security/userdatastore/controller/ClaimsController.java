@@ -22,7 +22,6 @@ import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,20 +65,38 @@ class ClaimsController {
     }
 
     /**
-     * Create claims for the given user or update the exiting ones.
+     * Create claims for the given user.
      *
      * @param userId user identifier
      * @param claims claims
      * @return response status
      */
     @Operation(
-            summary = "Create or update claims",
-            description = "Create claims for the given user or update the exiting ones."
+            summary = "Create claims",
+            description = "Create claims for the given user."
     )
     @PostMapping("/admin/claims")
-    public Response storeClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
-        logger.info("Creating or updating claim of user ID: {}", claims);
-        claimsService.createOrUpdateClaims(userId, claims);
+    public Response createClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
+        logger.info("Creating claims for user ID: {}", claims);
+        claimsService.createClaims(userId, claims);
+        return new Response();
+    }
+
+    /**
+     * Update claims for the given user.
+     *
+     * @param userId user identifier
+     * @param claims claims
+     * @return response status
+     */
+    @Operation(
+            summary = "Update claims",
+            description = "Update claims for the given user."
+    )
+    @PutMapping("/admin/claims")
+    public Response updateClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
+        logger.info("Updating claims for user ID: {}", claims);
+        claimsService.updateClaims(userId, claims);
         return new Response();
     }
 

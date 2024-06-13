@@ -292,11 +292,22 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
-    public void storeClaims(String userId, Object value) throws UserDataStoreClientException {
+    public void createClaims(String userId, Object value) throws UserDataStoreClientException {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
         try {
             restClient.post("/admin/claims", value, queryParams, EMPTY_MULTI_MAP, new ParameterizedTypeReference<Response>(){});
+        } catch (RestClientException ex) {
+            handleException(ex);
+        }
+    }
+
+    @Override
+    public void updateClaims(String userId, Object value) throws UserDataStoreClientException {
+        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.put("userId", Collections.singletonList(userId));
+        try {
+            restClient.put("/admin/claims", value, queryParams, EMPTY_MULTI_MAP, new ParameterizedTypeReference<Response>(){});
         } catch (RestClientException ex) {
             handleException(ex);
         }

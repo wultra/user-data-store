@@ -66,7 +66,7 @@ class ClaimsRestClientTest {
         Map<String, String> claims = new LinkedHashMap<>();
         claims.put("claim1", "value1");
         claims.put("claim2", "value2");
-        restClient.storeClaims("alice", claims);
+        restClient.createClaims("alice", claims);
 
         Map<String, String> claimsRetrieved = (Map<String, String>) restClient.fetchClaims("alice", null);
         assertEquals(2, claimsRetrieved.size());
@@ -80,9 +80,9 @@ class ClaimsRestClientTest {
         Map<String, String> claims = new LinkedHashMap<>();
         claims.put("claim1", "value1");
         claims.put("claim2", "value2");
-        restClient.storeClaims("alice", claims);
+        restClient.createClaims("bob", claims);
 
-        Map<String, String> claimsRetrieved = (Map<String, String>) restClient.fetchClaims("alice", null);
+        Map<String, String> claimsRetrieved = (Map<String, String>) restClient.fetchClaims("bob", null);
         assertEquals(2, claimsRetrieved.size());
         assertEquals("value1", claimsRetrieved.get("claim1"));
         assertEquals("value2", claimsRetrieved.get("claim2"));
@@ -90,14 +90,14 @@ class ClaimsRestClientTest {
         Map<String, String> claims2 = new LinkedHashMap<>();
         claims2.put("claim1", "value2");
         claims2.put("claim2", "value1");
-        restClient.storeClaims("alice", claims2);
+        restClient.updateClaims("bob", claims2);
 
-        Map<String, String> claimsRetrieved2 = (Map<String, String>) restClient.fetchClaims("alice", null);
+        Map<String, String> claimsRetrieved2 = (Map<String, String>) restClient.fetchClaims("bob", null);
         assertEquals(2, claimsRetrieved2.size());
         assertEquals("value2", claimsRetrieved2.get("claim1"));
         assertEquals("value1", claimsRetrieved2.get("claim2"));
 
-        restClient.deleteClaims("alice", null);
-        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchClaims("alice", null));
+        restClient.deleteClaims("bob", null);
+        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchClaims("bob", null));
     }
 }
