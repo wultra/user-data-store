@@ -40,7 +40,7 @@ public record DocumentCreateRequest(
         String documentType,
         @NotBlank @Size(max = 32)
         String dataType,
-        @NotBlank @Size(max = 255)
+        @Size(max = 255)
         String documentDataId,
         @Size(max = 255)
         String externalId,
