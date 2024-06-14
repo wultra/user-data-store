@@ -40,3 +40,26 @@ Stores user claims.
 | `timestamp_last_updated` | `TIMESTAMP WITHOUT TIME ZONE` |                           | Timestamp of last update if any.                                                                               |
 
 <!-- end -->
+
+<!-- begin database table uds_document -->
+### Documents Table
+
+Stores documents.
+
+#### Schema
+
+| Name                     | Type                          | Info                               | Note                                                                                                                |
+|--------------------------|-------------------------------|------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| `id`                     | `VARCHAR(36)`                 | `NOT NULL PRIMARY KEY`             | UUID identifier of the document, generated when the document is created.                                            |
+| `user_id`                | `VARCHAR(255)`                | `NOT NULL`                         | User identifier, owner of the document.                                                                             |
+| `document_type`          | `VARCHAR(32)`                 | `NOT NULL`                         | Document type, one of: `profile`, `personal_id`, `passport`, `drivers_license`, `payment_card`, `loyalty`, `photo`. |
+| `data_type`              | `VARCHAR(32)`                 | `NOT NULL`                         | Data type, one of: `claims`, `jwt`, `vc`, `image_base64`, `binary_base64`, `url`.                                   |
+| `document_data_id`       | `VARCHAR(255)`                |                                    | Optional identifier of the stored document (e.g. ID card number).                                                   |
+| `external_id`            | `VARCHAR(255)`                |                                    | Optional external identifier of the stored document (e.g. ID in an external database).                              |
+| `document_data`          | `TEXT`                        | `NOT NULL`                         | Data of the document, encrypted in case encryption is enabled.                                                      |
+| `attributes`             | `TEXT`                        |                                    | Optional map of attributes related to the document, a key-value map serialized into JSON.                           |
+| `encryption_mode`        | `VARCHAR(255)`                | `DEFAULT 'NO_ENCRYPTION' NOT NULL` | Configured encryption: `NO_ENCRYPTION` means plaintext, `AES_HMAC` for AES encryption with HMAC-based index.        |
+| `timestamp_created`      | `TIMESTAMP WITHOUT TIME ZONE` | `DEFAULT NOW()'`                   | Timestamp of creation.                                                                                              |
+| `timestamp_last_updated` | `TIMESTAMP WITHOUT TIME ZONE` |                                    | Timestamp of last update if any.                                                                                    |
+
+<!-- end -->
