@@ -31,7 +31,7 @@ There are two roles, that you may assign to the user in the table `uds_authoriti
 ## Deploying User Data Store
 
 Right now, the only standalone war is supported running from console using the `java -jar` command.
-The deployed application is accessible on `http://localhost:8080/user-data-store/`.
+The deployed application is accessible on `http://localhost:8080/user-data-store-server/`.
 
 ## Supported Java Runtime Versions
 
