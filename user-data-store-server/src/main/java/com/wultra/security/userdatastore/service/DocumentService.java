@@ -86,6 +86,7 @@ public class DocumentService {
         documentEntity.setDocumentType(request.documentType());
         documentEntity.setDataType(request.dataType());
         documentEntity.setDocumentDataId(request.documentDataId());
+        documentEntity.setExternalId(request.externalId());
         encryptionService.encryptDocumentData(documentEntity, request.documentData());
         documentConverter.convertAndSetAttributes(request.attributes(), documentEntity);
 
