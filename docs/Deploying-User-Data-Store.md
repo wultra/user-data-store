@@ -5,7 +5,7 @@ This chapter explains how to deploy User Data Store.
 
 ## Downloading User Data Store
 
-You can download the latest `user-data-store.war` from the [User Data Store releases page](https://github.com/wultra/user-data-store/releases).
+You can download the latest `user-data-store-server.war` from the [User Data Store releases page](https://github.com/wultra/user-data-store/releases).
 
 
 ## Configuring User Data Store
