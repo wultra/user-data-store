@@ -50,7 +50,7 @@ jobs:
         username: ${{ secrets.JFROG_CONTAINER_REGISTRY_USERNAME }}
         password: ${{ secrets.JFROG_CONTAINER_REGISTRY_PASSWORD }}
     - name: Build and push container image to registry
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         push: ${{ github.event_name == 'workflow_dispatch' }}
         platforms: linux/amd64,linux/arm64
@@ -65,7 +65,7 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
     - name: Build and push container image to Azure registry
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         push: ${{ github.event_name == 'workflow_dispatch' }}
         platforms: linux/amd64
