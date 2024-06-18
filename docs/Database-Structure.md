@@ -59,7 +59,7 @@ Stores documents.
 | `document_data`          | `TEXT`                        | `NOT NULL`                         | Data of the document, encrypted in case encryption is enabled.                                                      |
 | `attributes`             | `TEXT`                        |                                    | Optional map of attributes related to the document, a key-value map serialized into JSON.                           |
 | `encryption_mode`        | `VARCHAR(255)`                | `DEFAULT 'NO_ENCRYPTION' NOT NULL` | Encryption of document data: `NO_ENCRYPTION` means plaintext, `AES_HMAC` for AES encryption with HMAC-based index.  |
-| `timestamp_created`      | `TIMESTAMP WITHOUT TIME ZONE` | `DEFAULT NOW()'`                   | Timestamp of creation of the document.                                                                              |
+| `timestamp_created`      | `TIMESTAMP WITHOUT TIME ZONE` | `DEFAULT NOW()`                    | Timestamp of creation of the document.                                                                              |
 | `timestamp_last_updated` | `TIMESTAMP WITHOUT TIME ZONE` |                                    | Optional timestamp of last update of the document.                                                                  |
 
 <!-- end -->
