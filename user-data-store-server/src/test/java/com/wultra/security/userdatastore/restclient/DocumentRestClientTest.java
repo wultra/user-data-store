@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DocumentRestClientTest {
 
-    private static final String USER_DATA_STORE_REST_URL = "http://localhost:%d/user-data-store-server";
+    private static final String USER_DATA_STORE_REST_URL = "http://localhost:%d/user-data-store";
 
     @LocalServerPort
     private int serverPort;
