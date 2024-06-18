@@ -124,7 +124,7 @@ Stores attachments.
 | `attachment_type`        | `VARCHAR(32)`                 | `NOT NULL`                         | Attachment type, one of: `text`, `image_base64`, `binary_base64`.                                                    |
 | `attachment_data`        | `TEXT`                        | `NOT NULL`                         | Data of the attachment, encrypted in case encryption is enabled.                                                     |
 | `encryption_mode`        | `VARCHAR(255)`                | `DEFAULT 'NO_ENCRYPTION' NOT NULL` | Encryption of attachment data: `NO_ENCRYPTION` means plaintext, `AES_HMAC` for AES encryption with HMAC-based index. |
-| `timestamp_created`      | `TIMESTAMP WITHOUT TIME ZONE` | `DEFAULT NOW()'`                   | Timestamp of creation of the attachment.                                                                             |
+| `timestamp_created`      | `TIMESTAMP WITHOUT TIME ZONE` | `DEFAULT NOW()`                    | Timestamp of creation of the attachment.                                                                             |
 | `timestamp_last_updated` | `TIMESTAMP WITHOUT TIME ZONE` |                                    | Optional timestamp of last update of the attachment.                                                                 |
 
 <!-- end -->
