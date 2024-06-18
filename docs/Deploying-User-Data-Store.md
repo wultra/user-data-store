@@ -5,7 +5,7 @@ This chapter explains how to deploy User Data Store.
 
 ## Downloading User Data Store
 
-You can download the latest `user-data-store.war` from the [User Data Store releases page](https://github.com/wultra/user-data-store/releases).
+You can download the latest `user-data-store-server.war` from the [User Data Store releases page](https://github.com/wultra/user-data-store/releases).
 
 
 ## Configuring User Data Store
@@ -31,7 +31,7 @@ There are two roles, that you may assign to the user in the table `uds_authoriti
 ## Deploying User Data Store
 
 Right now, the only standalone war is supported running from console using the `java -jar` command.
-The deployed application is accessible on `http://localhost:8080/user-data-store/`.
+The deployed application is accessible on `http://localhost:8080/user-data-store-server/`.
 
 ## Supported Java Runtime Versions
 

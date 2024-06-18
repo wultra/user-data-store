@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="1" author="Roman Strobl" dbms="postgresql">
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+        </sql>
+    </changeSet>
+
+    <changeSet id="2" author="Roman Strobl">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM uds_document;
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO uds_document (
+                id,
+                user_id,
+                document_type,
+                data_type,
+                document_data_id,
+                external_id,
+                document_data,
+                attributes,
+                encryption_mode,
+                timestamp_created,
+                timestamp_last_updated
+            )
+            SELECT
+                uuid_generate_v4(),
+                user_id,
+                'profile',
+                'claims',
+                NULL,
+                NULL,
+                claims,
+                '{}',
+                encryption_mode,
+                timestamp_created,
+                timestamp_last_updated
+            FROM
+                uds_user_claims;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
