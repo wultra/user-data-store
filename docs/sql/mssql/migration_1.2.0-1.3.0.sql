@@ -7,7 +7,7 @@ CREATE TABLE uds_document_history (id varchar(36) NOT NULL, document_id varchar(
 GO
 
 -- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml::3::Roman Strobl
-CREATE TABLE uds_photo (id varchar(36) NOT NULL, user_id varchar(255) NOT NULL, document_id varchar(255) NOT NULL, external_id varchar(255), photo_type varchar(32) NOT NULL, photo_data varchar (max) NOT NULL, encryption_mode varchar(255) CONSTRAINT DF_uds_photo_encryption_mode DEFAULT 'NO_ENCRYPTION' NOT NULL, timestamp_created datetime2 CONSTRAINT DF_uds_photo_timestamp_created DEFAULT GETDATE(), timestamp_last_updated datetime2, CONSTRAINT PK_UDS_PHOTO PRIMARY KEY (id));
+CREATE TABLE uds_photo (id varchar(36) NOT NULL, user_id varchar(255) NOT NULL, document_id varchar(36) NOT NULL, external_id varchar(255), photo_type varchar(32) NOT NULL, photo_data varchar (max) NOT NULL, encryption_mode varchar(255) CONSTRAINT DF_uds_photo_encryption_mode DEFAULT 'NO_ENCRYPTION' NOT NULL, timestamp_created datetime2 CONSTRAINT DF_uds_photo_timestamp_created DEFAULT GETDATE(), timestamp_last_updated datetime2, CONSTRAINT PK_UDS_PHOTO PRIMARY KEY (id));
 GO
 
 -- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml::4::Roman Strobl
@@ -15,7 +15,7 @@ ALTER TABLE uds_photo ADD CONSTRAINT fk_uds_photo_document_id FOREIGN KEY (docum
 GO
 
 -- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml::5::Roman Strobl
-CREATE TABLE uds_attachment (id varchar(36) NOT NULL, user_id varchar(255) NOT NULL, document_id varchar(255) NOT NULL, external_id varchar(255), attachment_type varchar(32) NOT NULL, attachment_data varchar (max) NOT NULL, encryption_mode varchar(255) CONSTRAINT DF_uds_attachment_encryption_mode DEFAULT 'NO_ENCRYPTION' NOT NULL, timestamp_created datetime2 CONSTRAINT DF_uds_attachment_timestamp_created DEFAULT GETDATE(), timestamp_last_updated datetime2, CONSTRAINT PK_UDS_ATTACHMENT PRIMARY KEY (id));
+CREATE TABLE uds_attachment (id varchar(36) NOT NULL, user_id varchar(255) NOT NULL, document_id varchar(36) NOT NULL, external_id varchar(255), attachment_type varchar(32) NOT NULL, attachment_data varchar (max) NOT NULL, encryption_mode varchar(255) CONSTRAINT DF_uds_attachment_encryption_mode DEFAULT 'NO_ENCRYPTION' NOT NULL, timestamp_created datetime2 CONSTRAINT DF_uds_attachment_timestamp_created DEFAULT GETDATE(), timestamp_last_updated datetime2, CONSTRAINT PK_UDS_ATTACHMENT PRIMARY KEY (id));
 GO
 
 -- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml::6::Roman Strobl

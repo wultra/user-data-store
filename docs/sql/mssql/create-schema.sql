@@ -1,12 +1,3 @@
--- *********************************************************************
--- Update Database Script
--- *********************************************************************
--- Change Log: ./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml
--- Ran at: 6/19/24, 11:35 AM
--- Against: null@offline:mssql
--- Liquibase version: 4.25.0
--- *********************************************************************
-
 -- Changeset user-data-store/0.1.x/20230220-initial-schema.xml::1::Lubos Racansky
 -- Create a new table uds_user_claims
 CREATE TABLE uds_user_claims (user_id varchar(255) NOT NULL, claims varchar (max) NOT NULL, encryption_mode varchar(255) CONSTRAINT DF_uds_user_claims_encryption_mode DEFAULT 'NO_ENCRYPTION' NOT NULL, timestamp_created datetime2 CONSTRAINT DF_uds_user_claims_timestamp_created DEFAULT GETDATE(), timestamp_last_updated datetime2, CONSTRAINT PK_UDS_USER_CLAIMS PRIMARY KEY (user_id));

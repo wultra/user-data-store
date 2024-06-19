@@ -88,7 +88,7 @@
             <column name="user_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="document_id" type="VARCHAR(255)">
+            <column name="document_id" type="VARCHAR(36)">
                 <constraints nullable="false"/>
             </column>
             <column name="external_id" type="VARCHAR(255)"/>
@@ -133,7 +133,7 @@
             <column name="user_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="document_id" type="VARCHAR(255)">
+            <column name="document_id" type="VARCHAR(36)">
                 <constraints nullable="false"/>
             </column>
             <column name="external_id" type="VARCHAR(255)"/>

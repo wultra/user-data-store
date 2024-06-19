@@ -1,12 +1,3 @@
--- *********************************************************************
--- Update Database Script
--- *********************************************************************
--- Change Log: ./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml
--- Ran at: 6/19/24, 11:37 AM
--- Against: null@offline:oracle
--- Liquibase version: 4.25.0
--- *********************************************************************
-
 -- Changeset user-data-store/0.1.x/20230220-initial-schema.xml::1::Lubos Racansky
 -- Create a new table uds_user_claims
 CREATE TABLE uds_user_claims (user_id VARCHAR2(255) NOT NULL, claims CLOB NOT NULL, encryption_mode VARCHAR2(255) DEFAULT 'NO_ENCRYPTION' NOT NULL, timestamp_created TIMESTAMP DEFAULT sysdate, timestamp_last_updated TIMESTAMP, CONSTRAINT PK_UDS_USER_CLAIMS PRIMARY KEY (user_id));
