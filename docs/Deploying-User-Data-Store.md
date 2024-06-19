@@ -36,6 +36,7 @@ The deployed application is accessible on `http://localhost:8080/user-data-store
 ## Supported Java Runtime Versions
 
 The following Java runtime versions are supported:
+- Java 21 (LTS release)
 - Java 17 (LTS release)
 
 The User Data Store may run on other Java versions, however we do not perform extensive testing with non-LTS releases.
