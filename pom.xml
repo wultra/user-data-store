@@ -49,8 +49,6 @@
         <swagger-annotations-jakarta.version>2.2.22</swagger-annotations-jakarta.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
         <logstash.version>7.4</logstash.version>
-
-        <mssql-jdbc.version>12.6.2.jre11</mssql-jdbc.version>
     </properties>
 
     <dependencies>
