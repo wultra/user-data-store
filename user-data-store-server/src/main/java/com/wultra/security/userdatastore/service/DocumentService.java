@@ -22,10 +22,7 @@ import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
-import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
-import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
-import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
-import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
+import com.wultra.security.userdatastore.client.model.response.*;
 import com.wultra.security.userdatastore.converter.DocumentConverter;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.entity.DocumentHistoryEntity;
@@ -100,22 +97,22 @@ public class DocumentService {
 
         final DocumentEntity documentEntityFinal = documentEntity;
 
-        final List<String> photoIds = new ArrayList<>();
+        final List<EmbeddedPhotoCreateResponse> photosResponse = new ArrayList<>();
         if (request.photos() != null && !request.photos().isEmpty()) {
             request.photos().forEach(photoRequest -> {
                 final PhotoCreateResponse response = photoService.createPhoto(photoRequest, documentEntityFinal);
-                photoIds.add(response.id());
+                photosResponse.add(new EmbeddedPhotoCreateResponse(response.id()));
             });
         }
 
-        final List<String> attachmentIds = new ArrayList<>();
+        final List<EmbeddedAttachmentCreateResponse> attachmentsResponse = new ArrayList<>();
         if (request.attachments() != null && !request.attachments().isEmpty()) {
             request.attachments().forEach(attachmentRequest -> {
                 final AttachmentCreateResponse response = attachmentService.createAttachment(attachmentRequest, documentEntityFinal);
-                attachmentIds.add(response.id());
+                attachmentsResponse.add(new EmbeddedAttachmentCreateResponse(response.id()));
             });
         }
-        return new DocumentCreateResponse(documentEntity.getId(), documentEntity.getDocumentDataId(), photoIds, attachmentIds);
+        return new DocumentCreateResponse(documentEntity.getId(), documentEntity.getDocumentDataId(), photosResponse, attachmentsResponse);
     }
 
     @Transactional

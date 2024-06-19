@@ -80,8 +80,8 @@ class DocumentRestClientTest {
         DocumentCreateResponse response = restClient.createDocument(request);
         assertNotNull(response.id());
         assertNotNull(response.documentDataId());
-        assertEquals(1, response.photoIds().size());
-        assertEquals(1, response.attachmentIds().size());
+        assertEquals(1, response.photos().size());
+        assertEquals(1, response.attachments().size());
     }
 
     @Test
