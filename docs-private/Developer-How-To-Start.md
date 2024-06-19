@@ -19,6 +19,26 @@ Others (like URL, username, password) depend on your environment.
 liquibase --changelog-file=./docs/db/changelog/db.changelog-master.xml --url=jdbc:postgresql://localhost:5432/powerauth --username=powerauth status
 ```
 
+### PostgreSQL
+
+```shell
+liquibase --changeLogFile=./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml --output-file=./docs/sql/postgresql/generated-postgresql-script.sql updateSQL --url=offline:postgres
+```
+
+
+### Oracle
+
+```shell
+liquibase --changeLogFile=./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml --output-file=./docs/sql/oracle/create-schema.sql updateSQL --url=offline:oracle
+```
+
+
+### MS SQL
+
+```shell
+liquibase --changeLogFile=./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml --output-file=./docs/sql/mssql/create-schema.sql updateSQL --url=offline:mssql
+```
+
 
 ### Users
 
