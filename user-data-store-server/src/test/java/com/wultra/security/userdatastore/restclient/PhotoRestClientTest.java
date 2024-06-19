@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PhotoRestClientTest {
 
-    private static final String USER_DATA_STORE_REST_URL = "http://localhost:%d/user-data-store-server";
+    private static final String USER_DATA_STORE_REST_URL = "http://localhost:%d/user-data-store";
 
     @LocalServerPort
     private int serverPort;
