@@ -71,14 +71,16 @@ public class AttachmentService {
         if (!documentEntity.getUserId().equals(userId)) {
             throw new ResourceNotFoundException("User reference not valid, ID: '%s'".formatted(userId));
         }
+        final LocalDateTime timestamp = LocalDateTime.now();
         final AttachmentEntity attachmentEntity = new AttachmentEntity();
         attachmentEntity.setId(UUID.randomUUID().toString());
         attachmentEntity.setDocument(documentEntity);
         attachmentEntity.setUserId(userId);
         attachmentEntity.setAttachmentType(request.attachmentType());
         attachmentEntity.setExternalId(request.externalId());
-        attachmentEntity.setTimestampCreated(LocalDateTime.now());
+        attachmentEntity.setTimestampCreated(timestamp);
         encryptionService.encryptAttachment(attachmentEntity, request.attachmentData());
+        documentEntity.setTimestampLastUpdated(timestamp);
 
         attachmentRepository.save(attachmentEntity);
 
@@ -91,12 +93,14 @@ public class AttachmentService {
         if (attachmentEntityOptional.isEmpty()) {
             throw new ResourceNotFoundException("Attachment not found, ID: '%s'".formatted(attachmentId));
         }
+        final LocalDateTime timestamp = LocalDateTime.now();
         final AttachmentEntity attachmentEntity = attachmentEntityOptional.get();
         attachmentEntity.setAttachmentType(request.attachmentType());
         attachmentEntity.setExternalId(request.externalId());
-        attachmentEntity.setTimestampLastUpdated(LocalDateTime.now());
+        attachmentEntity.setTimestampLastUpdated(timestamp);
         encryptionService.encryptAttachment(attachmentEntity, request.attachmentData());
-
+        final DocumentEntity documentEntity = attachmentEntity.getDocument();
+        documentEntity.setTimestampLastUpdated(timestamp);
         attachmentRepository.save(attachmentEntity);
 
         return new Response();

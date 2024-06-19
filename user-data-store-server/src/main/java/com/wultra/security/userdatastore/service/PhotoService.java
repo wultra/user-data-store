@@ -92,14 +92,16 @@ public class PhotoService {
         if (!documentEntity.getUserId().equals(userId)) {
             throw new ResourceNotFoundException("User reference not valid, ID: '%s'".formatted(userId));
         }
+        final LocalDateTime timestamp = LocalDateTime.now();
         final PhotoEntity photoEntity = new PhotoEntity();
         photoEntity.setId(UUID.randomUUID().toString());
         photoEntity.setDocument(documentEntity);
         photoEntity.setUserId(userId);
         photoEntity.setPhotoType(request.photoType());
         photoEntity.setExternalId(request.externalId());
-        photoEntity.setTimestampCreated(LocalDateTime.now());
+        photoEntity.setTimestampCreated(timestamp);
         encryptionService.encryptPhoto(photoEntity, request.photoData());
+        documentEntity.setTimestampLastUpdated(timestamp);
 
         photoRepository.save(photoEntity);
 
@@ -112,11 +114,14 @@ public class PhotoService {
         if (photoEntityOptional.isEmpty()) {
             throw new ResourceNotFoundException("Attachment not found, ID: '%s'".formatted(photoId));
         }
+        final LocalDateTime timestamp = LocalDateTime.now();
         final PhotoEntity photoEntity = photoEntityOptional.get();
         photoEntity.setPhotoType(request.photoType());
         photoEntity.setExternalId(request.externalId());
-        photoEntity.setTimestampLastUpdated(LocalDateTime.now());
+        photoEntity.setTimestampLastUpdated(timestamp);
         encryptionService.encryptPhoto(photoEntity, request.photoData());
+        final DocumentEntity documentEntity = photoEntity.getDocument();
+        documentEntity.setTimestampLastUpdated(timestamp);
 
         photoRepository.save(photoEntity);
 
