@@ -22,29 +22,20 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.Map;
-
 /**
- * Request class for creating documents.
+ * Request class for updating photos.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Builder
 @Jacksonized
-public record DocumentCreateRequest(
+public record PhotoUpdateRequest(
 
-        @NotBlank @Size(max = 255)
-        String userId,
         @NotBlank @Size(max = 32)
-        String documentType,
-        @NotBlank @Size(max = 32)
-        String dataType,
-        @Size(max = 255)
-        String documentDataId,
-        @Size(max = 255)
-        String externalId,
+        String photoType,
         @NotBlank
-        String documentData,
-        Map<String, Object> attributes
+        String photoData,
+        @Size(max = 255)
+        String externalId
 
 ) { }

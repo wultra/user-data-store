@@ -21,6 +21,7 @@ import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
 import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.AttachmentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.converter.AttachmentConverter;
@@ -29,6 +30,7 @@ import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.AttachmentRepository;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
+import io.getlime.core.rest.model.base.response.Response;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -81,6 +83,23 @@ public class AttachmentService {
         attachmentRepository.save(attachmentEntity);
 
         return new AttachmentCreateResponse(attachmentEntity.getId(), documentEntity.getId());
+    }
+
+    @Transactional
+    public Response updateAttachment(final String attachmentId, final AttachmentUpdateRequest request) {
+        final Optional<AttachmentEntity> attachmentEntityOptional = attachmentRepository.findById(attachmentId);
+        if (attachmentEntityOptional.isEmpty()) {
+            throw new ResourceNotFoundException("Attachment not found, ID: '%s'".formatted(attachmentId));
+        }
+        final AttachmentEntity attachmentEntity = attachmentEntityOptional.get();
+        attachmentEntity.setAttachmentType(request.attachmentType());
+        attachmentEntity.setExternalId(request.externalId());
+        attachmentEntity.setTimestampLastUpdated(LocalDateTime.now());
+        encryptionService.encryptAttachment(attachmentEntity, request.attachmentData());
+
+        attachmentRepository.save(attachmentEntity);
+
+        return new Response();
     }
 
     @Transactional(readOnly = true)

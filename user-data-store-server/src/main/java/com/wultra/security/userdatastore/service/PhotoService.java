@@ -21,6 +21,7 @@ import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
 import com.wultra.security.userdatastore.converter.PhotoConverter;
@@ -29,6 +30,7 @@ import com.wultra.security.userdatastore.model.entity.PhotoEntity;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import com.wultra.security.userdatastore.model.repository.PhotoRepository;
+import io.getlime.core.rest.model.base.response.Response;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -102,6 +104,23 @@ public class PhotoService {
         photoRepository.save(photoEntity);
 
         return new PhotoCreateResponse(photoEntity.getId(), documentEntity.getId());
+    }
+
+    @Transactional
+    public Response updatePhoto(final String photoId, final PhotoUpdateRequest request) {
+        final Optional<PhotoEntity> photoEntityOptional = photoRepository.findById(photoId);
+        if (photoEntityOptional.isEmpty()) {
+            throw new ResourceNotFoundException("Attachment not found, ID: '%s'".formatted(photoId));
+        }
+        final PhotoEntity photoEntity = photoEntityOptional.get();
+        photoEntity.setPhotoType(request.photoType());
+        photoEntity.setExternalId(request.externalId());
+        photoEntity.setTimestampLastUpdated(LocalDateTime.now());
+        encryptionService.encryptPhoto(photoEntity, request.photoData());
+
+        photoRepository.save(photoEntity);
+
+        return new Response();
     }
 
     @Transactional

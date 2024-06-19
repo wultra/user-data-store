@@ -21,6 +21,7 @@ import com.wultra.core.rest.client.base.RestClientConfiguration;
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
 import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.AttachmentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
@@ -96,9 +97,21 @@ class AttachmentRestClientTest {
         assertEquals("test_data", attachment.attachmentData());
         assertNull(attachment.externalId());
 
-        restClient.deleteAttachments("alice", attachmentResponse.documentId());
+        AttachmentUpdateRequest requestUpdate = new AttachmentUpdateRequest("test_type2", "test_data2", null);
+        restClient.updateAttachment(attachment.id(), requestUpdate);
 
         AttachmentResponse fetchResponse2 = restClient.fetchAttachments("alice", attachmentResponse.documentId());
-        assertEquals(0, fetchResponse2.attachments().size());
+        assertEquals(1, fetchResponse2.attachments().size());
+        AttachmentDto attachment2 = fetchResponse2.attachments().get(0);
+        assertNotNull(attachment2.id());
+        assertEquals(response.id(), attachment2.documentId());
+        assertEquals("test_type2", attachment2.attachmentType());
+        assertEquals("test_data2", attachment2.attachmentData());
+        assertNull(attachment2.externalId());
+
+        restClient.deleteAttachments("alice", attachmentResponse.documentId());
+
+        AttachmentResponse fetchResponse3 = restClient.fetchAttachments("alice", attachmentResponse.documentId());
+        assertEquals(0, fetchResponse3.attachments().size());
     }
 }
