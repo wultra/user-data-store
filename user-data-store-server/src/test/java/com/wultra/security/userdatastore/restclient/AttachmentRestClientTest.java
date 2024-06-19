@@ -65,7 +65,7 @@ class AttachmentRestClientTest {
 
     @Test
     void testPost() throws Exception {
-        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test", "1", null, "test_data", Collections.emptyMap());
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test", "1", null, "test_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
         DocumentCreateResponse response = restClient.createDocument(request);
         assertNotNull(response.id());
         assertNotNull(response.documentDataId());
@@ -77,7 +77,7 @@ class AttachmentRestClientTest {
 
     @Test
     void testLifeCycle() throws Exception {
-        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test_type", "test_data_type", "1", null, "test_data", Collections.emptyMap());
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test_type", "test_data_type", "1", null, "test_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
         DocumentCreateResponse response = restClient.createDocument(request);
         assertNotNull(response.id());
         assertNotNull(response.documentDataId());

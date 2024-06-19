@@ -21,6 +21,7 @@ import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
 import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.EmbeddedAttachmentCreateRequest;
 import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.converter.AttachmentConverter;
@@ -73,6 +74,22 @@ public class AttachmentService {
         attachmentEntity.setId(UUID.randomUUID().toString());
         attachmentEntity.setDocument(documentEntity);
         attachmentEntity.setUserId(userId);
+        attachmentEntity.setAttachmentType(request.attachmentType());
+        attachmentEntity.setExternalId(request.externalId());
+        attachmentEntity.setTimestampCreated(LocalDateTime.now());
+        encryptionService.encryptAttachment(attachmentEntity, request.attachmentData());
+
+        attachmentRepository.save(attachmentEntity);
+
+        return new AttachmentCreateResponse(attachmentEntity.getId(), documentEntity.getId());
+    }
+
+    @Transactional
+    public AttachmentCreateResponse createAttachment(final EmbeddedAttachmentCreateRequest request, final DocumentEntity documentEntity) {
+        final AttachmentEntity attachmentEntity = new AttachmentEntity();
+        attachmentEntity.setId(UUID.randomUUID().toString());
+        attachmentEntity.setDocument(documentEntity);
+        attachmentEntity.setUserId(documentEntity.getUserId());
         attachmentEntity.setAttachmentType(request.attachmentType());
         attachmentEntity.setExternalId(request.externalId());
         attachmentEntity.setTimestampCreated(LocalDateTime.now());

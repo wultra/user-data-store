@@ -136,14 +136,16 @@ class DocumentControllerTest {
                 "https://claims.example.com/department", "engineering"
         ));
         final var documentCreateRequest = new DocumentCreateRequest("alice", "profile", "claims",
-                "83692", null, documentData, Collections.emptyMap());
+                "83692", null, documentData, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
         final Map<String, Object> requestBody = Map.of(
                 "userId", "alice",
                 "documentType", "profile",
                 "dataType", "claims",
                 "documentDataId", "83692",
                 "documentData", documentData,
-                "attributes", Collections.emptyMap()
+                "attributes", Collections.emptyMap(),
+                "photos", Collections.emptyList(),
+                "attachments", Collections.emptyList()
         );
 
         final String requestBodyJson = new ObjectMapper().writeValueAsString(new ObjectRequest<>(documentCreateRequest));

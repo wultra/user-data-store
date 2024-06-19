@@ -21,8 +21,7 @@ import com.wultra.core.rest.client.base.RestClientConfiguration;
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
-import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
+import com.wultra.security.userdatastore.client.model.request.*;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,9 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,15 +64,29 @@ class DocumentRestClientTest {
 
     @Test
     void testPost() throws Exception {
-        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test_type", "1", null, "test_data", Collections.emptyMap());
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test_type", "1", null, "test_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
         DocumentCreateResponse response = restClient.createDocument(request);
         assertNotNull(response.id());
         assertNotNull(response.documentDataId());
     }
 
     @Test
+    void testPostComposite() throws Exception {
+        List<EmbeddedPhotoCreateRequest> photos = new ArrayList<>();
+        photos.add(new EmbeddedPhotoCreateRequest("test_type", "test_data", null));
+        List<EmbeddedAttachmentCreateRequest> attachments = new ArrayList<>();
+        attachments.add(new EmbeddedAttachmentCreateRequest("test_type", "test_data", null));
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test_type", "1", null, "test_data", Collections.emptyMap(), photos, attachments);
+        DocumentCreateResponse response = restClient.createDocument(request);
+        assertNotNull(response.id());
+        assertNotNull(response.documentDataId());
+        assertEquals(1, response.photoIds().size());
+        assertEquals(1, response.attachmentIds().size());
+    }
+
+    @Test
     void testLifeCycle() throws Exception {
-        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test_type", "test_data_type", "1", null, "test_data", Collections.emptyMap());
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test_type", "test_data_type", "1", null, "test_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
         DocumentCreateResponse response = restClient.createDocument(request);
         assertNotNull(response.id());
         assertNotNull(response.documentDataId());

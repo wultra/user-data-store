@@ -20,6 +20,8 @@ package com.wultra.security.userdatastore.client.model.response;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.List;
+
 /**
  * Response class for creating documents.
  *
@@ -30,6 +32,8 @@ import lombok.extern.jackson.Jacksonized;
 public record DocumentCreateResponse (
 
         String id,
-        String documentDataId
+        String documentDataId,
 
+        List<String> photoIds,
+        List<String> attachmentIds
 ) {}
