@@ -33,8 +33,8 @@
             <column name="encryption_mode" type="VARCHAR(255)" defaultValue="NO_ENCRYPTION">
                 <constraints nullable="false"/>
             </column>
-            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
-            <column name="timestamp_last_updated" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="${now}" />
+            <column name="timestamp_last_updated" type="TIMESTAMP WITHOUT TIME ZONE" />
         </createTable>
     </changeSet>
 
@@ -71,7 +71,7 @@
             <column name="encryption_mode" type="VARCHAR(255)" defaultValue="NO_ENCRYPTION">
                 <constraints nullable="false"/>
             </column>
-            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
+            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="${now}" />
         </createTable>
     </changeSet>
 
@@ -101,8 +101,8 @@
             <column name="encryption_mode" type="VARCHAR(255)" defaultValue="NO_ENCRYPTION">
                 <constraints nullable="false"/>
             </column>
-            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
-            <column name="timestamp_last_updated" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="${now}" />
+            <column name="timestamp_last_updated" type="TIMESTAMP WITHOUT TIME ZONE" />
         </createTable>
     </changeSet>
 
@@ -146,8 +146,8 @@
             <column name="encryption_mode" type="VARCHAR(255)" defaultValue="NO_ENCRYPTION">
                 <constraints nullable="false"/>
             </column>
-            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueComputed="NOW()"/>
-            <column name="timestamp_last_updated" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="${now}" />
+            <column name="timestamp_last_updated" type="TIMESTAMP WITHOUT TIME ZONE" />
         </createTable>
     </changeSet>
 
