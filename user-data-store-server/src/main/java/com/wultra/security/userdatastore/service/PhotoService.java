@@ -110,12 +110,9 @@ public class PhotoService {
 
     @Transactional
     public Response updatePhoto(final String photoId, final PhotoUpdateRequest request) {
-        final Optional<PhotoEntity> photoEntityOptional = photoRepository.findById(photoId);
-        if (photoEntityOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Attachment not found, ID: '%s'".formatted(photoId));
-        }
+        final PhotoEntity photoEntity = photoRepository.findById(photoId).orElseThrow(() ->
+                new ResourceNotFoundException("Photo not found, ID: '%s'".formatted(photoId)));
         final LocalDateTime timestamp = LocalDateTime.now();
-        final PhotoEntity photoEntity = photoEntityOptional.get();
         photoEntity.setPhotoType(request.photoType());
         photoEntity.setExternalId(request.externalId());
         photoEntity.setTimestampLastUpdated(timestamp);
