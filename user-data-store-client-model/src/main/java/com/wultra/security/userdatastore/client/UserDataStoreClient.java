@@ -18,10 +18,7 @@
 package com.wultra.security.userdatastore.client;
 
 import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
-import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
-import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.*;
 import com.wultra.security.userdatastore.client.model.response.*;
 
 /**
@@ -88,6 +85,15 @@ public interface UserDataStoreClient {
     PhotoCreateResponse createPhoto(PhotoCreateRequest request) throws UserDataStoreClientException;
 
     /**
+     * Update a photo.
+     *
+     * @param photoId Photo identifier.
+     * @param request Photo update request.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void updatePhoto(String photoId, PhotoUpdateRequest request) throws UserDataStoreClientException;
+
+    /**
      * Delete photos.
      *
      * @param userId     User identifier.
@@ -114,6 +120,15 @@ public interface UserDataStoreClient {
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
     AttachmentCreateResponse createAttachment(AttachmentCreateRequest request) throws UserDataStoreClientException;
+
+    /**
+     * Update an attachment.
+     *
+     * @param attachmentId Attachment identifier.
+     * @param request Attachment update request.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void updateAttachment(String attachmentId, AttachmentUpdateRequest request) throws UserDataStoreClientException;
 
     /**
      * Delete attachments.

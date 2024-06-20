@@ -18,6 +18,7 @@
 package com.wultra.security.userdatastore.controller;
 
 import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.AttachmentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.service.AttachmentService;
@@ -26,7 +27,6 @@ import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +85,22 @@ class AttachmentController {
         logger.info("Creating attachment for user ID: {}", request.getRequestObject().userId());
         final AttachmentCreateResponse response = attachmentService.createAttachment(request.getRequestObject());
         return new ObjectResponse<>(response);
+    }
+
+    /**
+     * Update an attachment.
+     *
+     * @param request Update attachment request
+     * @return response
+     */
+    @Operation(
+            summary = "Update an attachment",
+            description = "Update an attachment."
+    )
+    @PutMapping("/admin/attachments/{attachmentId}")
+    public Response updateAttachment(@NotBlank @Size(max = 36) @PathVariable("attachmentId") String attachmentId, @RequestBody final ObjectRequest<AttachmentUpdateRequest> request) {
+        logger.info("Updating attachment with ID: {}", attachmentId);
+        return attachmentService.updateAttachment(attachmentId, request.getRequestObject());
     }
 
     /**

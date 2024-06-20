@@ -23,22 +23,18 @@ import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * Request class for creating attachments.
+ * Request class for updating photos.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Builder
 @Jacksonized
-public record AttachmentCreateRequest(
+public record PhotoUpdateRequest(
 
-        @NotBlank @Size(max = 255)
-        String userId,
-        @NotBlank @Size(max = 36)
-        String documentId,
         @NotBlank @Size(max = 32)
-        String attachmentType,
+        String photoType,
         @NotBlank
-        String attachmentData,
+        String photoData,
         @Size(max = 255)
         String externalId
 

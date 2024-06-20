@@ -25,10 +25,7 @@ import com.wultra.core.rest.client.base.RestClientConfiguration;
 import com.wultra.core.rest.client.base.RestClientException;
 import com.wultra.security.userdatastore.client.UserDataStoreClient;
 import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
-import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
-import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.*;
 import com.wultra.security.userdatastore.client.model.response.*;
 import io.getlime.core.rest.model.base.request.ObjectRequest;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
@@ -222,6 +219,11 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
+    public void updatePhoto(String photoId, PhotoUpdateRequest request) throws UserDataStoreClientException {
+        put("/admin/photos/" + photoId, request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, Response.class);
+    }
+
+    @Override
     public void deletePhotos(String userId, String documentId) throws UserDataStoreClientException {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));
@@ -244,6 +246,11 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     @Override
     public AttachmentCreateResponse createAttachment(AttachmentCreateRequest request) throws UserDataStoreClientException {
         return post("/admin/attachments", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, AttachmentCreateResponse.class);
+    }
+
+    @Override
+    public void updateAttachment(String attachmentId, AttachmentUpdateRequest request) throws UserDataStoreClientException {
+        put("/admin/attachments/" + attachmentId, request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, Response.class);
     }
 
     @Override

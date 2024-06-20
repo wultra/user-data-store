@@ -22,6 +22,7 @@ import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
 import com.wultra.security.userdatastore.client.model.request.EmbeddedPhotoCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
 import com.wultra.security.userdatastore.converter.PhotoConverter;
@@ -30,6 +31,7 @@ import com.wultra.security.userdatastore.model.entity.PhotoEntity;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import com.wultra.security.userdatastore.model.repository.PhotoRepository;
+import io.getlime.core.rest.model.base.response.Response;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -91,14 +93,16 @@ public class PhotoService {
         if (!documentEntity.getUserId().equals(userId)) {
             throw new ResourceNotFoundException("User reference not valid, ID: '%s'".formatted(userId));
         }
+        final LocalDateTime timestamp = LocalDateTime.now();
         final PhotoEntity photoEntity = new PhotoEntity();
         photoEntity.setId(UUID.randomUUID().toString());
         photoEntity.setDocument(documentEntity);
         photoEntity.setUserId(userId);
         photoEntity.setPhotoType(request.photoType());
         photoEntity.setExternalId(request.externalId());
-        photoEntity.setTimestampCreated(LocalDateTime.now());
+        photoEntity.setTimestampCreated(timestamp);
         encryptionService.encryptPhoto(photoEntity, request.photoData());
+        documentEntity.setTimestampLastUpdated(timestamp);
 
         photoRepository.save(photoEntity);
 
@@ -119,6 +123,22 @@ public class PhotoService {
         photoRepository.save(photoEntity);
 
         return new PhotoCreateResponse(photoEntity.getId(), documentEntity.getId());
+    }
+
+    public Response updatePhoto(final String photoId, final PhotoUpdateRequest request) {
+        final PhotoEntity photoEntity = photoRepository.findById(photoId).orElseThrow(() ->
+                new ResourceNotFoundException("Photo not found, ID: '%s'".formatted(photoId)));
+        final LocalDateTime timestamp = LocalDateTime.now();
+        photoEntity.setPhotoType(request.photoType());
+        photoEntity.setExternalId(request.externalId());
+        photoEntity.setTimestampLastUpdated(timestamp);
+        encryptionService.encryptPhoto(photoEntity, request.photoData());
+        final DocumentEntity documentEntity = photoEntity.getDocument();
+        documentEntity.setTimestampLastUpdated(timestamp);
+
+        photoRepository.save(photoEntity);
+
+        return new Response();
     }
 
     @Transactional

@@ -22,6 +22,7 @@ import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
 import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.EmbeddedAttachmentCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.AttachmentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.converter.AttachmentConverter;
@@ -30,6 +31,7 @@ import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.AttachmentRepository;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
+import io.getlime.core.rest.model.base.response.Response;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -70,14 +72,16 @@ public class AttachmentService {
         if (!documentEntity.getUserId().equals(userId)) {
             throw new ResourceNotFoundException("User reference not valid, ID: '%s'".formatted(userId));
         }
+        final LocalDateTime timestamp = LocalDateTime.now();
         final AttachmentEntity attachmentEntity = new AttachmentEntity();
         attachmentEntity.setId(UUID.randomUUID().toString());
         attachmentEntity.setDocument(documentEntity);
         attachmentEntity.setUserId(userId);
         attachmentEntity.setAttachmentType(request.attachmentType());
         attachmentEntity.setExternalId(request.externalId());
-        attachmentEntity.setTimestampCreated(LocalDateTime.now());
+        attachmentEntity.setTimestampCreated(timestamp);
         encryptionService.encryptAttachment(attachmentEntity, request.attachmentData());
+        documentEntity.setTimestampLastUpdated(timestamp);
 
         attachmentRepository.save(attachmentEntity);
 
@@ -98,6 +102,21 @@ public class AttachmentService {
         attachmentRepository.save(attachmentEntity);
 
         return new AttachmentCreateResponse(attachmentEntity.getId(), documentEntity.getId());
+    }
+
+    public Response updateAttachment(final String attachmentId, final AttachmentUpdateRequest request) {
+        final AttachmentEntity attachmentEntity = attachmentRepository.findById(attachmentId).orElseThrow(() ->
+               new ResourceNotFoundException("Attachment not found, ID: '%s'".formatted(attachmentId)));
+        final LocalDateTime timestamp = LocalDateTime.now();
+        attachmentEntity.setAttachmentType(request.attachmentType());
+        attachmentEntity.setExternalId(request.externalId());
+        attachmentEntity.setTimestampLastUpdated(timestamp);
+        encryptionService.encryptAttachment(attachmentEntity, request.attachmentData());
+        final DocumentEntity documentEntity = attachmentEntity.getDocument();
+        documentEntity.setTimestampLastUpdated(timestamp);
+        attachmentRepository.save(attachmentEntity);
+
+        return new Response();
     }
 
     @Transactional(readOnly = true)
