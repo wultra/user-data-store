@@ -18,6 +18,7 @@
 package com.wultra.security.userdatastore.controller;
 
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
 import com.wultra.security.userdatastore.service.PhotoService;
@@ -26,7 +27,6 @@ import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +85,22 @@ class PhotoController {
         logger.info("Creating photo for user ID: {}", request.getRequestObject().userId());
         final PhotoCreateResponse response = photoService.createPhoto(request.getRequestObject());
         return new ObjectResponse<>(response);
+    }
+
+    /**
+     * Update a photo.
+     *
+     * @param request Update photo request
+     * @return response
+     */
+    @Operation(
+            summary = "Update a photo",
+            description = "Update a photo."
+    )
+    @PutMapping("/admin/photos/{photoId}")
+    public Response updatePhoto(@NotBlank @Size(max = 36) @PathVariable("photoId") String photoId, @RequestBody final ObjectRequest<PhotoUpdateRequest> request) {
+        logger.info("Updating photo with ID: {}", photoId);
+        return photoService.updatePhoto(photoId, request.getRequestObject());
     }
 
     /**

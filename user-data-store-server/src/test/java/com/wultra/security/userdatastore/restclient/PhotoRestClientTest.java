@@ -22,6 +22,7 @@ import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
@@ -84,22 +85,34 @@ class PhotoRestClientTest {
         assertNotNull(response.documentDataId());
 
         PhotoCreateRequest PhotoRequest = new PhotoCreateRequest("alice", response.id(), "test_type", "test_data", null);
-        PhotoCreateResponse PhotoResponse = restClient.createPhoto(PhotoRequest);
-        assertNotNull(PhotoResponse.id());
-        assertNotNull(PhotoResponse.documentId());
+        PhotoCreateResponse photoResponse = restClient.createPhoto(PhotoRequest);
+        assertNotNull(photoResponse.id());
+        assertNotNull(photoResponse.documentId());
 
-        PhotoResponse fetchResponse = restClient.fetchPhotos("alice", PhotoResponse.documentId());
+        PhotoResponse fetchResponse = restClient.fetchPhotos("alice", photoResponse.documentId());
         assertEquals(1, fetchResponse.photos().size());
-        PhotoDto Photo = fetchResponse.photos().get(0);
-        assertNotNull(Photo.id());
-        assertEquals(response.id(), Photo.documentId());
-        assertEquals("test_type", Photo.photoType());
-        assertEquals("test_data", Photo.photoData());
-        assertNull(Photo.externalId());
+        PhotoDto photo = fetchResponse.photos().get(0);
+        assertNotNull(photo.id());
+        assertEquals(response.id(), photo.documentId());
+        assertEquals("test_type", photo.photoType());
+        assertEquals("test_data", photo.photoData());
+        assertNull(photo.externalId());
 
-        restClient.deletePhotos("alice", PhotoResponse.documentId());
+        PhotoUpdateRequest requestUpdate = new PhotoUpdateRequest("test_type2", "test_data2", null);
+        restClient.updatePhoto(photo.id(), requestUpdate);
 
-        PhotoResponse fetchResponse2 = restClient.fetchPhotos("alice", PhotoResponse.documentId());
-        assertEquals(0, fetchResponse2.photos().size());
+        PhotoResponse fetchResponse2 = restClient.fetchPhotos("alice", photoResponse.documentId());
+        assertEquals(1, fetchResponse2.photos().size());
+        PhotoDto photo2 = fetchResponse2.photos().get(0);
+        assertNotNull(photo2.id());
+        assertEquals(response.id(), photo2.documentId());
+        assertEquals("test_type2", photo2.photoType());
+        assertEquals("test_data2", photo2.photoData());
+        assertNull(photo2.externalId());
+
+        restClient.deletePhotos("alice", photoResponse.documentId());
+
+        PhotoResponse fetchResponse3 = restClient.fetchPhotos("alice", photoResponse.documentId());
+        assertEquals(0, fetchResponse3.photos().size());
     }
 }
