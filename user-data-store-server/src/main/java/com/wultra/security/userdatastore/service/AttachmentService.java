@@ -89,10 +89,8 @@ public class AttachmentService {
 
     @Transactional
     public Response updateAttachment(final String attachmentId, final AttachmentUpdateRequest request) {
-        final Optional<AttachmentEntity> attachmentEntityOptional = attachmentRepository.findById(attachmentId);
-        if (attachmentEntityOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Attachment not found, ID: '%s'".formatted(attachmentId));
-        }
+        final AttachmentEntity attachmentEntity= attachmentRepository.findById(attachmentId).orElseThrow(() ->
+               throw new ResourceNotFoundException("Attachment not found, ID: '%s'".formatted(attachmentId));
         final LocalDateTime timestamp = LocalDateTime.now();
         final AttachmentEntity attachmentEntity = attachmentEntityOptional.get();
         attachmentEntity.setAttachmentType(request.attachmentType());
