@@ -20,20 +20,15 @@ package com.wultra.security.userdatastore.client.model.response;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.List;
-
 /**
- * Response class for creating documents.
+ * Response class for creating photos.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Builder
 @Jacksonized
-public record DocumentCreateResponse (
+public record EmbeddedPhotoCreateResponse(
 
-        String id,
-        String documentDataId,
+        String id
 
-        List<EmbeddedPhotoCreateResponse> photos,
-        List<EmbeddedAttachmentCreateResponse> attachments
 ) {}

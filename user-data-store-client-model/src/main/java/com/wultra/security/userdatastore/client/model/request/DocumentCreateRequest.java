@@ -22,6 +22,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,6 +46,9 @@ public record DocumentCreateRequest(
         String externalId,
         @NotBlank
         String documentData,
-        Map<String, Object> attributes
+        Map<String, Object> attributes,
+
+        List<EmbeddedPhotoCreateRequest> photos,
+        List<EmbeddedAttachmentCreateRequest> attachments
 
 ) { }

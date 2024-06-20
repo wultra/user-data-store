@@ -15,25 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wultra.security.userdatastore.client.model.response;
+package com.wultra.security.userdatastore.client.model.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.List;
-
 /**
- * Response class for creating documents.
+ * Request class for creating photos.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Builder
 @Jacksonized
-public record DocumentCreateResponse (
+public record EmbeddedPhotoCreateRequest(
 
-        String id,
-        String documentDataId,
+        @NotBlank @Size(max = 32)
+        String photoType,
+        @NotBlank
+        String photoData,
+        @Size(max = 255)
+        String externalId
 
-        List<EmbeddedPhotoCreateResponse> photos,
-        List<EmbeddedAttachmentCreateResponse> attachments
-) {}
+) { }

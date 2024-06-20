@@ -20,6 +20,7 @@ package com.wultra.security.userdatastore.service;
 import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
+import com.wultra.security.userdatastore.client.model.request.EmbeddedPhotoCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
@@ -109,6 +110,21 @@ public class PhotoService {
     }
 
     @Transactional
+    public PhotoCreateResponse createPhoto(final EmbeddedPhotoCreateRequest request, final DocumentEntity documentEntity) {
+        final PhotoEntity photoEntity = new PhotoEntity();
+        photoEntity.setId(UUID.randomUUID().toString());
+        photoEntity.setDocument(documentEntity);
+        photoEntity.setUserId(documentEntity.getUserId());
+        photoEntity.setPhotoType(request.photoType());
+        photoEntity.setExternalId(request.externalId());
+        photoEntity.setTimestampCreated(LocalDateTime.now());
+        encryptionService.encryptPhoto(photoEntity, request.photoData());
+
+        photoRepository.save(photoEntity);
+
+        return new PhotoCreateResponse(photoEntity.getId(), documentEntity.getId());
+    }
+
     public Response updatePhoto(final String photoId, final PhotoUpdateRequest request) {
         final PhotoEntity photoEntity = photoRepository.findById(photoId).orElseThrow(() ->
                 new ResourceNotFoundException("Photo not found, ID: '%s'".formatted(photoId)));

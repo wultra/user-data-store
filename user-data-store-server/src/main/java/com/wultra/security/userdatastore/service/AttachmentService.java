@@ -21,6 +21,7 @@ import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
 import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
+import com.wultra.security.userdatastore.client.model.request.EmbeddedAttachmentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.AttachmentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
@@ -88,6 +89,21 @@ public class AttachmentService {
     }
 
     @Transactional
+    public AttachmentCreateResponse createAttachment(final EmbeddedAttachmentCreateRequest request, final DocumentEntity documentEntity) {
+        final AttachmentEntity attachmentEntity = new AttachmentEntity();
+        attachmentEntity.setId(UUID.randomUUID().toString());
+        attachmentEntity.setDocument(documentEntity);
+        attachmentEntity.setUserId(documentEntity.getUserId());
+        attachmentEntity.setAttachmentType(request.attachmentType());
+        attachmentEntity.setExternalId(request.externalId());
+        attachmentEntity.setTimestampCreated(LocalDateTime.now());
+        encryptionService.encryptAttachment(attachmentEntity, request.attachmentData());
+
+        attachmentRepository.save(attachmentEntity);
+
+        return new AttachmentCreateResponse(attachmentEntity.getId(), documentEntity.getId());
+    }
+
     public Response updateAttachment(final String attachmentId, final AttachmentUpdateRequest request) {
         final AttachmentEntity attachmentEntity = attachmentRepository.findById(attachmentId).orElseThrow(() ->
                new ResourceNotFoundException("Attachment not found, ID: '%s'".formatted(attachmentId)));

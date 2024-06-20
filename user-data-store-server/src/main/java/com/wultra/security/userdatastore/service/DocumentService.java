@@ -22,8 +22,7 @@ import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
-import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
-import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
+import com.wultra.security.userdatastore.client.model.response.*;
 import com.wultra.security.userdatastore.converter.DocumentConverter;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.entity.DocumentHistoryEntity;
@@ -36,12 +35,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Service for user documents.
@@ -57,6 +54,8 @@ public class DocumentService {
     private final DocumentHistoryRepository documentHistoryRepository;
     private final Audit audit;
     private final EncryptionService encryptionService;
+    private final PhotoService photoService;
+    private final AttachmentService attachmentService;
     private final DocumentConverter documentConverter;
 
     @Transactional(readOnly = true)
@@ -97,7 +96,24 @@ public class DocumentService {
         updateDocumentHistory(documentEntity);
         audit("Created document for user ID: {}", userId);
 
-        return new DocumentCreateResponse(documentEntity.getId(), documentEntity.getDocumentDataId());
+        final DocumentEntity documentEntityFinal = documentEntity;
+
+        final List<EmbeddedPhotoCreateResponse> photosResponse = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(request.photos())) {
+            photosResponse.addAll(request.photos().stream()
+                    .map(photoRequest -> photoService.createPhoto(photoRequest, documentEntityFinal))
+                    .map(response -> new EmbeddedPhotoCreateResponse(response.id()))
+                    .toList());
+        }
+
+        final List<EmbeddedAttachmentCreateResponse> attachmentsResponse = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(request.attachments())) {
+            attachmentsResponse.addAll(request.attachments().stream()
+                    .map(attachmentRequest -> attachmentService.createAttachment(attachmentRequest, documentEntityFinal))
+                    .map(response -> new EmbeddedAttachmentCreateResponse(response.id()))
+                    .toList());
+        }
+        return new DocumentCreateResponse(documentEntity.getId(), documentEntity.getDocumentDataId(), photosResponse, attachmentsResponse);
     }
 
     @Transactional
