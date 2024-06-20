@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -98,19 +99,19 @@ public class DocumentService {
         final DocumentEntity documentEntityFinal = documentEntity;
 
         final List<EmbeddedPhotoCreateResponse> photosResponse = new ArrayList<>();
-        if (request.photos() != null && !request.photos().isEmpty()) {
-            request.photos().forEach(photoRequest -> {
-                final PhotoCreateResponse response = photoService.createPhoto(photoRequest, documentEntityFinal);
-                photosResponse.add(new EmbeddedPhotoCreateResponse(response.id()));
-            });
+        if (!CollectionUtils.isEmpty(request.photos())) {
+            photosResponse.addAll(request.photos().stream()
+                    .map(photoRequest -> photoService.createPhoto(photoRequest, documentEntityFinal))
+                    .map(response -> new EmbeddedPhotoCreateResponse(response.id()))
+                    .toList());
         }
 
         final List<EmbeddedAttachmentCreateResponse> attachmentsResponse = new ArrayList<>();
-        if (request.attachments() != null && !request.attachments().isEmpty()) {
-            request.attachments().forEach(attachmentRequest -> {
-                final AttachmentCreateResponse response = attachmentService.createAttachment(attachmentRequest, documentEntityFinal);
-                attachmentsResponse.add(new EmbeddedAttachmentCreateResponse(response.id()));
-            });
+        if (!CollectionUtils.isEmpty(request.attachments())) {
+            attachmentsResponse.addAll(request.attachments().stream()
+                    .map(attachmentRequest -> attachmentService.createAttachment(attachmentRequest, documentEntityFinal))
+                    .map(response -> new EmbeddedAttachmentCreateResponse(response.id()))
+                    .toList());
         }
         return new DocumentCreateResponse(documentEntity.getId(), documentEntity.getDocumentDataId(), photosResponse, attachmentsResponse);
     }
