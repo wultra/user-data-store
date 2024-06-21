@@ -85,6 +85,22 @@ class DocumentRestClientTest {
     }
 
     @Test
+    void testDeleteComposite() throws Exception {
+        List<EmbeddedPhotoCreateRequest> photos = new ArrayList<>();
+        photos.add(new EmbeddedPhotoCreateRequest("test_type", "test_data", null));
+        List<EmbeddedAttachmentCreateRequest> attachments = new ArrayList<>();
+        attachments.add(new EmbeddedAttachmentCreateRequest("test_type", "test_data", null));
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test_type", "1", null, "test_data", Collections.emptyMap(), photos, attachments);
+        DocumentCreateResponse response = restClient.createDocument(request);
+
+        DocumentResponse documentResponse = restClient.fetchDocuments("alice", response.id());
+        assertEquals(1, documentResponse.documents().size());
+
+        restClient.deleteDocuments("alice", response.id());
+        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchDocuments("alice", response.id()));
+    }
+
+    @Test
     void testLifeCycle() throws Exception {
         DocumentCreateRequest request = new DocumentCreateRequest("alice", "test_type", "test_data_type", "1", null, "test_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
         DocumentCreateResponse response = restClient.createDocument(request);
