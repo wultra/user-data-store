@@ -22,7 +22,7 @@ liquibase --changelog-file=./docs/db/changelog/db.changelog-master.xml --url=jdb
 ### PostgreSQL
 
 ```shell
-liquibase --changeLogFile=./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml --output-file=./docs/sql/postgresql/generated-postgresql-script.sql updateSQL --url=offline:postgres
+liquibase --changeLogFile=./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml --output-file=./docs/sql/postgresql/generated-postgresql-script.sql updateSQL --url=offline:postgresql
 ```
 
 
