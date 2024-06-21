@@ -44,7 +44,9 @@ Following endpoints are published in User Data Store RESTful API:
 
 ### User Claims API (Deprecated)
 
+<!-- begin box warning -->
 This REST API is deprecated, see Swagger for usage information.
+<!-- end -->
 
 - `GET` `/private/user-claims` - Fetch user claims
 - `POST` `/public/user-claims` - Create or update user claims
@@ -86,13 +88,13 @@ Access to the REST API is authenticated. See chapter [Setting Up REST Service Cr
 
 Use HTTP Basic authentication to access the REST API, for example:
 
-Authorization: Basic YWRtaW46YWRtaW4=
+`Authorization: Basic YWRtaW46YWRtaW4=`
 
-The username and password is a Base-64 encoded string in format username:password.
+The username and password is a Base-64 encoded string in the format `username:password`.
 
 The following paths require a ROLE_WRITE authority:
 - `/admin/**` - supported REST API for User Data Store
-- `/public/**` - deprecated REST API for user claims
+- `/public/**` - **deprecated** REST API for user claims
 
 The remainder of the REST API paths require a ROLE_READ authority.
 
@@ -122,10 +124,10 @@ Fetch documents for a user.
 
 ##### Query Params
 
-| Param        | Type                                                     | Description                                                         |
-|--------------|----------------------------------------------------------|---------------------------------------------------------------------|
-| `userId`     | `String`<span class="required" title="Required">*</span> | User identifier of the owner of fetched documents.                  |
-| `documentId` | `String`                                                 | Optional document identifier to allow fetching a specific document. |
+| Param                                                    | Type     | Description                                                         |
+|----------------------------------------------------------|----------|---------------------------------------------------------------------|
+| `userId`<span class="required" title="Required">*</span> | `String` | User identifier of the owner of fetched documents.                  |
+| `documentId`                                             | `String` | Optional document identifier to allow fetching a specific document. |
 
 #### Response 200
 
@@ -269,9 +271,9 @@ Update a document.
 
 ##### Path Params
 
-| Param        | Type                                                     | Description          |
-|--------------|----------------------------------------------------------|----------------------|
-| `documentId` | `String`<span class="required" title="Required">*</span> | Document identifier. |
+| Param                                                        | Type     | Description          |
+|--------------------------------------------------------------|----------|----------------------|
+| `documentId`<span class="required" title="Required">*</span> | `String` | Document identifier. |
 
 
 ```json
@@ -337,10 +339,10 @@ Delete documents.
 
 ##### Query Params
 
-| Param        | Type                                                     | Description                                                         |
-|--------------|----------------------------------------------------------|---------------------------------------------------------------------|
-| `userId`     | `String`<span class="required" title="Required">*</span> | User identifier of the owner of deleted documents.                  |
-| `documentId` | `String`                                                 | Optional document identifier to allow deleting a specific document. |
+| Param                                                    | Type     | Description                                                         |
+|----------------------------------------------------------|----------|---------------------------------------------------------------------|
+| `userId`<span class="required" title="Required">*</span> | `String` | User identifier of the owner of documents to be deleted.            |
+| `documentId`                                             | `String` | Optional document identifier to allow deleting a specific document. |
 
 #### Response 200
 
@@ -377,10 +379,10 @@ Fetch photos for a user.
 
 ##### Query Params
 
-| Param        | Type                                                     | Description                                            |
-|--------------|----------------------------------------------------------|--------------------------------------------------------|
-| `userId`     | `String`<span class="required" title="Required">*</span> | User identifier of the owner of fetched photos.        |
-| `documentId` | `String`<span class="required" title="Required">*</span> | Document identifier of document related to the photos. |
+| Param                                                        | Type     | Description                                            |
+|--------------------------------------------------------------|----------|--------------------------------------------------------|
+| `userId`<span class="required" title="Required">*</span>     | `String` | User identifier of the owner of fetched photos.        |
+| `documentId`<span class="required" title="Required">*</span> | `String` | Document identifier of document related to the photos. |
 
 #### Response 200
 
@@ -443,13 +445,13 @@ Create a photo.
 
 ##### Request Params
 
-| Parameter                                                    | Type     | Description                                                                                        |
-|--------------------------------------------------------------|----------|----------------------------------------------------------------------------------------------------|
-| `userId`<span class="required" title="Required">*</span>     | `String` | User identifier of document owner.                                                                 |
-| `documentId`<span class="required" title="Required">*</span> | `String` | Identifier of the related document.                                                                |
-| `photoType`<span class="required" title="Required">*</span>  | `String` | One of `photoType`: `person`, `document_front_side`, `document_back_side`, `person_with_document`. |
-| `photoData`<span class="required" title="Required">*</span>  | `String` | Base-64 encoded photo data.                                                                        |
-| `externalId`                                                 | `String` | Optional external identifier of the photo (e.g. identifier used in the bank system).               |
+| Parameter                                                    | Type     | Description                                                                           |
+|--------------------------------------------------------------|----------|---------------------------------------------------------------------------------------|
+| `userId`<span class="required" title="Required">*</span>     | `String` | User identifier of document owner.                                                    |
+| `documentId`<span class="required" title="Required">*</span> | `String` | Identifier of the related document.                                                   |
+| `photoType`<span class="required" title="Required">*</span>  | `String` | One of `person`, `document_front_side`, `document_back_side`, `person_with_document`. |
+| `photoData`<span class="required" title="Required">*</span>  | `String` | Base-64 encoded photo data.                                                           |
+| `externalId`                                                 | `String` | Optional external identifier of the photo (e.g. identifier used in the bank system).  |
 
 #### Response 200
 
@@ -506,11 +508,11 @@ Update a photo.
 
 ##### Request Params
 
-| Parameter                                                    | Type     | Description                                                                                        |
-|--------------------------------------------------------------|----------|----------------------------------------------------------------------------------------------------|
-| `photoType`<span class="required" title="Required">*</span>  | `String` | One of `photoType`: `person`, `document_front_side`, `document_back_side`, `person_with_document`. |
-| `photoData`<span class="required" title="Required">*</span>  | `String` | Base-64 encoded photo data.                                                                        |
-| `externalId`                                                 | `String` | Optional external identifier of the photo (e.g. identifier used in the bank system).               |
+| Parameter                                                   | Type     | Description                                                                           |
+|-------------------------------------------------------------|----------|---------------------------------------------------------------------------------------|
+| `photoType`<span class="required" title="Required">*</span> | `String` | One of `person`, `document_front_side`, `document_back_side`, `person_with_document`. |
+| `photoData`<span class="required" title="Required">*</span> | `String` | Base-64 encoded photo data.                                                           |
+| `externalId`                                                | `String` | Optional external identifier of the photo (e.g. identifier used in the bank system).  |
 
 #### Response 200
 
@@ -547,10 +549,10 @@ Delete photos.
 
 ##### Query Params
 
-| Param        | Type                                                     | Description                                                                    |
-|--------------|----------------------------------------------------------|--------------------------------------------------------------------------------|
-| `userId`     | `String`<span class="required" title="Required">*</span> | User identifier of the owner of deleted photos.                                |
-| `documentId` | `String`                                                 | Optional document identifier to allow deleting photos for a specific document. |
+| Param                                                    | Type     | Description                                                                    |
+|----------------------------------------------------------|----------|--------------------------------------------------------------------------------|
+| `userId`<span class="required" title="Required">*</span> | `String` | User identifier of the owner of deleted photos.                                |
+| `documentId`                                             | `String` | Optional document identifier to allow deleting photos for a specific document. |
 
 #### Response 200
 
@@ -587,10 +589,10 @@ Fetch attachments for a user.
 
 ##### Query Params
 
-| Param        | Type                                                     | Description                                                 |
-|--------------|----------------------------------------------------------|-------------------------------------------------------------|
-| `userId`     | `String`<span class="required" title="Required">*</span> | User identifier of the owner of fetched attachments.        |
-| `documentId` | `String`<span class="required" title="Required">*</span> | Document identifier of document related to the attachments. |
+| Param                                                        | Type     | Description                                                 |
+|--------------------------------------------------------------|----------|-------------------------------------------------------------|
+| `userId`<span class="required" title="Required">*</span>     | `String` | User identifier of the owner of fetched attachments.        |
+| `documentId`<span class="required" title="Required">*</span> | `String` | Document identifier of document related to the attachments. |
 
 #### Response 200
 
@@ -653,13 +655,13 @@ Create an attachment.
 
 ##### Request Params
 
-| Parameter                                                        | Type     | Description                                                                          |
-|------------------------------------------------------------------|----------|--------------------------------------------------------------------------------------|
-| `userId`<span class="required" title="Required">*</span>         | `String` | User identifier of document owner.                                                   |
-| `documentId`<span class="required" title="Required">*</span>     | `String` | Identifier of the related document.                                                  |
-| `attachmentType`<span class="required" title="Required">*</span> | `String` | One of `text`, `image_base64`, `binary_base64`.                                      |
-| `attachmentData`<span class="required" title="Required">*</span> | `String` | Base-64 encoded attachment data.                                                     |
-| `externalId`                                                     | `String` | Optional external identifier of the photo (e.g. identifier used in the bank system). |
+| Parameter                                                        | Type     | Description                                                                               |
+|------------------------------------------------------------------|----------|-------------------------------------------------------------------------------------------|
+| `userId`<span class="required" title="Required">*</span>         | `String` | User identifier of document owner.                                                        |
+| `documentId`<span class="required" title="Required">*</span>     | `String` | Identifier of the related document.                                                       |
+| `attachmentType`<span class="required" title="Required">*</span> | `String` | One of `text`, `image_base64`, `binary_base64`.                                           |
+| `attachmentData`<span class="required" title="Required">*</span> | `String` | Base-64 encoded attachment data.                                                          |
+| `externalId`                                                     | `String` | Optional external identifier of the attachment (e.g. identifier used in the bank system). |
 
 #### Response 200
 
@@ -716,11 +718,11 @@ Update an attachment.
 
 ##### Request Params
 
-| Parameter                                                        | Type     | Description                                                                          |
-|------------------------------------------------------------------|----------|--------------------------------------------------------------------------------------|
-| `attachmentType`<span class="required" title="Required">*</span> | `String` | One of `text`, `image_base64`, `binary_base64`.                                      |
-| `attachmentData`<span class="required" title="Required">*</span> | `String` | Base-64 encoded attachment data.                                                     |
-| `externalId`                                                     | `String` | Optional external identifier of the photo (e.g. identifier used in the bank system). |
+| Parameter                                                        | Type     | Description                                                                               |
+|------------------------------------------------------------------|----------|-------------------------------------------------------------------------------------------|
+| `attachmentType`<span class="required" title="Required">*</span> | `String` | One of `text`, `image_base64`, `binary_base64`.                                           |
+| `attachmentData`<span class="required" title="Required">*</span> | `String` | Base-64 encoded attachment data.                                                          |
+| `externalId`                                                     | `String` | Optional external identifier of the attachment (e.g. identifier used in the bank system). |
 
 #### Response 200
 
@@ -757,10 +759,10 @@ Delete attachments.
 
 ##### Query Params
 
-| Param        | Type                                                     | Description                                                                         |
-|--------------|----------------------------------------------------------|-------------------------------------------------------------------------------------|
-| `userId`     | `String`<span class="required" title="Required">*</span> | User identifier of the owner of deleted attachments.                                |
-| `documentId` | `String`                                                 | Optional document identifier to allow deleting attachments for a specific document. |
+| Param                                                    | Type     | Description                                                                         |
+|----------------------------------------------------------|----------|-------------------------------------------------------------------------------------|
+| `userId`<span class="required" title="Required">*</span> | `String` | User identifier of the owner of deleted attachments.                                |
+| `documentId`                                             | `String` | Optional document identifier to allow deleting attachments for a specific document. |
 
 #### Response 200
 
@@ -797,10 +799,10 @@ Fetch claims for a user.
 
 ##### Query Params
 
-| Param    | Type                                                     | Description                                               |
-|----------|----------------------------------------------------------|-----------------------------------------------------------|
-| `userId` | `String`<span class="required" title="Required">*</span> | User identifier of the owner of fetched claims.           |
-| `claim`  | `String`                                                 | Optional claim name for fetching individual claim values. |
+| Param                                                    | Type     | Description                                               |
+|----------------------------------------------------------|----------|-----------------------------------------------------------|
+| `userId`<span class="required" title="Required">*</span> | `String` | User identifier of the owner of fetched claims.           |
+| `claim`                                                  | `String` | Optional claim name for fetching individual claim values. |
 
 #### Response 200
 
@@ -840,9 +842,9 @@ Create a claim.
 
 ##### Query Params
 
-| Param    | Type                                                     | Description                             |
-|----------|----------------------------------------------------------|-----------------------------------------|
-| `userId` | `String`<span class="required" title="Required">*</span> | User identifier of the owner of claims. |
+| Param                                                    | Type     | Description                             |
+|----------------------------------------------------------|----------|-----------------------------------------|
+| `userId`<span class="required" title="Required">*</span> | `String` | User identifier of the owner of claims. |
 
 ```json
 {
@@ -885,9 +887,9 @@ Create a claim.
 
 ##### Query Params
 
-| Param    | Type                                                     | Description                             |
-|----------|----------------------------------------------------------|-----------------------------------------|
-| `userId` | `String`<span class="required" title="Required">*</span> | User identifier of the owner of claims. |
+| Param                                                    | Type     | Description                             |
+|----------------------------------------------------------|----------|-----------------------------------------|
+| `userId`<span class="required" title="Required">*</span> | `String` | User identifier of the owner of claims. |
 
 ```json
 {
@@ -930,10 +932,10 @@ Delete claims.
 
 ##### Query Params
 
-| Param    | Type                                                     | Description                                         |
-|----------|----------------------------------------------------------|-----------------------------------------------------|
-| `userId` | `String`<span class="required" title="Required">*</span> | User identifier of the owner of deleted claims.     |
-| `claim`  | `String`                                                 | Optional claim name for deleting individual claims. |
+| Param                                                    | Type     | Description                                         |
+|----------------------------------------------------------|----------|-----------------------------------------------------|
+| `userId`<span class="required" title="Required">*</span> | `String` | User identifier of the owner of deleted claims.     |
+| `claim`                                                  | `String` | Optional claim name for deleting individual claims. |
 
 #### Response 200
 
