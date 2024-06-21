@@ -60,6 +60,27 @@ public class AttachmentService {
     private final EncryptionService encryptionService;
     private final AttachmentConverter attachmentConverter;
 
+    @Transactional(readOnly = true)
+    public AttachmentResponse fetchAttachments(final String userId, final Optional<String> documentId) {
+        if (documentId.isPresent()) {
+            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
+            if (documentEntityOptional.isEmpty()) {
+                throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
+            }
+            final DocumentEntity documentEntity = documentEntityOptional.get();
+            final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserIdAndDocument(userId, documentEntity);
+            attachmentEntities.forEach(encryptionService::decryptAttachment);
+            final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
+            audit("Retrieved attachments for document ID: {}", documentId.get());
+            return new AttachmentResponse(attachments);
+        }
+        final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserId(userId);
+        attachmentEntities.forEach(encryptionService::decryptAttachment);
+        final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
+        audit("Retrieved attachments for user ID: {}", userId);
+        return new AttachmentResponse(attachments);
+    }
+
     @Transactional
     public AttachmentCreateResponse createAttachment(final AttachmentCreateRequest request) {
         final String userId = request.userId();
@@ -119,33 +140,12 @@ public class AttachmentService {
         return new Response();
     }
 
-    @Transactional(readOnly = true)
-    public AttachmentResponse fetchAttachments(final String userId, final Optional<String> documentId) {
-        if (documentId.isPresent()) {
-            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
-            if (documentEntityOptional.isEmpty()) {
-                return new AttachmentResponse(Collections.emptyList());
-            }
-            final DocumentEntity documentEntity = documentEntityOptional.get();
-            final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserIdAndDocument(userId, documentEntity);
-            attachmentEntities.forEach(encryptionService::decryptAttachment);
-            final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
-            audit("Retrieved attachments for document ID: {}", documentId.get());
-            return new AttachmentResponse(attachments);
-        }
-        final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserId(userId);
-        attachmentEntities.forEach(encryptionService::decryptAttachment);
-        final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
-        audit("Retrieved attachments for user ID: {}", userId);
-        return new AttachmentResponse(attachments);
-    }
-
     @Transactional
     public void deleteAttachments(final String userId, final Optional<String> documentId) {
         if (documentId.isPresent()) {
             final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
             if (documentEntityOptional.isEmpty()) {
-                return;
+                throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
             }
             attachmentRepository.deleteAllByUserIdAndDocument(userId, documentEntityOptional.get());
             audit("Deleted attachments for document ID: {}", documentId.get());

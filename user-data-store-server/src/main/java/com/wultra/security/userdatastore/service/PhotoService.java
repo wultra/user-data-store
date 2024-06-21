@@ -39,7 +39,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -65,7 +64,7 @@ public class PhotoService {
         if (documentId.isPresent()) {
             final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
             if (documentEntityOptional.isEmpty()) {
-                return new PhotoResponse(Collections.emptyList());
+                throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
             }
             final DocumentEntity documentEntity = documentEntityOptional.get();
             final List<PhotoEntity> photoEntities = photoRepository.findAllByUserIdAndDocument(userId, documentEntity);
@@ -146,7 +145,7 @@ public class PhotoService {
         if (documentId.isPresent()) {
             final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
             if (documentEntityOptional.isEmpty()) {
-                return;
+                throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
             }
 
             photoRepository.deleteAllByUserIdAndDocument(userId, documentEntityOptional.get());
