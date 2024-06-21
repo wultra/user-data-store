@@ -145,6 +145,8 @@ public class DocumentService {
 
     @Transactional
     public void deleteDocuments(final String userId, final Optional<String> documentId) {
+        photoService.deletePhotos(userId, documentId);
+        attachmentService.deleteAttachments(userId, documentId);
         if (documentId.isPresent()) {
             int count = documentRepository.deleteAllByUserIdAndId(userId, documentId.get());
             if (count == 1) {
