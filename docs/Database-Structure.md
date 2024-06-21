@@ -24,23 +24,6 @@ In our case, the authentication tables are prefixed by `uds_`.
 
 This chapter explains individual tables and their columns. The column types are used from PostgreSQL dialect, other databases use types that are equivalent (mapping is usually straight-forward).
 
-<!-- begin database table uds_user_claims -->
-### User Claims Table
-
-Stores user claims.
-
-#### Schema
-
-| Name                     | Type                          | Info                      | Note                                                                                                           |
-|--------------------------|-------------------------------|---------------------------|----------------------------------------------------------------------------------------------------------------|
-| `user_id`                | `VARCHAR(255)`                | `NOT NULL PRIMARY KEY`    | Record identifier taken over from the creator.                                                                 |
-| `claims`                 | `TEXT`                        | `NOT NULL PRIMARY KEY`    | JSON with claims. Format depends on value of `encryption_mode`.                                                |
-| `encryption_mode`        | `VARCHAR(255)`                | `DEFAULT 'NO_ENCRYPTION'` | Drives format of claims. `NO_ENCRYPTION` means plaintext, `AES_HMAC` for AES encryption with HMAC-based index. |
-| `timestamp_created`      | `TIMESTAMP WITHOUT TIME ZONE` | `DEFAULT NOW()'`          | Timestamp of creation.                                                                                         |
-| `timestamp_last_updated` | `TIMESTAMP WITHOUT TIME ZONE` |                           | Timestamp of last update if any.                                                                               |
-
-<!-- end -->
-
 <!-- begin database table uds_document -->
 ### Documents Table
 
@@ -126,5 +109,22 @@ Stores attachments.
 | `encryption_mode`        | `VARCHAR(255)`                | `DEFAULT 'NO_ENCRYPTION' NOT NULL` | Encryption of attachment data: `NO_ENCRYPTION` means plaintext, `AES_HMAC` for AES encryption with HMAC-based index. |
 | `timestamp_created`      | `TIMESTAMP WITHOUT TIME ZONE` | `DEFAULT NOW()`                    | Timestamp of creation of the attachment.                                                                             |
 | `timestamp_last_updated` | `TIMESTAMP WITHOUT TIME ZONE` |                                    | Optional timestamp of last update of the attachment.                                                                 |
+
+<!-- end -->
+
+<!-- begin database table uds_user_claims -->
+### User Claims Table
+
+Stores user claims.
+
+#### Schema
+
+| Name                     | Type                          | Info                      | Note                                                                                                           |
+|--------------------------|-------------------------------|---------------------------|----------------------------------------------------------------------------------------------------------------|
+| `user_id`                | `VARCHAR(255)`                | `NOT NULL PRIMARY KEY`    | Record identifier taken over from the creator.                                                                 |
+| `claims`                 | `TEXT`                        | `NOT NULL PRIMARY KEY`    | JSON with claims. Format depends on value of `encryption_mode`.                                                |
+| `encryption_mode`        | `VARCHAR(255)`                | `DEFAULT 'NO_ENCRYPTION'` | Drives format of claims. `NO_ENCRYPTION` means plaintext, `AES_HMAC` for AES encryption with HMAC-based index. |
+| `timestamp_created`      | `TIMESTAMP WITHOUT TIME ZONE` | `DEFAULT NOW()'`          | Timestamp of creation.                                                                                         |
+| `timestamp_last_updated` | `TIMESTAMP WITHOUT TIME ZONE` |                           | Timestamp of last update if any.                                                                               |
 
 <!-- end -->
