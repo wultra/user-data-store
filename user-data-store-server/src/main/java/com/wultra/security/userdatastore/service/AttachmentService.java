@@ -31,7 +31,6 @@ import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.AttachmentRepository;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
-import io.getlime.core.rest.model.base.response.Response;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -104,7 +103,7 @@ public class AttachmentService {
         return new AttachmentCreateResponse(attachmentEntity.getId(), documentEntity.getId());
     }
 
-    public Response updateAttachment(final String attachmentId, final AttachmentUpdateRequest request) {
+    public void updateAttachment(final String attachmentId, final AttachmentUpdateRequest request) {
         final AttachmentEntity attachmentEntity = attachmentRepository.findById(attachmentId).orElseThrow(() ->
                new ResourceNotFoundException("Attachment not found, ID: '%s'".formatted(attachmentId)));
         final LocalDateTime timestamp = LocalDateTime.now();
@@ -115,8 +114,6 @@ public class AttachmentService {
         final DocumentEntity documentEntity = attachmentEntity.getDocument();
         documentEntity.setTimestampLastUpdated(timestamp);
         attachmentRepository.save(attachmentEntity);
-
-        return new Response();
     }
 
     @Transactional(readOnly = true)

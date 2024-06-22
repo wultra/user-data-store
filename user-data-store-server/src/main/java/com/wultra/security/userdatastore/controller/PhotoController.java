@@ -21,15 +21,17 @@ import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest
 import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
+import com.wultra.security.userdatastore.model.validator.PhotoRequestValidator;
 import com.wultra.security.userdatastore.service.PhotoService;
 import io.getlime.core.rest.model.base.request.ObjectRequest;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,14 +45,11 @@ import java.util.Optional;
 @RestController
 @Validated
 @Slf4j
+@AllArgsConstructor
 class PhotoController {
 
     private final PhotoService photoService;
-
-    @Autowired
-    PhotoController(PhotoService photoService) {
-        this.photoService = photoService;
-    }
+    private final PhotoRequestValidator validator = new PhotoRequestValidator();
 
     /**
      * Return photos for the given user and document.
@@ -81,8 +80,9 @@ class PhotoController {
             description = "Create a photo for the given user and document."
     )
     @PostMapping("/admin/photos")
-    public ObjectResponse<PhotoCreateResponse> createPhoto(@RequestBody final ObjectRequest<PhotoCreateRequest> request) {
+    public ObjectResponse<PhotoCreateResponse> createPhoto(@Valid @RequestBody final ObjectRequest<PhotoCreateRequest> request) {
         logger.info("Creating photo for user ID: {}", request.getRequestObject().userId());
+        validator.validateRequest(request.getRequestObject());
         final PhotoCreateResponse response = photoService.createPhoto(request.getRequestObject());
         return new ObjectResponse<>(response);
     }
@@ -98,9 +98,11 @@ class PhotoController {
             description = "Update a photo."
     )
     @PutMapping("/admin/photos/{photoId}")
-    public Response updatePhoto(@NotBlank @Size(max = 36) @PathVariable("photoId") String photoId, @RequestBody final ObjectRequest<PhotoUpdateRequest> request) {
+    public Response updatePhoto(@NotBlank @Size(max = 36) @PathVariable("photoId") String photoId, @Valid @RequestBody final ObjectRequest<PhotoUpdateRequest> request) {
         logger.info("Updating photo with ID: {}", photoId);
-        return photoService.updatePhoto(photoId, request.getRequestObject());
+        validator.validateRequest(request.getRequestObject());
+        photoService.updatePhoto(photoId, request.getRequestObject());
+        return new Response();
     }
 
     /**

@@ -73,7 +73,7 @@ class DocumentRestClientTest {
     @Test
     void testPostComposite() throws Exception {
         List<EmbeddedPhotoCreateRequest> photos = new ArrayList<>();
-        photos.add(new EmbeddedPhotoCreateRequest("test_type", "test_data", null));
+        photos.add(new EmbeddedPhotoCreateRequest("test_type", "aW1hZ2VfZGF0YQ==", null));
         List<EmbeddedAttachmentCreateRequest> attachments = new ArrayList<>();
         attachments.add(new EmbeddedAttachmentCreateRequest("test_type", "test_data", null));
         DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test_type", "1", null, "test_data", Collections.emptyMap(), photos, attachments);
@@ -124,4 +124,29 @@ class DocumentRestClientTest {
 
         assertThrows(UserDataStoreClientException.class, () -> restClient.fetchDocuments("bob", response.id()));
     }
+
+    @Test
+    void testValidation_NullUser() {
+        DocumentCreateRequest request = new DocumentCreateRequest(null, "test_type", "test_data_type", "1", null, "test_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        assertThrows(UserDataStoreClientException.class, () -> restClient.createDocument(request));
+    }
+
+    @Test
+    void testValidation_InvalidJson() {
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test_type", "claims", "1", null, "invalid_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        assertThrows(UserDataStoreClientException.class, () -> restClient.createDocument(request));
+    }
+
+    @Test
+    void testValidation_InvalidBase64() {
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test_type", "image_base64", "1", null, "invalid_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        assertThrows(UserDataStoreClientException.class, () -> restClient.createDocument(request));
+    }
+
+    @Test
+    void testValidation_InvalidUrl() {
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "test_type", "url", "1", null, "invalid_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        assertThrows(UserDataStoreClientException.class, () -> restClient.createDocument(request));
+    }
+
 }
