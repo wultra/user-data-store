@@ -64,16 +64,14 @@ public class DocumentRequestValidator {
 
     private void validateDataTypes(final String documentType, final String dataType, final String documentData) {
         switch (dataType) {
-            case "claims":
-            case "jwt":
-            case "vc":
+            case "claims", "jwt", "vc" -> {
                 try {
                     mapper.readTree(documentData);
                 } catch (JsonProcessingException e) {
                     throw new RequestValidationException(e.getMessage(), e);
                 }
-                break;
-            case "image_base64":
+            }
+            case "image_base64" -> {
                 if (documentType.equals("photo")) {
                     // avoid validation, photo is encoded separately in the photo request
                     return;
@@ -83,21 +81,22 @@ public class DocumentRequestValidator {
                 } catch (IllegalArgumentException e) {
                     throw new RequestValidationException(e.getMessage(), e);
                 }
-                break;
-            case "binary_base64":
+            }
+            case "binary_base64" -> {
                 try {
                     Base64.getDecoder().decode(documentData);
                 } catch (IllegalArgumentException e) {
                     throw new RequestValidationException(e.getMessage(), e);
                 }
-                break;
-            case "url":
+            }
+            case "url" -> {
                 try {
                     new URL(documentData);
                 } catch (MalformedURLException e) {
                     throw new RequestValidationException(e.getMessage(), e);
                 }
-                break;
+            }
+            default -> logger.debug("No validation rule for dataType: {}", dataType);
         }
     }
 }
