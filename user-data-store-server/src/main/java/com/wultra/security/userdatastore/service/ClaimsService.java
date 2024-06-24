@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -126,7 +127,7 @@ public class ClaimsService {
 
     @Transactional
     public void deleteClaims(final String userId, final String claim) {
-        if (claim.isEmpty()) {
+        if (!StringUtils.hasText(claim)) {
             final List<DocumentEntity> toDelete = documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE);
             documentRepository.deleteAll(toDelete);
             audit("Deleted claims of user ID: {}, claim: {}", userId);
