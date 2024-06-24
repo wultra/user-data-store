@@ -152,6 +152,18 @@ Fetch documents for a user.
   }
 }
 ```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "Document not found, ID: 'e6eea62b-274b-4c6a-81a8-5bbc75811863'"
+  }
+}
+```
 <!-- end -->
 
 <!-- begin api POST /admin/documents -->
@@ -311,6 +323,18 @@ Update a document.
   "status": "OK"
 }
 ```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "Document not found, ID: '8ab06a8d-b850-4259-9756-52ed44514b1'"
+  }
+}
+```
 <!-- end -->
 
 <!-- begin api DELETE /admin/documents -->
@@ -405,6 +429,18 @@ Fetch photos for a user.
   }
 }
 ```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "Document not found, ID: '8ab06a8d-b850-4259-9756-52ed44514b1'"
+  }
+}
+```
 <!-- end -->
 
 <!-- begin api POST /admin/photos -->
@@ -461,6 +497,30 @@ Create a photo.
   "responseObject": {
     "id": "e42c8432-6971-419d-9a23-1c4042d91e24",
     "documentId": "c55b1970-a336-49d4-8067-7aa32d64eebe"
+  }
+}
+```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "Document not found, ID: '49c6e850-900e-4d90-bdc8-d9bb47e44384'"
+  }
+}
+```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "User reference not valid, ID: 'user1'"
   }
 }
 ```
@@ -521,6 +581,18 @@ Update a photo.
   "status": "OK"
 }
 ```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "Photo not found, ID: 'e42c8432-6971-419d-9a23-1c4042d91e24'"
+  }
+}
+```
 <!-- end -->
 
 <!-- begin api DELETE /admin/photos -->
@@ -559,6 +631,18 @@ Delete photos.
 ```json
 {
   "status": "OK"
+}
+```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "Document not found, ID: '49c6e850-900e-4d90-bdc8-d9bb47e44384'"
+  }
 }
 ```
 <!-- end -->
@@ -612,6 +696,18 @@ Fetch attachments for a user.
         "timestampLastUpdated": null
       }
     ]
+  }
+}
+```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "Document not found, ID: '8ab06a8d-b850-4259-9756-52ed44514b1'"
   }
 }
 ```
@@ -674,6 +770,30 @@ Create an attachment.
   }
 }
 ```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "Document not found, ID: '49c6e850-900e-4d90-bdc8-d9bb47e44384'"
+  }
+}
+```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "User reference not valid, ID: 'user1'"
+  }
+}
+```
 <!-- end -->
 
 <!-- begin api PUT /admin/attachments/{attachmentId} -->
@@ -731,6 +851,18 @@ Update an attachment.
   "status": "OK"
 }
 ```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "Attachment not found, ID: '7ae0eef7-d266-4662-9c20-749e42f69f1b'"
+  }
+}
+```
 <!-- end -->
 
 <!-- begin api DELETE /admin/attachments -->
@@ -769,6 +901,18 @@ Delete attachments.
 ```json
 {
   "status": "OK"
+}
+```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "Document not found, ID: '49c6e850-900e-4d90-bdc8-d9bb47e44384'"
+  }
 }
 ```
 <!-- end -->
@@ -816,7 +960,7 @@ Fetch claims for a user.
 ```
 <!-- end -->
 
-<!-- begin api POST /admin/attachments -->
+<!-- begin api POST /admin/claims -->
 ### Create Claims
 
 Create a claim.
@@ -857,6 +1001,18 @@ Create a claim.
 ```json
 {
   "status": "OK"
+}
+```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "ALREADY_EXISTS",
+    "message": "Claims for user 'user1' already exist"
+  }
 }
 ```
 <!-- end -->
@@ -902,6 +1058,18 @@ Create a claim.
 ```json
 {
   "status": "OK"
+}
+```
+
+#### Response 400
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "NOT_FOUND",
+    "message": "Claims for user 'user1' do not exist"
+  }
 }
 ```
 <!-- end -->

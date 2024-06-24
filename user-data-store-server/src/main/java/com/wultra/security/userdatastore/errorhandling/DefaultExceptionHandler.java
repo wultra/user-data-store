@@ -20,6 +20,7 @@ package com.wultra.security.userdatastore.errorhandling;
 import com.wultra.security.userdatastore.model.error.EncryptionException;
 import com.wultra.security.userdatastore.model.error.InvalidRequestException;
 import com.wultra.security.userdatastore.model.error.RequestValidationException;
+import com.wultra.security.userdatastore.model.error.ResourceAlreadyExistsException;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import io.getlime.core.rest.model.base.response.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
@@ -94,6 +95,19 @@ class DefaultExceptionHandler {
     public ErrorResponse handleNotFoundException(final ResourceNotFoundException e) {
         logger.warn("Error occurred when processing request object.", e);
         return new ErrorResponse("NOT_FOUND", e.getMessage());
+    }
+
+    /**
+     * Exception handler for {@link ResourceAlreadyExistsException}.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleAlreadyExistsException(final ResourceAlreadyExistsException e) {
+        logger.warn("Error occurred when processing request object.", e);
+        return new ErrorResponse("ALREADY_EXISTS", e.getMessage());
     }
 
 }
