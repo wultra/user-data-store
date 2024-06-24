@@ -63,11 +63,8 @@ public class AttachmentService {
     @Transactional(readOnly = true)
     public AttachmentResponse fetchAttachments(final String userId, final Optional<String> documentId) {
         if (documentId.isPresent()) {
-            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
-            if (documentEntityOptional.isEmpty()) {
-                throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
-            }
-            final DocumentEntity documentEntity = documentEntityOptional.get();
+            final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
+                    () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
             final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserIdAndDocument(userId, documentEntity);
             attachmentEntities.forEach(encryptionService::decryptAttachment);
             final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
@@ -85,11 +82,8 @@ public class AttachmentService {
     public AttachmentCreateResponse createAttachment(final AttachmentCreateRequest request) {
         final String userId = request.userId();
         final String documentId = request.documentId();
-        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
-        if (documentEntityOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
-        }
-        final DocumentEntity documentEntity = documentEntityOptional.get();
+        final DocumentEntity documentEntity = documentRepository.findById(documentId).orElseThrow(
+                () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
         if (!documentEntity.getUserId().equals(userId)) {
             throw new ResourceNotFoundException("User reference not valid, ID: '%s'".formatted(userId));
         }
@@ -143,11 +137,9 @@ public class AttachmentService {
     @Transactional
     public void deleteAttachments(final String userId, final Optional<String> documentId) {
         if (documentId.isPresent()) {
-            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
-            if (documentEntityOptional.isEmpty()) {
-                throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
-            }
-            attachmentRepository.deleteAllByUserIdAndDocument(userId, documentEntityOptional.get());
+            final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
+                    () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
+            attachmentRepository.deleteAllByUserIdAndDocument(userId, documentEntity);
             audit("Deleted attachments for document ID: {}", documentId.get());
             return;
         }

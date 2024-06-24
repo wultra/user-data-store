@@ -62,11 +62,8 @@ public class PhotoService {
     @Transactional(readOnly = true)
     public PhotoResponse fetchPhotos(final String userId, final Optional<String> documentId) {
         if (documentId.isPresent()) {
-            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
-            if (documentEntityOptional.isEmpty()) {
-                throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
-            }
-            final DocumentEntity documentEntity = documentEntityOptional.get();
+            final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
+                    () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
             final List<PhotoEntity> photoEntities = photoRepository.findAllByUserIdAndDocument(userId, documentEntity);
             photoEntities.forEach(encryptionService::decryptPhoto);
             final List<PhotoDto> photos = photoEntities.stream().map(photoConverter::toPhoto).toList();
@@ -84,11 +81,8 @@ public class PhotoService {
     public PhotoCreateResponse createPhoto(final PhotoCreateRequest request) {
         final String userId = request.userId();
         final String documentId = request.documentId();
-        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
-        if (documentEntityOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
-        }
-        final DocumentEntity documentEntity = documentEntityOptional.get();
+        final DocumentEntity documentEntity = documentRepository.findById(documentId).orElseThrow(
+                () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
         if (!documentEntity.getUserId().equals(userId)) {
             throw new ResourceNotFoundException("User reference not valid, ID: '%s'".formatted(userId));
         }
@@ -143,12 +137,9 @@ public class PhotoService {
     @Transactional
     public void deletePhotos(final String userId, final Optional<String> documentId) {
         if (documentId.isPresent()) {
-            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
-            if (documentEntityOptional.isEmpty()) {
-                throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
-            }
-
-            photoRepository.deleteAllByUserIdAndDocument(userId, documentEntityOptional.get());
+            final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
+                    () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
+            photoRepository.deleteAllByUserIdAndDocument(userId, documentEntity);
             audit("Deleted photos for document ID: {}", documentId.get());
             return;
         }
