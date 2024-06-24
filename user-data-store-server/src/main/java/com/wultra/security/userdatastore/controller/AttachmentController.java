@@ -21,15 +21,17 @@ import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRe
 import com.wultra.security.userdatastore.client.model.request.AttachmentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
+import com.wultra.security.userdatastore.model.validator.AttachmentRequestValidator;
 import com.wultra.security.userdatastore.service.AttachmentService;
 import io.getlime.core.rest.model.base.request.ObjectRequest;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,14 +45,11 @@ import java.util.Optional;
 @RestController
 @Validated
 @Slf4j
+@AllArgsConstructor
 class AttachmentController {
 
     private final AttachmentService attachmentService;
-
-    @Autowired
-    AttachmentController(AttachmentService attachmentService) {
-        this.attachmentService = attachmentService;
-    }
+    private final AttachmentRequestValidator validator = new AttachmentRequestValidator();
 
     /**
      * Return attachments for the given user.
@@ -81,8 +80,9 @@ class AttachmentController {
             description = "Create an attachment for the given user and document."
     )
     @PostMapping("/admin/attachments")
-    public ObjectResponse<AttachmentCreateResponse> createAttachment(@RequestBody final ObjectRequest<AttachmentCreateRequest> request) {
+    public ObjectResponse<AttachmentCreateResponse> createAttachment(@Valid @RequestBody final ObjectRequest<AttachmentCreateRequest> request) {
         logger.info("Creating attachment for user ID: {}", request.getRequestObject().userId());
+        validator.validateRequest(request.getRequestObject());
         final AttachmentCreateResponse response = attachmentService.createAttachment(request.getRequestObject());
         return new ObjectResponse<>(response);
     }
@@ -98,9 +98,11 @@ class AttachmentController {
             description = "Update an attachment."
     )
     @PutMapping("/admin/attachments/{attachmentId}")
-    public Response updateAttachment(@NotBlank @Size(max = 36) @PathVariable("attachmentId") String attachmentId, @RequestBody final ObjectRequest<AttachmentUpdateRequest> request) {
+    public Response updateAttachment(@NotBlank @Size(max = 36) @PathVariable("attachmentId") String attachmentId, @Valid @RequestBody final ObjectRequest<AttachmentUpdateRequest> request) {
         logger.info("Updating attachment with ID: {}", attachmentId);
-        return attachmentService.updateAttachment(attachmentId, request.getRequestObject());
+        validator.validateRequest(request.getRequestObject());
+        attachmentService.updateAttachment(attachmentId, request.getRequestObject());
+        return new Response();
     }
 
     /**

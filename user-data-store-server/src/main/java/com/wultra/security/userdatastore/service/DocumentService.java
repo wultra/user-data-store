@@ -61,11 +61,9 @@ public class DocumentService {
     @Transactional(readOnly = true)
     public DocumentResponse fetchDocuments(final String userId, final Optional<String> documentId) {
         if (documentId.isPresent()) {
-            final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId.get());
-            if (documentEntityOptional.isEmpty()) {
-                throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId.get()));
-            }
-            final DocumentDto document = documentConverter.toDocument(documentEntityOptional.get());
+            final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
+                    () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId.get())));
+            final DocumentDto document = documentConverter.toDocument(documentEntity);
             return new DocumentResponse(Collections.singletonList(document));
         }
         final List<DocumentEntity> documentEntities = documentRepository.findAllByUserId(userId);
@@ -120,11 +118,8 @@ public class DocumentService {
     public Response updateDocument(final String documentId, final DocumentUpdateRequest request) {
         final String userId = request.userId();
         logger.debug("Updating document for user ID: {}", userId);
-        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentId);
-        if (documentEntityOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId));
-        }
-        DocumentEntity documentEntity = documentEntityOptional.get();
+        final DocumentEntity documentEntity = documentRepository.findById(documentId).orElseThrow(
+                () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
         documentEntity.setUserId(userId);
         documentEntity.setDocumentType(request.documentType());
         documentEntity.setDataType(request.dataType());
