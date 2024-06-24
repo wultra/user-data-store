@@ -24,6 +24,7 @@ import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequ
 import com.wultra.security.userdatastore.client.model.request.EmbeddedAttachmentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.EmbeddedPhotoCreateRequest;
 import com.wultra.security.userdatastore.model.error.RequestValidationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
 import java.net.MalformedURLException;
@@ -35,6 +36,7 @@ import java.util.Base64;
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
+@Slf4j
 public class DocumentRequestValidator {
 
     final ObjectMapper mapper = new ObjectMapper();
