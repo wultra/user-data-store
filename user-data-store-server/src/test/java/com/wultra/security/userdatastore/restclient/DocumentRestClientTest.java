@@ -86,7 +86,7 @@ class DocumentRestClientTest {
 
     @Test
     void testDeleteComposite() throws Exception {
-        final List<EmbeddedPhotoCreateRequest> photos = List.of(new EmbeddedPhotoCreateRequest("test_type", "test_data", null);
+        final List<EmbeddedPhotoCreateRequest> photos = List.of(new EmbeddedPhotoCreateRequest("test_type", "test_data", null));
         List<EmbeddedAttachmentCreateRequest> attachments = new ArrayList<>();
         attachments.add(new EmbeddedAttachmentCreateRequest("test_type", "test_data", null));
         DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test_type", "1", null, "test_data", Collections.emptyMap(), photos, attachments);
