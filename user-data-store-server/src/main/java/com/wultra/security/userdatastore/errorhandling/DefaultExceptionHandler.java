@@ -19,12 +19,14 @@ package com.wultra.security.userdatastore.errorhandling;
 
 import com.wultra.security.userdatastore.model.error.EncryptionException;
 import com.wultra.security.userdatastore.model.error.InvalidRequestException;
+import com.wultra.security.userdatastore.model.error.RequestValidationException;
 import com.wultra.security.userdatastore.model.error.ResourceAlreadyExistsException;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import io.getlime.core.rest.model.base.response.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -70,14 +72,14 @@ class DefaultExceptionHandler {
     }
 
     /**
-     * Exception handler for {@link InvalidRequestException} or {@link ConstraintViolationException}.
+     * Exception handler for invalid request exceptions.
      *
      * @param e Exception.
      * @return Response with error details.
      */
-    @ExceptionHandler({InvalidRequestException.class, ConstraintViolationException.class})
+    @ExceptionHandler({InvalidRequestException.class, ConstraintViolationException.class, MethodArgumentNotValidException.class, RequestValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInvalidRequestException(final RuntimeException e) {
+    public ErrorResponse handleInvalidRequestException(final Exception e) {
         logger.warn("Error occurred when processing request object.", e);
         return new ErrorResponse("INVALID_REQUEST", e.getMessage());
     }

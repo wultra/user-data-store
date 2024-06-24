@@ -31,7 +31,6 @@ import com.wultra.security.userdatastore.model.entity.PhotoEntity;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import com.wultra.security.userdatastore.model.repository.PhotoRepository;
-import io.getlime.core.rest.model.base.response.Response;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -118,7 +117,7 @@ public class PhotoService {
         return new PhotoCreateResponse(photoEntity.getId(), documentEntity.getId());
     }
 
-    public Response updatePhoto(final String photoId, final PhotoUpdateRequest request) {
+    public void updatePhoto(final String photoId, final PhotoUpdateRequest request) {
         final PhotoEntity photoEntity = photoRepository.findById(photoId).orElseThrow(() ->
                 new ResourceNotFoundException("Photo not found, ID: '%s'".formatted(photoId)));
         final LocalDateTime timestamp = LocalDateTime.now();
@@ -130,8 +129,6 @@ public class PhotoService {
         documentEntity.setTimestampLastUpdated(timestamp);
 
         photoRepository.save(photoEntity);
-
-        return new Response();
     }
 
     @Transactional

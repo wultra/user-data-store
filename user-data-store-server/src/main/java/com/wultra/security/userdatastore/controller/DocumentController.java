@@ -21,16 +21,17 @@ import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequ
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
+import com.wultra.security.userdatastore.model.validator.DocumentRequestValidator;
 import com.wultra.security.userdatastore.service.DocumentService;
 import io.getlime.core.rest.model.base.request.ObjectRequest;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,14 +45,11 @@ import java.util.Optional;
 @RestController
 @Validated
 @Slf4j
+@AllArgsConstructor
 class DocumentController {
 
     private final DocumentService documentService;
-
-    @Autowired
-    DocumentController(DocumentService documentService) {
-        this.documentService = documentService;
-    }
+    private final DocumentRequestValidator validator = new DocumentRequestValidator();
 
     /**
      * Return documents for the given user.
@@ -82,8 +80,9 @@ class DocumentController {
             description = "Create a documents for the given user."
     )
     @PostMapping("/admin/documents")
-    public ObjectResponse<DocumentCreateResponse> createDocument(@RequestBody final ObjectRequest<DocumentCreateRequest> request) {
+    public ObjectResponse<DocumentCreateResponse> createDocument(@Valid @RequestBody final ObjectRequest<DocumentCreateRequest> request) {
         logger.info("Creating document for user ID: {}", request.getRequestObject().userId());
+        validator.validateRequest(request.getRequestObject());
         final DocumentCreateResponse response = documentService.createDocument(request.getRequestObject());
         return new ObjectResponse<>(response);
     }
@@ -100,8 +99,9 @@ class DocumentController {
             description = "Update a document for the given user."
     )
     @PutMapping("/admin/documents/{documentId}")
-    public Response updateDocument(@NotBlank @Size(max = 36) @PathVariable("documentId") String documentId, @RequestBody final ObjectRequest<DocumentUpdateRequest> request) {
+    public Response updateDocument(@NotBlank @Size(max = 36) @PathVariable("documentId") String documentId, @Valid @RequestBody final ObjectRequest<DocumentUpdateRequest> request) {
         logger.info("Updating document for user ID: {}", request.getRequestObject().userId());
+        validator.validateRequest(request.getRequestObject());
         documentService.updateDocument(documentId, request.getRequestObject());
         return new Response();
     }

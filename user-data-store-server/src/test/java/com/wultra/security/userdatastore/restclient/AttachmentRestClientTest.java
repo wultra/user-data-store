@@ -20,6 +20,7 @@ package com.wultra.security.userdatastore.restclient;
 import com.wultra.core.rest.client.base.RestClientConfiguration;
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
+import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
 import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.AttachmentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
@@ -113,5 +114,27 @@ class AttachmentRestClientTest {
 
         AttachmentResponse fetchResponse3 = restClient.fetchAttachments("alice", attachmentResponse.documentId());
         assertEquals(0, fetchResponse3.attachments().size());
+    }
+
+    @Test
+    void testValidation_NullUser() {
+        AttachmentCreateRequest attachmentRequest = new AttachmentCreateRequest(null, "123", "test", "test_data", null);
+        assertThrows(UserDataStoreClientException.class, () -> restClient.createAttachment(attachmentRequest));
+    }
+
+    @Test
+    void testValidation_InvalidImageBase64() throws Exception {
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "personal_id", "profile", "1", null, "{}", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        restClient.createDocument(request);
+        AttachmentCreateRequest attachmentRequest = new AttachmentCreateRequest(null, "123", "image_base64", "invalid_data", null);
+        assertThrows(UserDataStoreClientException.class, () -> restClient.createAttachment(attachmentRequest));
+    }
+
+    @Test
+    void testValidation_InvalidBinaryBase64() throws Exception {
+        DocumentCreateRequest request = new DocumentCreateRequest("alice", "personal_id", "profile", "1", null, "{}", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        restClient.createDocument(request);
+        AttachmentCreateRequest attachmentRequest = new AttachmentCreateRequest(null, "123", "binary_base64", "invalid_data", null);
+        assertThrows(UserDataStoreClientException.class, () -> restClient.createAttachment(attachmentRequest));
     }
 }
