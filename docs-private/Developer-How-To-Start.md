@@ -29,14 +29,14 @@ liquibase --changeLogFile=./docs/db/changelog/changesets/user-data-store/db.chan
 ### Oracle
 
 ```shell
-liquibase --changeLogFile=./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml --output-file=./docs/sql/oracle/create-schema.sql updateSQL --url=offline:oracle
+liquibase --changeLogFile=./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml --output-file=./docs/sql/oracle/generated-oracle-script.sql updateSQL --url=offline:oracle
 ```
 
 
 ### MS SQL
 
 ```shell
-liquibase --changeLogFile=./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml --output-file=./docs/sql/mssql/create-schema.sql updateSQL --url=offline:mssql
+liquibase --changeLogFile=./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml --output-file=./docs/sql/mssql/generated-mssql-script.sql updateSQL --url=offline:mssql
 ```
 
 
