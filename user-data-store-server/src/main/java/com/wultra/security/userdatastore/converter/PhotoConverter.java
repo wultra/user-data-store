@@ -18,13 +18,11 @@
 package com.wultra.security.userdatastore.converter;
 
 import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
-import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.entity.PhotoEntity;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.wultra.security.userdatastore.service.EncryptionService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 /**
  * Converter for photos.
@@ -32,44 +30,10 @@ import java.util.Optional;
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Component
+@AllArgsConstructor
 public class PhotoConverter {
 
-    private final DocumentRepository documentRepository;
-
-    /**
-     * Converter constructor.
-     * @param documentRepository Document repository.
-     */
-    @Autowired
-    public PhotoConverter(DocumentRepository documentRepository) {
-        this.documentRepository = documentRepository;
-    }
-
-    /**
-     * Convert {@link PhotoDto} to {@link PhotoEntity}.
-     * @param photo Photo DTO.
-     * @return Photo entity.
-     */
-    public PhotoEntity toPhotoEntity(final PhotoDto photo) {
-        if (photo == null) {
-            return null;
-        }
-
-        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(photo.documentId());
-        if (documentEntityOptional.isEmpty()) {
-            return null;
-        }
-
-        final PhotoEntity entity = new PhotoEntity();
-        entity.setId(photo.id());
-        entity.setDocument(documentEntityOptional.get());
-        entity.setPhotoData(photo.photoData());
-        entity.setPhotoType(photo.photoType());
-        entity.setExternalId(photo.externalId());
-        entity.setTimestampCreated(photo.timestampCreated());
-        entity.setTimestampLastUpdated(photo.timestampLastUpdated());
-        return entity;
-    }
+    private final EncryptionService encryptionService;
 
     /**
      * Convert {@link PhotoEntity} to {@link PhotoDto}.
@@ -84,7 +48,7 @@ public class PhotoConverter {
         return PhotoDto.builder()
                 .id(entity.getId())
                 .documentId(entity.getDocument().getId())
-                .photoData(entity.getPhotoData())
+                .photoData(encryptionService.decryptPhoto(entity))
                 .photoType(entity.getPhotoType())
                 .externalId(entity.getExternalId())
                 .timestampCreated(entity.getTimestampCreated())
@@ -93,4 +57,3 @@ public class PhotoConverter {
     }
 
 }
-

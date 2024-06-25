@@ -22,6 +22,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
+import com.wultra.security.userdatastore.service.EncryptionService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -35,33 +37,11 @@ import java.util.Map;
  */
 @Component
 @Slf4j
+@AllArgsConstructor
 public class DocumentConverter {
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
-    /**
-     * Convert {@link DocumentDto} to {@link DocumentEntity}.
-     * @param document Document DTO.
-     * @return Document entity.
-     */
-    public DocumentEntity toDocumentEntity(final DocumentDto document) {
-        if (document == null) {
-            return null;
-        }
-
-        final DocumentEntity entity = new DocumentEntity();
-        entity.setId(document.id());
-        entity.setUserId(document.userId());
-        entity.setDocumentType(document.documentType());
-        entity.setDataType(document.dataType());
-        entity.setDocumentDataId(document.documentDataId());
-        entity.setExternalId(document.externalId());
-        entity.setDocumentData(document.documentData());
-        convertAndSetAttributes(document.attributes(), entity);
-        entity.setTimestampCreated(document.timestampCreated());
-        entity.setTimestampLastUpdated(document.timestampLastUpdated());
-        return entity;
-    }
+    private final EncryptionService encryptionService;
 
     /**
      * Convert {@link DocumentEntity} to {@link DocumentDto}.
@@ -80,7 +60,7 @@ public class DocumentConverter {
                 .dataType(entity.getDataType())
                 .documentDataId(entity.getDocumentDataId())
                 .externalId(entity.getExternalId())
-                .documentData(entity.getDocumentData())
+                .documentData(encryptionService.decryptDocumentData(entity))
                 .attributes(convertAttributesToMap(entity.getAttributes()))
                 .timestampCreated(entity.getTimestampCreated())
                 .timestampLastUpdated(entity.getTimestampLastUpdated())

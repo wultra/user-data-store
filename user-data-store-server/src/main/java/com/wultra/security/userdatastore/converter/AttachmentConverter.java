@@ -19,12 +19,10 @@ package com.wultra.security.userdatastore.converter;
 
 import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
 import com.wultra.security.userdatastore.model.entity.AttachmentEntity;
-import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.wultra.security.userdatastore.service.EncryptionService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 /**
  * Converter for attachments.
@@ -32,44 +30,10 @@ import java.util.Optional;
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Component
+@AllArgsConstructor
 public class AttachmentConverter {
 
-    private final DocumentRepository documentRepository;
-
-    /**
-     * Converter constructor.
-     * @param documentRepository Document repository.
-     */
-    @Autowired
-    public AttachmentConverter(DocumentRepository documentRepository) {
-        this.documentRepository = documentRepository;
-    }
-
-    /**
-     * Convert {@link AttachmentDto} to {@link AttachmentEntity}.
-     * @param attachment Attachment DTO.
-     * @return Attachment entity.
-     */
-    public AttachmentEntity toAttachmentEntity(final AttachmentDto attachment) {
-        if (attachment == null) {
-            return null;
-        }
-
-        final Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(attachment.documentId());
-        if (documentEntityOptional.isEmpty()) {
-            return null;
-        }
-
-        final AttachmentEntity entity = new AttachmentEntity();
-        entity.setId(attachment.id());
-        entity.setDocument(documentEntityOptional.get());
-        entity.setAttachmentData(attachment.attachmentData());
-        entity.setAttachmentType(attachment.attachmentType());
-        entity.setExternalId(attachment.externalId());
-        entity.setTimestampCreated(attachment.timestampCreated());
-        entity.setTimestampLastUpdated(attachment.timestampLastUpdated());
-        return entity;
-    }
+    private final EncryptionService encryptionService;
 
     /**
      * Convert {@link AttachmentEntity} to {@link AttachmentDto}.
@@ -84,7 +48,7 @@ public class AttachmentConverter {
         return AttachmentDto.builder()
                 .id(entity.getId())
                 .documentId(entity.getDocument().getId())
-                .attachmentData(entity.getAttachmentData())
+                .attachmentData(encryptionService.decryptAttachment(entity))
                 .attachmentType(entity.getAttachmentType())
                 .externalId(entity.getExternalId())
                 .timestampCreated(entity.getTimestampCreated())

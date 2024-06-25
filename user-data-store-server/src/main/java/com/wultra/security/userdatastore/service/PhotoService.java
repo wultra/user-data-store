@@ -64,13 +64,11 @@ public class PhotoService {
             final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
                     () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
             final List<PhotoEntity> photoEntities = photoRepository.findAllByUserIdAndDocument(userId, documentEntity);
-            photoEntities.forEach(encryptionService::decryptPhoto);
             final List<PhotoDto> photos = photoEntities.stream().map(photoConverter::toPhoto).toList();
             audit("Retrieved photos for user ID: {}", userId);
             return new PhotoResponse(photos);
         }
         final List<PhotoEntity> photoEntities = photoRepository.findAllByUserId(userId);
-        photoEntities.forEach(encryptionService::decryptPhoto);
         final List<PhotoDto> photos = photoEntities.stream().map(photoConverter::toPhoto).toList();
         audit("Retrieved photos for user ID: {}", userId);
         return new PhotoResponse(photos);
