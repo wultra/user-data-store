@@ -102,10 +102,10 @@ class DocumentController {
     )
     @PutMapping("/admin/documents/{documentId}")
     public Response updateDocument(@NotBlank @Size(max = 36) @PathVariable("documentId") String documentId, @Valid @RequestBody final ObjectRequest<DocumentUpdateRequest> request) {
-        logger.info("action: updateDocument, state: initiated, documentId: {}", documentId);
+        logger.info("action: updateDocument, state: initiated, userId: {}, documentId: {}", request.getRequestObject().userId(), documentId);
         validator.validateRequest(request.getRequestObject());
         documentService.updateDocument(documentId, request.getRequestObject());
-        logger.info("action: updateDocument, state: succeeded, documentId: {}", documentId);
+        logger.info("action: updateDocument, state: succeeded, userId: {}, documentId: {}", request.getRequestObject().userId(), documentId);
         return new Response();
     }
 
