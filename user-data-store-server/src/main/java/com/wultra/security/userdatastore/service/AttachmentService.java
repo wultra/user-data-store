@@ -38,7 +38,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -118,6 +117,7 @@ public class AttachmentService {
         return new AttachmentCreateResponse(attachmentEntity.getId(), documentEntity.getId());
     }
 
+    @Transactional
     public void updateAttachment(final String attachmentId, final AttachmentUpdateRequest request) {
         final AttachmentEntity attachmentEntity = attachmentRepository.findById(attachmentId).orElseThrow(() ->
                new ResourceNotFoundException("Attachment not found, ID: '%s'".formatted(attachmentId)));

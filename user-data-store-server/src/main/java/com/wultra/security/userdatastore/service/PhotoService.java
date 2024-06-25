@@ -117,6 +117,7 @@ public class PhotoService {
         return new PhotoCreateResponse(photoEntity.getId(), documentEntity.getId());
     }
 
+    @Transactional
     public void updatePhoto(final String photoId, final PhotoUpdateRequest request) {
         final PhotoEntity photoEntity = photoRepository.findById(photoId).orElseThrow(() ->
                 new ResourceNotFoundException("Photo not found, ID: '%s'".formatted(photoId)));
