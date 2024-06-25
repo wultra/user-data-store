@@ -67,7 +67,6 @@ public class DocumentService {
             return new DocumentResponse(Collections.singletonList(document));
         }
         final List<DocumentEntity> documentEntities = documentRepository.findAllByUserId(userId);
-        documentEntities.forEach(encryptionService::decryptDocumentData);
         final List<DocumentDto> documents = documentEntities.stream().map(documentConverter::toDocument).toList();
         audit("Retrieved documents of user ID: {}", userId);
         return new DocumentResponse(documents);

@@ -47,7 +47,7 @@ import java.util.Base64;
  */
 @Service
 @Slf4j
-class EncryptionService {
+public class EncryptionService {
 
     private final String masterDbEncryptionKeyBase64;
 

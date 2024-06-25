@@ -70,7 +70,6 @@ public class AttachmentService {
             return new AttachmentResponse(attachments);
         }
         final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserId(userId);
-        attachmentEntities.forEach(encryptionService::decryptAttachment);
         final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
         audit("Retrieved attachments for user ID: {}", userId);
         return new AttachmentResponse(attachments);
