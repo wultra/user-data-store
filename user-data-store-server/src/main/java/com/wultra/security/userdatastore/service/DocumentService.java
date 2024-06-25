@@ -64,6 +64,7 @@ public class DocumentService {
             final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
                     () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId.get())));
             final DocumentDto document = documentConverter.toDocument(documentEntity);
+            audit("Retrieved documents of user ID: {}", userId);
             return new DocumentResponse(Collections.singletonList(document));
         }
         final List<DocumentEntity> documentEntities = documentRepository.findAllByUserId(userId);
@@ -145,7 +146,7 @@ public class DocumentService {
         if (documentId.isPresent()) {
             int count = documentRepository.deleteAllByUserIdAndId(userId, documentId.get());
             if (count == 1) {
-                audit("Deleted document with ID: {}", documentId.get());
+                audit("Deleted document for user ID: {}", userId);
             }
             return;
         }

@@ -64,8 +64,9 @@ class PhotoController {
     )
     @GetMapping("/photos")
     public ObjectResponse<PhotoResponse> fetchPhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
-        logger.info("Fetching photos for document ID: {}", documentId);
+        logger.info("action: fetchPhotos, state: initiated, userId: {}, documentId: {}", userId, documentId);
         final PhotoResponse photos = photoService.fetchPhotos(userId, Optional.ofNullable(documentId));
+        logger.info("action: fetchPhotos, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new ObjectResponse<>(photos);
     }
 
@@ -81,9 +82,10 @@ class PhotoController {
     )
     @PostMapping("/admin/photos")
     public ObjectResponse<PhotoCreateResponse> createPhoto(@Valid @RequestBody final ObjectRequest<PhotoCreateRequest> request) {
-        logger.info("Creating photo for user ID: {}", request.getRequestObject().userId());
+        logger.info("action: createPhoto, state: initiated, userId: {}, documentId: {}", request.getRequestObject().userId(), request.getRequestObject().documentId());
         validator.validateRequest(request.getRequestObject());
         final PhotoCreateResponse response = photoService.createPhoto(request.getRequestObject());
+        logger.info("action: createPhoto, state: succeeded, userId: {}, documentId: {}", request.getRequestObject().userId(), request.getRequestObject().documentId());
         return new ObjectResponse<>(response);
     }
 
@@ -99,9 +101,10 @@ class PhotoController {
     )
     @PutMapping("/admin/photos/{photoId}")
     public Response updatePhoto(@NotBlank @Size(max = 36) @PathVariable("photoId") String photoId, @Valid @RequestBody final ObjectRequest<PhotoUpdateRequest> request) {
-        logger.info("Updating photo with ID: {}", photoId);
+        logger.info("action: createPhoto, state: initiated, photoId: {}", photoId);
         validator.validateRequest(request.getRequestObject());
         photoService.updatePhoto(photoId, request.getRequestObject());
+        logger.info("action: createPhoto, state: succeeded, photoId: {}", photoId);
         return new Response();
     }
 
@@ -118,8 +121,9 @@ class PhotoController {
     )
     @DeleteMapping("/admin/photos")
     public Response deletePhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
-        logger.info("Deleting photos for document ID: {}", documentId);
+        logger.info("action: deletePhotos, state: initiated, userId: {}, documentId: {}", userId, documentId);
         photoService.deletePhotos(userId, Optional.ofNullable(documentId));
+        logger.info("action: deletePhotos, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new Response();
     }
 

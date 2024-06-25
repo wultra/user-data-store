@@ -66,7 +66,7 @@ public class PhotoService {
             final List<PhotoEntity> photoEntities = photoRepository.findAllByUserIdAndDocument(userId, documentEntity);
             photoEntities.forEach(encryptionService::decryptPhoto);
             final List<PhotoDto> photos = photoEntities.stream().map(photoConverter::toPhoto).toList();
-            audit("Retrieved photos for document ID: {}", documentId.get());
+            audit("Retrieved photos for user ID: {}", userId);
             return new PhotoResponse(photos);
         }
         final List<PhotoEntity> photoEntities = photoRepository.findAllByUserId(userId);
@@ -97,6 +97,7 @@ public class PhotoService {
         documentEntity.setTimestampLastUpdated(timestamp);
 
         photoRepository.save(photoEntity);
+        audit("Created photo for user ID: {}", userId);
 
         return new PhotoCreateResponse(photoEntity.getId(), documentEntity.getId());
     }
@@ -113,6 +114,7 @@ public class PhotoService {
         encryptionService.encryptPhoto(photoEntity, request.photoData());
 
         photoRepository.save(photoEntity);
+        audit("Created photo for user ID: {}", photoEntity.getUserId());
 
         return new PhotoCreateResponse(photoEntity.getId(), documentEntity.getId());
     }
@@ -130,6 +132,7 @@ public class PhotoService {
         documentEntity.setTimestampLastUpdated(timestamp);
 
         photoRepository.save(photoEntity);
+        audit("Updated photo for user ID: {}", photoEntity.getUserId());
     }
 
     @Transactional
@@ -138,7 +141,7 @@ public class PhotoService {
             final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
                     () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
             photoRepository.deleteAllByUserIdAndDocument(userId, documentEntity);
-            audit("Deleted photos for document ID: {}", documentId.get());
+            audit("Deleted photos for user ID: {}", userId);
             return;
         }
         photoRepository.deleteAllByUserId(userId);
