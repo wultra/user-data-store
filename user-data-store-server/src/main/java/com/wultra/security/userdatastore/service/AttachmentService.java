@@ -64,7 +64,6 @@ public class AttachmentService {
             final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
                     () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
             final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserIdAndDocument(userId, documentEntity);
-            attachmentEntities.forEach(encryptionService::decryptAttachment);
             final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
             audit("Retrieved attachments for document ID: {}", documentId.get());
             return new AttachmentResponse(attachments);
