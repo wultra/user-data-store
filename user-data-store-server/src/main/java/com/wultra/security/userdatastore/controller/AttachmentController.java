@@ -64,8 +64,9 @@ class AttachmentController {
     )
     @GetMapping("/attachments")
     public ObjectResponse<AttachmentResponse> fetchAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
-        logger.info("Fetching photos for document ID: {}", documentId);
+        logger.info("action: fetchAttachments, state: initiated, userId: {}, documentId: {}", userId, documentId);
         final AttachmentResponse attachments = attachmentService.fetchAttachments(userId, Optional.ofNullable(documentId));
+        logger.info("action: fetchAttachments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new ObjectResponse<>(attachments);
     }
 
@@ -81,9 +82,10 @@ class AttachmentController {
     )
     @PostMapping("/admin/attachments")
     public ObjectResponse<AttachmentCreateResponse> createAttachment(@Valid @RequestBody final ObjectRequest<AttachmentCreateRequest> request) {
-        logger.info("Creating attachment for user ID: {}", request.getRequestObject().userId());
+        logger.info("action: createAttachment, state: initiated, userId: {}", request.getRequestObject().userId());
         validator.validateRequest(request.getRequestObject());
         final AttachmentCreateResponse response = attachmentService.createAttachment(request.getRequestObject());
+        logger.info("action: createAttachment, state: succeeded, userId: {}", request.getRequestObject().userId());
         return new ObjectResponse<>(response);
     }
 
@@ -99,9 +101,10 @@ class AttachmentController {
     )
     @PutMapping("/admin/attachments/{attachmentId}")
     public Response updateAttachment(@NotBlank @Size(max = 36) @PathVariable("attachmentId") String attachmentId, @Valid @RequestBody final ObjectRequest<AttachmentUpdateRequest> request) {
-        logger.info("Updating attachment with ID: {}", attachmentId);
+        logger.info("action: updateAttachment, state: initiated, attachmentId: {}", attachmentId);
         validator.validateRequest(request.getRequestObject());
         attachmentService.updateAttachment(attachmentId, request.getRequestObject());
+        logger.info("action: updateAttachment, state: succeeded, attachmentId: {}", attachmentId);
         return new Response();
     }
 
@@ -118,8 +121,9 @@ class AttachmentController {
     )
     @DeleteMapping("/admin/attachments")
     public Response deleteAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
-        logger.info("Deleting attachments for document ID: {}", documentId);
+        logger.info("action: deleteAttachments, state: initiated, userId: {}, documentId: {}", userId, documentId);
         attachmentService.deleteAttachments(userId, Optional.ofNullable(documentId));
+        logger.info("action: deleteAttachments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new Response();
     }
 

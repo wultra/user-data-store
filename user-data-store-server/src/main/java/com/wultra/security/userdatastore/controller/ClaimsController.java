@@ -58,9 +58,10 @@ class ClaimsController {
             description = "Return claims for the given user."
     )
     @GetMapping("/claims")
-    public ObjectResponse<Object> fetchClaim(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
-        logger.info("Fetching claim of user ID: {}, claim: {}", userId, claim);
+    public ObjectResponse<Object> fetchClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
+        logger.info("action: fetchClaims, state: initiated, userId: {}, claim: {}", userId, claim);
         final Object claims = claimsService.fetchClaims(userId, Optional.ofNullable(claim));
+        logger.info("action: fetchClaims, state: succeeded, userId: {}, claim: {}", userId, claim);
         return new ObjectResponse<>(claims);
     }
 
@@ -77,8 +78,9 @@ class ClaimsController {
     )
     @PostMapping("/admin/claims")
     public Response createClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
-        logger.info("Creating claims for user ID: {}", claims);
+        logger.info("action: createClaims, state: initiated, userId: {}", userId);
         claimsService.createClaims(userId, claims);
+        logger.info("action: createClaims, state: succeeded, userId: {}", userId);
         return new Response();
     }
 
@@ -95,8 +97,9 @@ class ClaimsController {
     )
     @PutMapping("/admin/claims")
     public Response updateClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
-        logger.info("Updating claims for user ID: {}", claims);
+        logger.info("action: updateClaims, state: initiated, userId: {}", userId);
         claimsService.updateClaims(userId, claims);
+        logger.info("action: updateClaims, state: succeeded, userId: {}", userId);
         return new Response();
     }
 
@@ -111,9 +114,10 @@ class ClaimsController {
             description = "Delete claims of the given user."
     )
     @DeleteMapping("/admin/claims")
-    public Response deleteClaim(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
-        logger.info("Updating claims of user ID: {}, deleted claim: {}", userId, claim);
+    public Response deleteClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
+        logger.info("action: deleteClaims, state: initiated, userId: {}, claim: {}", userId, claim);
         claimsService.deleteClaims(userId, claim);
+        logger.info("action: deleteClaims, state: succeeded, userId: {}, claim: {}", userId, claim);
         return new Response();
     }
 }

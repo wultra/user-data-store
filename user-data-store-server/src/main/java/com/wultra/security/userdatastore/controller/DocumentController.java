@@ -64,8 +64,9 @@ class DocumentController {
     )
     @GetMapping("/documents")
     public ObjectResponse<DocumentResponse> fetchDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
-        logger.info("Fetching documents; user ID: {}, document ID: {}", userId, documentId);
+        logger.info("action: fetchDocuments, state: initiated, userId: {}, documentId: {}", userId, documentId);
         final DocumentResponse documents = documentService.fetchDocuments(userId, Optional.ofNullable(documentId));
+        logger.info("action: fetchDocuments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new ObjectResponse<>(documents);
     }
 
@@ -81,9 +82,10 @@ class DocumentController {
     )
     @PostMapping("/admin/documents")
     public ObjectResponse<DocumentCreateResponse> createDocument(@Valid @RequestBody final ObjectRequest<DocumentCreateRequest> request) {
-        logger.info("Creating document for user ID: {}", request.getRequestObject().userId());
+        logger.info("action: createDocument, state: initiated, userId: {}", request.getRequestObject().userId());
         validator.validateRequest(request.getRequestObject());
         final DocumentCreateResponse response = documentService.createDocument(request.getRequestObject());
+        logger.info("action: createDocument, state: succeeded, userId: {}", request.getRequestObject().userId());
         return new ObjectResponse<>(response);
     }
 
@@ -100,9 +102,10 @@ class DocumentController {
     )
     @PutMapping("/admin/documents/{documentId}")
     public Response updateDocument(@NotBlank @Size(max = 36) @PathVariable("documentId") String documentId, @Valid @RequestBody final ObjectRequest<DocumentUpdateRequest> request) {
-        logger.info("Updating document for user ID: {}", request.getRequestObject().userId());
+        logger.info("action: updateDocument, state: initiated, documentId: {}", documentId);
         validator.validateRequest(request.getRequestObject());
         documentService.updateDocument(documentId, request.getRequestObject());
+        logger.info("action: updateDocument, state: succeeded, documentId: {}", documentId);
         return new Response();
     }
 
@@ -119,8 +122,9 @@ class DocumentController {
     )
     @DeleteMapping("/admin/documents")
     public Response deleteDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
-        logger.info("Deleting documents; user ID: {}, document ID: {}", userId, documentId);
+        logger.info("action: deleteDocuments, state: initiated, userId: {}, documentId: {}", userId, documentId);
         documentService.deleteDocuments(userId, Optional.ofNullable(documentId));
+        logger.info("action: deleteDocuments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new Response();
     }
 

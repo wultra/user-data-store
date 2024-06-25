@@ -59,8 +59,9 @@ class UserClaimsController {
     )
     @GetMapping("/private/user-claims")
     public ObjectResponse<Object> fetchClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
-        logger.info("Fetching claims of user ID: {}", userId);
+        logger.info("action: fetchClaims, state: initiated, userId: {}", userId);
         final Object userClaims = userClaimsService.fetchUserClaims(userId);
+        logger.info("action: fetchClaims, state: succeeded, userId: {}", userId);
         return new ObjectResponse<>(userClaims);
     }
 
@@ -77,8 +78,9 @@ class UserClaimsController {
     )
     @PostMapping("/public/user-claims")
     public Response storeClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
-        logger.info("Creating or updating claims of user ID: {}", userId);
+        logger.info("action: storeClaims, state: initiated, userId: {}", userId);
         userClaimsService.createOrUpdateUserClaims(userId, claims);
+        logger.info("action: storeClaims, state: succeeded, userId: {}", userId);
         return new Response();
     }
 
@@ -94,8 +96,9 @@ class UserClaimsController {
     )
     @DeleteMapping("/public/user-claims")
     public Response deleteClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
-        logger.info("Deleting claims of user ID: {}", userId);
+        logger.info("action: deleteClaims, state: initiated, userId: {}", userId);
         userClaimsService.deleteUserClaims(userId);
+        logger.info("action: deleteClaims, state: succeeded, userId: {}", userId);
         return new Response();
     }
 }

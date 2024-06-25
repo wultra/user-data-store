@@ -67,7 +67,8 @@ class DefaultExceptionHandler {
     @ExceptionHandler(EncryptionException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleEncryptionException(final EncryptionException e) {
-        logger.warn("Error occurred when processing request object.", e);
+        logger.warn("Error occurred when processing request object: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
         return new ErrorResponse("ENCRYPTION_ERROR", e.getMessage());
     }
 
@@ -80,7 +81,8 @@ class DefaultExceptionHandler {
     @ExceptionHandler({InvalidRequestException.class, ConstraintViolationException.class, MethodArgumentNotValidException.class, RequestValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvalidRequestException(final Exception e) {
-        logger.warn("Error occurred when processing request object.", e);
+        logger.warn("Error occurred when processing request object: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
         return new ErrorResponse("INVALID_REQUEST", e.getMessage());
     }
 
@@ -93,7 +95,8 @@ class DefaultExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNotFoundException(final ResourceNotFoundException e) {
-        logger.warn("Error occurred when processing request object.", e);
+        logger.warn("Error occurred when processing request object: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
         return new ErrorResponse("NOT_FOUND", e.getMessage());
     }
 
@@ -106,7 +109,8 @@ class DefaultExceptionHandler {
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleAlreadyExistsException(final ResourceAlreadyExistsException e) {
-        logger.warn("Error occurred when processing request object.", e);
+        logger.warn("Error occurred when processing request object: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
         return new ErrorResponse("ALREADY_EXISTS", e.getMessage());
     }
 

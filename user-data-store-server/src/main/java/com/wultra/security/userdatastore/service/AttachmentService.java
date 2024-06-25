@@ -38,7 +38,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -67,7 +66,7 @@ public class AttachmentService {
             final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserIdAndDocument(userId, documentEntity);
             attachmentEntities.forEach(encryptionService::decryptAttachment);
             final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
-            audit("Retrieved attachments for document ID: {}", documentId.get());
+            audit("Retrieved attachments for user ID: {}", userId);
             return new AttachmentResponse(attachments);
         }
         final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserId(userId);
@@ -98,6 +97,7 @@ public class AttachmentService {
         documentEntity.setTimestampLastUpdated(timestamp);
 
         attachmentRepository.save(attachmentEntity);
+        audit("Created attachment for user ID: {}", userId);
 
         return new AttachmentCreateResponse(attachmentEntity.getId(), documentEntity.getId());
     }
@@ -114,6 +114,7 @@ public class AttachmentService {
         encryptionService.encryptAttachment(attachmentEntity, request.attachmentData());
 
         attachmentRepository.save(attachmentEntity);
+        audit("Created attachment for user ID: {}", attachmentEntity.getUserId());
 
         return new AttachmentCreateResponse(attachmentEntity.getId(), documentEntity.getId());
     }
@@ -129,6 +130,7 @@ public class AttachmentService {
         final DocumentEntity documentEntity = attachmentEntity.getDocument();
         documentEntity.setTimestampLastUpdated(timestamp);
         attachmentRepository.save(attachmentEntity);
+        audit("Updated attachment for user ID: {}", attachmentEntity.getUserId());
     }
 
     @Transactional
@@ -137,7 +139,7 @@ public class AttachmentService {
             final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
                     () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
             attachmentRepository.deleteAllByUserIdAndDocument(userId, documentEntity);
-            audit("Deleted attachments for document ID: {}", documentId.get());
+            audit("Deleted attachments for user ID: {}", userId);
             return;
         }
         attachmentRepository.deleteAllByUserId(userId);
