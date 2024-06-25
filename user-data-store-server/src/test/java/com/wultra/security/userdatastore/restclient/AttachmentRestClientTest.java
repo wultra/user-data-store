@@ -27,6 +27,7 @@ import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequ
 import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -34,6 +35,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.security.Security;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,7 +58,8 @@ class AttachmentRestClientTest {
     private UserDataStoreRestClient restClient;
 
     @BeforeAll
-    void initRestClient() throws Exception {
+    void initTests() throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
         RestClientConfiguration config = new RestClientConfiguration();
         config.setHttpBasicAuthEnabled(true);
         config.setHttpBasicAuthUsername("admin");

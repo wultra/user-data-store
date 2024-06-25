@@ -28,6 +28,7 @@ import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -35,6 +36,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.security.Security;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,7 +61,8 @@ class PhotoRestClientTest {
     private UserDataStoreRestClient restClient;
 
     @BeforeAll
-    void initRestClient() throws Exception {
+    void initTests() throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
         RestClientConfiguration config = new RestClientConfiguration();
         config.setHttpBasicAuthEnabled(true);
         config.setHttpBasicAuthUsername("admin");
