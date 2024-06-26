@@ -20,6 +20,7 @@ package com.wultra.security.userdatastore.restclient;
 import com.wultra.core.rest.client.base.RestClientConfiguration;
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -27,6 +28,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.security.Security;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -50,7 +52,8 @@ class UserClaimsRestClientTest {
     private UserDataStoreRestClient restClient;
 
     @BeforeAll
-    void initRestClient() throws Exception {
+    void initTests() throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
         RestClientConfiguration config = new RestClientConfiguration();
         config.setHttpBasicAuthEnabled(true);
         config.setHttpBasicAuthUsername("admin");
