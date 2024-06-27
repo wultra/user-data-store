@@ -21,7 +21,13 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.servers.Server;
+import jakarta.servlet.ServletContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 /**
  * Configuration class used for setting up Swagger documentation.
@@ -45,5 +51,14 @@ import org.springframework.context.annotation.Configuration;
         )
 )
 class OpenApiConfiguration {
+
+    @Bean
+    public OpenAPI openAPI(final ServletContext servletContext) {
+        final Server server = new Server()
+                .url(servletContext.getContextPath())
+                .description("Default Server URL");
+        return new OpenAPI()
+                .servers(List.of(server));
+    }
 
 }
