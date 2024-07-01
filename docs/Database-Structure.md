@@ -6,6 +6,8 @@ User Data Store supports database changes using Liquibase.
 But you may download DDL scripts for supported databases:
 
 - [PostgreSQL - Create Database Schema](./sql/postgresql/create-schema.sql)
+- [Oracle - Create Database Schema](./sql/oracle/create-schema.sql)
+- [MSSQL - Create Database Schema](./sql/mssql/create-schema.sql)
 
 ## Auditing
 

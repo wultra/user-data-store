@@ -10,4 +10,6 @@ Note that data from table `uds_user_claims` is migrated into table `uds_document
 
 For manual changes use SQL scripts:
 
-- [PostgreSQL script](./sql/postgresql/migration_1.2.0_1.3.0.sql)
+- [PostgreSQL script](./sql/postgresql/migration_1.2.0-1.3.0.sql)
+- [Oracle script](./sql/oracle/migration_1.2.0-1.3.0.sql)
+- [MSSQL script](./sql/mssql/migration_1.2.0-1.3.0.sql)
