@@ -9,10 +9,9 @@ The generated REST API documentation in deployed User Data Store:
 http[s]://[host]:[port]/user-data-store/swagger-ui/index.html
 ```
 
-Following endpoints are published in User Data Store RESTful API:
+## Published RESTful API
 
-<!-- begin remove -->
-## Methods
+Following endpoints are published in User Data Store RESTful API:
 
 ### Document API
 
@@ -51,8 +50,6 @@ This REST API is deprecated, see Swagger for usage information.
 - `GET` `/private/user-claims` - Fetch user claims
 - `POST` `/public/user-claims` - Create or update user claims
 - `DELETE` `/public/user-claims` - Delete user claims
-
-<!-- end -->
 
 ### Error Handling
 
@@ -97,6 +94,8 @@ The following paths require a ROLE_WRITE authority:
 - `/public/**` - **deprecated** REST API for user claims
 
 The remainder of the REST API paths require a ROLE_READ authority.
+
+## Documents REST API
 
 <!-- begin api GET /documents -->
 ### Fetch Documents
@@ -377,6 +376,8 @@ Delete documents.
 ```
 <!-- end -->
 
+## Photos REST API
+
 <!-- begin api GET /photos -->
 ### Fetch photos
 
@@ -647,6 +648,9 @@ Delete photos.
 ```
 <!-- end -->
 
+## Attachments REST API
+
+
 <!-- begin api GET /attachments -->
 ### Fetch attachments
 
@@ -916,6 +920,8 @@ Delete attachments.
 }
 ```
 <!-- end -->
+
+## Claims REST API
 
 <!-- begin api GET /claims -->
 ### Fetch Claims
