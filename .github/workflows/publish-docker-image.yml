@@ -71,7 +71,7 @@ jobs:
     - name: Build and push container image to Azure registry
       uses: docker/build-push-action@v6
       with:
-        push: ${{ inputs.push_to_acr == true || inputs.push_to_docker_hub == true }}
+        push: ${{ inputs.push_to_acr == true || inputs.push_to_jfrog == true }}
         context: .
         platforms: linux/amd64,linux/arm64
         file: ./Dockerfile
