@@ -97,11 +97,36 @@
 
     <changeSet id="5" author="Roman Strobl" dbms="mssql">
         <sql>
-            CREATE OR ALTER FUNCTION dbo.uuid_generate_v4()
-                RETURNS UNIQUEIDENTIFIER
+            CREATE OR ALTER PROCEDURE dbo.migrate_claims
             AS
             BEGIN
-                RETURN NEWID()
+                INSERT INTO uds_document (
+                    id,
+                    user_id,
+                    document_type,
+                    data_type,
+                    document_data_id,
+                    external_id,
+                    document_data,
+                    attributes,
+                    encryption_mode,
+                    timestamp_created,
+                    timestamp_last_updated
+                )
+                SELECT
+                    NEWID(),
+                    user_id,
+                    'profile',
+                    'claims',
+                    NULL,
+                    NULL,
+                    claims,
+                    '{}',
+                    encryption_mode,
+                    timestamp_created,
+                    timestamp_last_updated
+                FROM
+                    uds_user_claims;
             END;
         </sql>
     </changeSet>
@@ -113,33 +138,7 @@
             </sqlCheck>
         </preConditions>
         <sql>
-            INSERT INTO uds_document (
-                id,
-                user_id,
-                document_type,
-                data_type,
-                document_data_id,
-                external_id,
-                document_data,
-                attributes,
-                encryption_mode,
-                timestamp_created,
-                timestamp_last_updated
-            )
-            SELECT
-                dbo.uuid_generate_v4(),
-                user_id,
-                'profile',
-                'claims',
-                NULL,
-                NULL,
-                claims,
-                '{}',
-                encryption_mode,
-                timestamp_created,
-                timestamp_last_updated
-            FROM
-                uds_user_claims;
+            EXEC dbo.migrate_claims;
         </sql>
     </changeSet>
 
