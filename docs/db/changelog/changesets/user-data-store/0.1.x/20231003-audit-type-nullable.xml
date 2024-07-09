@@ -4,8 +4,9 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
     <changeSet id="1" logicalFilePath="user-data-store/0.1.x/20231003-audit-type-nullable.xml" author="Lubos Racansky">
+        <validCheckSum>9:b347f7a70a4fd3514b33bf3b5e8365ab</validCheckSum>
         <comment>Drop not null constraint for audit_log.audit_type</comment>
-        <dropNotNullConstraint tableName="audit_log" columnName="audit_type" />
+        <dropNotNullConstraint tableName="audit_log" columnName="audit_type" columnDataType="varchar(256)"/>
         <!-- no rollback on purpose, the audit tables may be shared across several components -->
         <rollback />
     </changeSet>
