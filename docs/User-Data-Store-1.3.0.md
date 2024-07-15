@@ -6,6 +6,8 @@ This guide contains instructions for migration from User Data Store version `1.2
 
 For convenience, you can use liquibase for your database migration.
 
+The main Liquibase script is located in path [db/changelog/db.changelog-master.xml](db/changelog/db.changelog-master.xml).
+
 Note that data from table `uds_user_claims` is migrated into table `uds_document` during this upgrade.
 
 For manual changes use SQL scripts:
