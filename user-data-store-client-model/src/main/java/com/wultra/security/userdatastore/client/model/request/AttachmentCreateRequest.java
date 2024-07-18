@@ -29,7 +29,7 @@ import lombok.extern.jackson.Jacksonized;
  */
 @Builder
 @Jacksonized
-public record AttachmentCreateRequest (
+public record AttachmentCreateRequest(
 
         @NotBlank @Size(max = 255)
         String userId,
