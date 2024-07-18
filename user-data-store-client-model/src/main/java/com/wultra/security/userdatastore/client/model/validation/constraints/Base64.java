@@ -17,13 +17,11 @@
  */
 package com.wultra.security.userdatastore.client.model.validation.constraints;
 
-import com.wultra.security.userdatastore.client.model.validation.constraints.Base64.List;
 import com.wultra.security.userdatastore.client.model.validation.constraintvalidators.Base64Validator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -37,7 +35,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
-@Repeatable(List.class)
 @Documented
 @Constraint(validatedBy = Base64Validator.class)
 public @interface Base64 {
@@ -48,15 +45,4 @@ public @interface Base64 {
 
     Class<? extends Payload>[] payload() default { };
 
-    /**
-     * Defines several {@link Base64} annotations on the same element.
-     *
-     * @see Base64
-     */
-    @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
-    @Retention(RUNTIME)
-    @Documented
-    @interface List {
-        Base64[] value();
-    }
 }
