@@ -22,7 +22,7 @@ import com.wultra.security.userdatastore.client.model.validation.constraints.Att
 /**
  * Interface for attachment requests.
  *
- * @author @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky lubos.racansky@wultra.com
  */
 @AttachmentRequestData
 public interface AttachmentRequest {
