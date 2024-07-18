@@ -31,12 +31,12 @@ class AttachmentRequestValidatorTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-            "text, sample",
-            "unknown,sample",
-            "image_base64, dGVzdA",
-            "binary_base64, dGVzdA",
-    })
+    @CsvSource(textBlock = """
+            text, sample
+            unknown,sample
+            image_base64, dGVzdA
+            binary_base64, dGVzdA
+            """)
     void testValid(final String attachmentType, final String attachmentData) {
         final EmbeddedAttachmentCreateRequest attachmentRequest = new EmbeddedAttachmentCreateRequest(attachmentType, attachmentData, "3c39ffd2-b639-4bb7-a25a-3a6eefdba8ef");
         final var validRequest = new DocumentCreateRequest("alice", "profile", "claims",
@@ -48,11 +48,11 @@ class AttachmentRequestValidatorTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-            "text,",
-            "image_base64, *****",
-            "binary_base64, image_base64, *****",
-    })
+    @CsvSource(textBlock = """
+            text,
+            image_base64, *****
+            binary_base64, image_base64, *****
+            """)
     void testInvalid(final String attachmentType, final String attachmentData) {
         final EmbeddedAttachmentCreateRequest attachmentRequest = new EmbeddedAttachmentCreateRequest(attachmentType, attachmentData, "3c39ffd2-b639-4bb7-a25a-3a6eefdba8ef");
         final var validRequest = new DocumentCreateRequest("alice", "profile", "claims",
