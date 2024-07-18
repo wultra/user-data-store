@@ -39,7 +39,7 @@ import java.util.Base64;
 @Slf4j
 public class DocumentRequestValidator implements ConstraintValidator<DocumentRequestData, DocumentRequest> {
 
-    final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public boolean isValid(DocumentRequest value, ConstraintValidatorContext context) {
