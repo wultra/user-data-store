@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Test for {@link DocumentRequestValidator}.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 class DocumentRequestValidatorTest {
 

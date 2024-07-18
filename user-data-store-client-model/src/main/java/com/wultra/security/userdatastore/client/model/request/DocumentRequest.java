@@ -22,7 +22,7 @@ import com.wultra.security.userdatastore.client.model.validation.constraints.Doc
 /**
  * Interface for document requests.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 @DocumentRequestData
 public interface DocumentRequest {

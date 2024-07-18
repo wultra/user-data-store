@@ -31,7 +31,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * Annotated attachment class must have valid combination of type and data.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 @Target(TYPE_USE)
 @Retention(RUNTIME)

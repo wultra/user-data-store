@@ -33,7 +33,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * Annotated element must be Base64 encoded.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)

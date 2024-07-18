@@ -30,7 +30,7 @@ import java.util.Base64;
  * Validator for {@link AttachmentRequestData}.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 @Slf4j
 public class AttachmentRequestValidator implements ConstraintValidator<AttachmentRequestData, AttachmentRequest> {

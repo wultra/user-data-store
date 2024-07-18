@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Validator for {@link com.wultra.security.userdatastore.client.model.validation.constraints.Base64}.
  *
- * @author Lubos Racansky lubos.racansky@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 @Slf4j
 public class Base64Validator implements ConstraintValidator<com.wultra.security.userdatastore.client.model.validation.constraints.Base64, String> {
