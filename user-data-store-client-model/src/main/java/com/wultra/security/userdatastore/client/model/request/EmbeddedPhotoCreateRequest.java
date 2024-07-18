@@ -17,6 +17,7 @@
  */
 package com.wultra.security.userdatastore.client.model.request;
 
+import com.wultra.security.userdatastore.client.model.validation.constraints.Base64;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -33,7 +34,7 @@ public record EmbeddedPhotoCreateRequest(
 
         @NotBlank @Size(max = 32)
         String photoType,
-        @NotBlank
+        @NotBlank @Base64
         String photoData,
         @Size(max = 255)
         String externalId

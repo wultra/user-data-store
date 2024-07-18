@@ -17,6 +17,7 @@
  */
 package com.wultra.security.userdatastore.client.model.request;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -48,7 +49,9 @@ public record DocumentCreateRequest(
         String documentData,
         Map<String, Object> attributes,
 
+        @Valid
         List<EmbeddedPhotoCreateRequest> photos,
+        @Valid
         List<EmbeddedAttachmentCreateRequest> attachments
 
-) { }
+) implements DocumentRequest { }

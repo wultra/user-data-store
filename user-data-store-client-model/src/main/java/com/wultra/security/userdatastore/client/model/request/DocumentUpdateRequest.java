@@ -47,4 +47,4 @@ public record DocumentUpdateRequest(
         String documentData,
         Map<String, Object> attributes
 
-) { }
+) implements DocumentRequest { }

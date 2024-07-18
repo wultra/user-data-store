@@ -21,7 +21,6 @@ import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequ
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
-import com.wultra.security.userdatastore.model.validator.DocumentRequestValidator;
 import com.wultra.security.userdatastore.service.DocumentService;
 import io.getlime.core.rest.model.base.request.ObjectRequest;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
@@ -49,7 +48,6 @@ import java.util.Optional;
 class DocumentController {
 
     private final DocumentService documentService;
-    private final DocumentRequestValidator validator = new DocumentRequestValidator();
 
     /**
      * Return documents for the given user.
@@ -83,7 +81,6 @@ class DocumentController {
     @PostMapping("/admin/documents")
     public ObjectResponse<DocumentCreateResponse> createDocument(@Valid @RequestBody final ObjectRequest<DocumentCreateRequest> request) {
         logger.info("action: createDocument, state: initiated, userId: {}", request.getRequestObject().userId());
-        validator.validateRequest(request.getRequestObject());
         final DocumentCreateResponse response = documentService.createDocument(request.getRequestObject());
         logger.info("action: createDocument, state: succeeded, userId: {}", request.getRequestObject().userId());
         return new ObjectResponse<>(response);
@@ -103,7 +100,6 @@ class DocumentController {
     @PutMapping("/admin/documents/{documentId}")
     public Response updateDocument(@NotBlank @Size(max = 36) @PathVariable("documentId") String documentId, @Valid @RequestBody final ObjectRequest<DocumentUpdateRequest> request) {
         logger.info("action: updateDocument, state: initiated, userId: {}, documentId: {}", request.getRequestObject().userId(), documentId);
-        validator.validateRequest(request.getRequestObject());
         documentService.updateDocument(documentId, request.getRequestObject());
         logger.info("action: updateDocument, state: succeeded, userId: {}, documentId: {}", request.getRequestObject().userId(), documentId);
         return new Response();

@@ -38,4 +38,4 @@ public record AttachmentUpdateRequest(
         @Size(max = 255)
         String externalId
 
-) { }
+) implements AttachmentRequest { }

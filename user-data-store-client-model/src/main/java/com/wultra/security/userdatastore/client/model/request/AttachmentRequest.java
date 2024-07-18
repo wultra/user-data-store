@@ -17,30 +17,15 @@
  */
 package com.wultra.security.userdatastore.client.model.request;
 
-import com.wultra.security.userdatastore.client.model.validation.constraints.Base64;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.extern.jackson.Jacksonized;
+import com.wultra.security.userdatastore.client.model.validation.constraints.AttachmentRequestData;
 
 /**
- * Request class for creating photos.
+ * Interface for attachment requests.
  *
- * @author Roman Strobl, roman.strobl@wultra.com
+ * @author @author Lubos Racansky lubos.racansky@wultra.com
  */
-@Builder
-@Jacksonized
-public record PhotoCreateRequest(
-
-        @NotBlank @Size(max = 255)
-        String userId,
-        @NotBlank @Size(max = 36)
-        String documentId,
-        @NotBlank @Size(max = 32)
-        String photoType,
-        @NotBlank @Base64
-        String photoData,
-        @Size(max = 255)
-        String externalId
-
-) { }
+@AttachmentRequestData
+public interface AttachmentRequest {
+    String attachmentType();
+    String attachmentData();
+}

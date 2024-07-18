@@ -21,7 +21,6 @@ import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest
 import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
-import com.wultra.security.userdatastore.model.validator.PhotoRequestValidator;
 import com.wultra.security.userdatastore.service.PhotoService;
 import io.getlime.core.rest.model.base.request.ObjectRequest;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
@@ -49,7 +48,6 @@ import java.util.Optional;
 class PhotoController {
 
     private final PhotoService photoService;
-    private final PhotoRequestValidator validator = new PhotoRequestValidator();
 
     /**
      * Return photos for the given user and document.
@@ -83,7 +81,6 @@ class PhotoController {
     @PostMapping("/admin/photos")
     public ObjectResponse<PhotoCreateResponse> createPhoto(@Valid @RequestBody final ObjectRequest<PhotoCreateRequest> request) {
         logger.info("action: createPhoto, state: initiated, userId: {}, documentId: {}", request.getRequestObject().userId(), request.getRequestObject().documentId());
-        validator.validateRequest(request.getRequestObject());
         final PhotoCreateResponse response = photoService.createPhoto(request.getRequestObject());
         logger.info("action: createPhoto, state: succeeded, userId: {}, documentId: {}", request.getRequestObject().userId(), request.getRequestObject().documentId());
         return new ObjectResponse<>(response);
@@ -102,7 +99,6 @@ class PhotoController {
     @PutMapping("/admin/photos/{photoId}")
     public Response updatePhoto(@NotBlank @Size(max = 36) @PathVariable("photoId") String photoId, @Valid @RequestBody final ObjectRequest<PhotoUpdateRequest> request) {
         logger.info("action: createPhoto, state: initiated, photoId: {}", photoId);
-        validator.validateRequest(request.getRequestObject());
         photoService.updatePhoto(photoId, request.getRequestObject());
         logger.info("action: createPhoto, state: succeeded, photoId: {}", photoId);
         return new Response();

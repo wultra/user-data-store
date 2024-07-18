@@ -21,7 +21,6 @@ import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRe
 import com.wultra.security.userdatastore.client.model.request.AttachmentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.AttachmentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
-import com.wultra.security.userdatastore.model.validator.AttachmentRequestValidator;
 import com.wultra.security.userdatastore.service.AttachmentService;
 import io.getlime.core.rest.model.base.request.ObjectRequest;
 import io.getlime.core.rest.model.base.response.ObjectResponse;
@@ -49,7 +48,6 @@ import java.util.Optional;
 class AttachmentController {
 
     private final AttachmentService attachmentService;
-    private final AttachmentRequestValidator validator = new AttachmentRequestValidator();
 
     /**
      * Return attachments for the given user.
@@ -83,7 +81,6 @@ class AttachmentController {
     @PostMapping("/admin/attachments")
     public ObjectResponse<AttachmentCreateResponse> createAttachment(@Valid @RequestBody final ObjectRequest<AttachmentCreateRequest> request) {
         logger.info("action: createAttachment, state: initiated, userId: {}", request.getRequestObject().userId());
-        validator.validateRequest(request.getRequestObject());
         final AttachmentCreateResponse response = attachmentService.createAttachment(request.getRequestObject());
         logger.info("action: createAttachment, state: succeeded, userId: {}", request.getRequestObject().userId());
         return new ObjectResponse<>(response);
@@ -102,7 +99,6 @@ class AttachmentController {
     @PutMapping("/admin/attachments/{attachmentId}")
     public Response updateAttachment(@NotBlank @Size(max = 36) @PathVariable("attachmentId") String attachmentId, @Valid @RequestBody final ObjectRequest<AttachmentUpdateRequest> request) {
         logger.info("action: updateAttachment, state: initiated, attachmentId: {}", attachmentId);
-        validator.validateRequest(request.getRequestObject());
         attachmentService.updateAttachment(attachmentId, request.getRequestObject());
         logger.info("action: updateAttachment, state: succeeded, attachmentId: {}", attachmentId);
         return new Response();
