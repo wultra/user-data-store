@@ -38,4 +38,4 @@ public record EmbeddedAttachmentCreateRequest(
         @Size(max = 255)
         String externalId
 
-) { }
+) implements AttachmentRequest { }
