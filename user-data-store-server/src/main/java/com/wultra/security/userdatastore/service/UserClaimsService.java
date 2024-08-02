@@ -64,7 +64,7 @@ public class UserClaimsService {
                 .findFirst()
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Claims for user ID: '%s' not found".formatted(userId)));
-        audit("Retrieved claims of user ID: {}", userId);
+        audit("action: fetchUserClaims, userId: {}", userId, null);
         try {
             return objectMapper.readValue(claims, new TypeReference<>() {});
         } catch (JsonProcessingException e) {
@@ -85,7 +85,7 @@ public class UserClaimsService {
                     logger.debug("Updating claims of user ID: {}", userId);
                     encryptionService.encryptDocumentData(entity, claimsAsString);
                     entity.setTimestampLastUpdated(LocalDateTime.now());
-                    audit("Updated claims of user ID: {}", userId);
+                    audit("action: updateUserClaims, userId: {}, documentId: {}", userId, entity.getId());
                 },
                 () -> {
                     logger.debug("Creating new claims of user ID: {}", userId);
@@ -100,7 +100,7 @@ public class UserClaimsService {
                     encryptionService.encryptDocumentData(entity, claimsAsString);
 
                     documentRepository.save(entity);
-                    audit("Created claims for user ID: {}", userId);
+                    audit("action: createUserClaims, userId: {}, documentId: {}", userId, entity.getId());
                 });
     }
 
@@ -108,14 +108,15 @@ public class UserClaimsService {
     public void deleteUserClaims(final String userId) {
         final List<DocumentEntity> toDelete = documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE);
         documentRepository.deleteAll(toDelete);
-        audit("Deleted claims of user ID: {}", userId);
+        audit("action: deleteUserClaims, userId: {}", userId, null);
     }
 
-    private void audit(final String message, final String userId) {
+    private void audit(final String message, final String userId, final String documentId) {
         final String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         final AuditDetail auditDetail = AuditDetail.builder()
                 .type("userClaims")
                 .param("userId", userId)
+                .param("documentId", documentId)
                 .param("actorId", loggedUsername)
                 .build();
         audit.info(message, auditDetail, userId);

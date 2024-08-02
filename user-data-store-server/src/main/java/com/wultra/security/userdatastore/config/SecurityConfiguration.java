@@ -47,7 +47,7 @@ public class SecurityConfiguration {
 
     @Bean
     public UserDetailsService userDetailsService(final DataSource dataSource) {
-        logger.info("Initializing JdbcDaoImpl as UserDetailsService");
+        logger.info("bean: init, type: UserDetailsService, implementation: JdbcDaoImpl");
         final JdbcDaoImpl jdbcDao = new JdbcDaoImpl();
         jdbcDao.setDataSource(dataSource);
         jdbcDao.setUsersByUsernameQuery(USERS_BY_USERNAME_QUERY);
@@ -66,7 +66,7 @@ public class SecurityConfiguration {
     @Bean
     @SuppressWarnings({"deprecation", "java:S5344"})
     public PasswordEncoder passwordEncoder() {
-        logger.info("Initializing DelegatingPasswordEncoder with default {}", SHA_256);
+        logger.info("bean: init, type: PasswordEncoder, implementation: DelegatingPasswordEncoder, default: {}", SHA_256);
         final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         final MessageDigestPasswordEncoder sha256 = new MessageDigestPasswordEncoder(SHA_256);
         final Map<String, PasswordEncoder> encoders = Map.of(

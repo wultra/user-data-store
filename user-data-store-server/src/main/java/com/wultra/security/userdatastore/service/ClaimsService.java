@@ -60,7 +60,7 @@ public class ClaimsService {
     public Object fetchClaims(final String userId, final Optional<String> claim) {
         final String claims = readClaims(userId);
         if (claim.isEmpty()) {
-            audit("Retrieved claims of user ID: {}", userId);
+            audit("action: fetchClaims, userId: {}", userId);
             try {
                 return objectMapper.<Map<String, Object>>readValue(claims, new TypeReference<>() {});
             } catch (JsonProcessingException e) {
@@ -68,7 +68,7 @@ public class ClaimsService {
             }
         }
         try {
-            audit("Retrieved claim of user ID: {}, claim: {}", userId, claim.get());
+            audit("action: fetchClaims, userId: {}, claim: {}", userId, claim.get());
             final Map<String, Object> claimMap = objectMapper.readValue(claims, new TypeReference<>() {});
             return claimMap.get(claim.get());
         } catch (JsonProcessingException e) {
@@ -101,7 +101,7 @@ public class ClaimsService {
                             encryptionService.encryptDocumentData(entity, claimsAsString);
 
                             documentRepository.save(entity);
-                            audit("Created claims for user ID: {}", userId);
+                            audit("action: createClaims, userId: {}", userId);
                         });
     }
 
@@ -118,7 +118,7 @@ public class ClaimsService {
                             logger.debug("Updating claims of user ID: {}", userId);
                             encryptionService.encryptDocumentData(entity, claimsAsString);
                             entity.setTimestampLastUpdated(LocalDateTime.now());
-                            audit("Updated claims of user ID: {}", userId);
+                            audit("action: updateClaims, userId: {}", userId);
                         },
                         () -> {
                             throw new ResourceNotFoundException("Claims for user '%s' do not exist".formatted(userId));
@@ -130,7 +130,7 @@ public class ClaimsService {
         if (!StringUtils.hasText(claim)) {
             final List<DocumentEntity> toDelete = documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE);
             documentRepository.deleteAll(toDelete);
-            audit("Deleted claims of user ID: {}, claim: {}", userId);
+            audit("action: deleteClaims, userId: {}", userId);
             return;
         }
         documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE).stream().findAny()
@@ -148,7 +148,7 @@ public class ClaimsService {
                     entity.setTimestampLastUpdated(LocalDateTime.now());
 
                     documentRepository.save(entity);
-                    audit("Updated claims of user ID: {}, deleted claim: {}", userId, claim);
+                    audit("action: deleteClaims, userId: {}, claim: {}", userId, claim);
                 },
                 () -> logger.debug("Delete request ignored, no claims found for user ID: {}", userId));
     }
