@@ -65,12 +65,12 @@ public class PhotoService {
                     () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
             final List<PhotoEntity> photoEntities = photoRepository.findAllByUserIdAndDocument(userId, documentEntity);
             final List<PhotoDto> photos = photoEntities.stream().map(photoConverter::toPhoto).toList();
-            audit("Retrieved photos for user ID: {}", userId);
+            audit("action: fetchPhotos, userId: {}, documentId: {}", userId, documentId.get());
             return new PhotoResponse(photos);
         }
         final List<PhotoEntity> photoEntities = photoRepository.findAllByUserId(userId);
         final List<PhotoDto> photos = photoEntities.stream().map(photoConverter::toPhoto).toList();
-        audit("Retrieved photos for user ID: {}", userId);
+        audit("action: fetchPhotos, userId: {}", userId, null);
         return new PhotoResponse(photos);
     }
 
@@ -95,7 +95,7 @@ public class PhotoService {
         documentEntity.setTimestampLastUpdated(timestamp);
 
         photoRepository.save(photoEntity);
-        audit("Created photo for user ID: {}", userId);
+        audit("action: createPhoto, userId: {}, documentId: {}", userId, documentId);
 
         return new PhotoCreateResponse(photoEntity.getId(), documentEntity.getId());
     }
@@ -112,7 +112,7 @@ public class PhotoService {
         encryptionService.encryptPhoto(photoEntity, request.photoData());
 
         photoRepository.save(photoEntity);
-        audit("Created photo for user ID: {}", photoEntity.getUserId());
+        audit("action: createPhoto, userId: {}, documentId: {}", photoEntity.getUserId(), documentEntity.getId());
 
         return new PhotoCreateResponse(photoEntity.getId(), documentEntity.getId());
     }
@@ -130,7 +130,7 @@ public class PhotoService {
         documentEntity.setTimestampLastUpdated(timestamp);
 
         photoRepository.save(photoEntity);
-        audit("Updated photo for user ID: {}", photoEntity.getUserId());
+        audit("action: updatePhoto, userId: {}, documentId: {}", photoEntity.getUserId(), documentEntity.getId());
     }
 
     @Transactional
@@ -139,19 +139,20 @@ public class PhotoService {
             final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
                     () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
             photoRepository.deleteAllByUserIdAndDocument(userId, documentEntity);
-            audit("Deleted photos for user ID: {}", userId);
+            audit("action: deletePhotos, userId: {}, documentId: {}", userId, documentId.get());
             return;
         }
         photoRepository.deleteAllByUserId(userId);
-        audit("Deleted photos for user ID: {}", userId);
+        audit("action: deletePhotos, userId: {}", userId, null);
     }
 
 
-    private void audit(final String message, final String userId) {
+    private void audit(final String message, final String userId, final String documentId) {
         final String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         final AuditDetail auditDetail = AuditDetail.builder()
                 .type("photo")
                 .param("userId", userId)
+                .param("documentId", documentId)
                 .param("actorId", loggedUsername)
                 .build();
         audit.info(message, auditDetail, userId);

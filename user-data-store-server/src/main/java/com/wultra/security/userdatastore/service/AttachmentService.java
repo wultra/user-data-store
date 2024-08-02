@@ -65,12 +65,12 @@ public class AttachmentService {
                     () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
             final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserIdAndDocument(userId, documentEntity);
             final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
-            audit("Retrieved attachments for user ID: {}", userId);
+            audit("action: fetchAttachments, userId: {}, documentId: {}", userId, documentId.get());
             return new AttachmentResponse(attachments);
         }
         final List<AttachmentEntity> attachmentEntities = attachmentRepository.findAllByUserId(userId);
         final List<AttachmentDto> attachments = attachmentEntities.stream().map(attachmentConverter::toAttachment).toList();
-        audit("Retrieved attachments for user ID: {}", userId);
+        audit("action: fetchAttachments, userId: {}", userId, null);
         return new AttachmentResponse(attachments);
     }
 
@@ -95,7 +95,7 @@ public class AttachmentService {
         documentEntity.setTimestampLastUpdated(timestamp);
 
         attachmentRepository.save(attachmentEntity);
-        audit("Created attachment for user ID: {}", userId);
+        audit("action: createAttachment, userId: {}, documentId: {}", userId, documentId);
 
         return new AttachmentCreateResponse(attachmentEntity.getId(), documentEntity.getId());
     }
@@ -112,7 +112,7 @@ public class AttachmentService {
         encryptionService.encryptAttachment(attachmentEntity, request.attachmentData());
 
         attachmentRepository.save(attachmentEntity);
-        audit("Created attachment for user ID: {}", attachmentEntity.getUserId());
+        audit("action: createAttachment, userId: {}, documentId: {}", attachmentEntity.getUserId(), documentEntity.getId());
 
         return new AttachmentCreateResponse(attachmentEntity.getId(), documentEntity.getId());
     }
@@ -129,7 +129,7 @@ public class AttachmentService {
         final DocumentEntity documentEntity = attachmentEntity.getDocument();
         documentEntity.setTimestampLastUpdated(timestamp);
         attachmentRepository.save(attachmentEntity);
-        audit("Updated attachment for user ID: {}", attachmentEntity.getUserId());
+        audit("action: updateAttachment, userId: {}, documentId: {}", attachmentEntity.getUserId(), documentEntity.getId());
     }
 
     @Transactional
@@ -138,18 +138,19 @@ public class AttachmentService {
             final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
                     () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
             attachmentRepository.deleteAllByUserIdAndDocument(userId, documentEntity);
-            audit("Deleted attachments for user ID: {}", userId);
+            audit("action: deleteAttachments, userId: {}, documentId: {}", userId, documentId.get());
             return;
         }
         attachmentRepository.deleteAllByUserId(userId);
-        audit("Deleted attachments for user ID: {}", userId);
+        audit("action: deleteAttachments, userId: {}", userId, null);
     }
 
-    private void audit(final String message, final String userId) {
+    private void audit(final String message, final String userId, final String documentId) {
         final String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         final AuditDetail auditDetail = AuditDetail.builder()
                 .type("attachment")
                 .param("userId", userId)
+                .param("documentId", documentId)
                 .param("actorId", loggedUsername)
                 .build();
         audit.info(message, auditDetail, userId);

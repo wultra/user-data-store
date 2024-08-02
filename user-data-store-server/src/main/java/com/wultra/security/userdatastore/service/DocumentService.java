@@ -29,7 +29,6 @@ import com.wultra.security.userdatastore.model.entity.DocumentHistoryEntity;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.DocumentHistoryRepository;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
-import io.getlime.core.rest.model.base.response.Response;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,12 +63,12 @@ public class DocumentService {
             final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
                     () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId.get())));
             final DocumentDto document = documentConverter.toDocument(documentEntity);
-            audit("Retrieved documents of user ID: {}", userId);
+            audit("action: fetchDocuments, userId: {}, documentId: {}", userId, documentId.get());
             return new DocumentResponse(Collections.singletonList(document));
         }
         final List<DocumentEntity> documentEntities = documentRepository.findAllByUserId(userId);
         final List<DocumentDto> documents = documentEntities.stream().map(documentConverter::toDocument).toList();
-        audit("Retrieved documents of user ID: {}", userId);
+        audit("action: fetchDocuments, userId: {}", userId, null);
         return new DocumentResponse(documents);
     }
 
@@ -92,7 +91,7 @@ public class DocumentService {
 
         documentEntity = documentRepository.save(documentEntity);
         updateDocumentHistory(documentEntity);
-        audit("Created document for user ID: {}", userId);
+        audit("action: createDocument, userId: {}, documentId: {}", userId, documentEntity.getId());
 
         final DocumentEntity documentEntityFinal = documentEntity;
 
@@ -115,7 +114,7 @@ public class DocumentService {
     }
 
     @Transactional
-    public Response updateDocument(final String documentId, final DocumentUpdateRequest request) {
+    public void updateDocument(final String documentId, final DocumentUpdateRequest request) {
         final String userId = request.userId();
         logger.debug("Updating document for user ID: {}", userId);
         final DocumentEntity documentEntity = documentRepository.findById(documentId).orElseThrow(
@@ -133,9 +132,7 @@ public class DocumentService {
 
         documentRepository.save(documentEntity);
         updateDocumentHistory(documentEntity);
-        audit("Updated document for user ID: {}", userId);
-
-        return new Response();
+        audit("action: updateDocument, userId: {}, documentId: {}", userId, documentId);
     }
 
     @Transactional
@@ -145,19 +142,20 @@ public class DocumentService {
         if (documentId.isPresent()) {
             int count = documentRepository.deleteAllByUserIdAndId(userId, documentId.get());
             if (count == 1) {
-                audit("Deleted document for user ID: {}", userId);
+                audit("action: deleteDocuments, userId: {}, documentId: {}", userId, documentId.get());
             }
             return;
         }
         documentRepository.deleteAllByUserId(userId);
-        audit("Deleted documents for user ID: {}", userId);
+        audit("action: deleteDocuments, userId: {}", userId, null);
     }
 
-    private void audit(final String message, final String userId) {
+    private void audit(final String message, final String userId, final String documentId) {
         final String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         final AuditDetail auditDetail = AuditDetail.builder()
                 .type("document")
                 .param("userId", userId)
+                .param("documentId", documentId)
                 .param("actorId", loggedUsername)
                 .build();
         audit.info(message, auditDetail, userId);

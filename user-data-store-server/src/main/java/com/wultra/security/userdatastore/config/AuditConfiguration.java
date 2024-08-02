@@ -43,7 +43,7 @@ public class AuditConfiguration {
      */
     @Bean
     public Audit audit(final AuditFactory auditFactory) {
-        logger.info("Initializing Audit");
+        logger.info("bean: init, type: Audit");
         return auditFactory.getAudit();
     }
 }
