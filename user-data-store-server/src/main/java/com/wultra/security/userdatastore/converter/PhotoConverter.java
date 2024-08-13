@@ -18,8 +18,11 @@
 package com.wultra.security.userdatastore.converter;
 
 import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
+import com.wultra.security.userdatastore.client.model.dto.PhotoImportDto;
+import com.wultra.security.userdatastore.client.model.dto.PhotoImportResultDto;
+import com.wultra.security.userdatastore.client.model.request.EmbeddedPhotoImportRequest;
+import com.wultra.security.userdatastore.client.model.response.EmbeddedPhotoImportResponse;
 import com.wultra.security.userdatastore.model.entity.PhotoEntity;
-import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import com.wultra.security.userdatastore.service.EncryptionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -53,6 +56,26 @@ public class PhotoConverter {
                 .externalId(entity.getExternalId())
                 .timestampCreated(entity.getTimestampCreated())
                 .timestampLastUpdated(entity.getTimestampLastUpdated())
+                .build();
+    }
+
+    public PhotoImportDto toPhotoImport(final EmbeddedPhotoImportRequest photo) {
+        return PhotoImportDto.builder()
+                .userId(photo.userId())
+                .photoDataType(photo.photoDataType())
+                .photoType(photo.photoType())
+                .photoData(photo.photoData())
+                .build();
+    }
+
+    public EmbeddedPhotoImportResponse toPhotoImportResponse(final PhotoImportResultDto result) {
+        return EmbeddedPhotoImportResponse.builder()
+                .userId(result.userId())
+                .photoType(result.photoType())
+                .documentId(result.documentId())
+                .photoId(result.photoId())
+                .imported(result.imported())
+                .error(result.error())
                 .build();
     }
 

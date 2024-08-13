@@ -48,3 +48,5 @@ SELECT
 FROM
     uds_user_claims;
 
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240812-import-result.xml::1::Roman Strobl
+CREATE TABLE uds_import_result (id VARCHAR(36) NOT NULL, import_path VARCHAR(255), user_id VARCHAR(255) NOT NULL, document_id VARCHAR(36) NOT NULL, photo_id VARCHAR(36), attachment_id VARCHAR(36), imported BOOLEAN NOT NULL, error VARCHAR(255), timestamp_created TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(), CONSTRAINT uds_import_result_pkey PRIMARY KEY (id));

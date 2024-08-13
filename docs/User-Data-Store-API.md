@@ -26,6 +26,7 @@ Following endpoints are published in User Data Store RESTful API:
 - [POST /admin/photos](#create-a-photo) - Create a photo
 - [PUT /admin/photo/{photoId}](#update-a-photo) - Update a photo
 - [DELETE /admin/photos](#delete-photos) - Delete photos
+- [POST /admin/photos/import] - Import photos
 
 ### Attachment API
 
@@ -646,6 +647,104 @@ Delete photos.
   }
 }
 ```
+<!-- end -->
+
+<!-- begin api POST /admin/photos/import -->
+### Import Photos
+
+Import photos synchronously.
+
+<!-- begin remove -->
+
+<table>
+    <tr>
+        <td>Method</td>
+        <td><code>POST</code></td>
+    </tr>
+    <tr>
+        <td>Resource URI</td>
+        <td><code>/admin/photos/import</code></td>
+    </tr>
+</table>
+<!-- end -->
+
+#### Request
+
+- Headers:
+  - `Authorization: Basic ...`
+
+```json
+{
+  "requestObject": {
+    "photos": [
+      {
+        "userId": "user123",
+        "photoDataType": "raw",
+        "photoType": "person",
+        "photoData": "http://myserver.com/photos/photo123.png"
+      },
+      {
+        "userId": "user456",
+        "photoDataType": "base64",
+        "photoType": "person",
+        "photoData": "http://myserver.com/photos/photo456.txt"
+      },
+      {
+        "userId": "user789",
+        "photoDataType": "base64_inline",
+        "photoType": "person",
+        "photoData": "FIwUe..."
+      }
+    ]
+  }
+}
+```
+
+##### Request Params
+
+| Parameter                                                       | Type     | Description                                                                                                                                          |
+|-----------------------------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `userId`<span class="required" title="Required">*</span>        | `String` | User identifier of document owner.                                                                                                                   |
+| `photoDataType`<span class="required" title="Required">*</span> | `String` | Photo data type: `raw` (base-64 encoding done by service), `base64` (no additional encoding) or `base64_inline` (data received directly in request). |
+| `photoType`<span class="required" title="Required">*</span>     | `String` | One of `person`, `document_front_side`, `document_back_side`, `person_with_document`.                                                                |
+| `photoData`<span class="required" title="Required">*</span>     | `String` | Photo file or URL location, or base-64 encoded photo data in case of `base64_inline` data type                                                       |
+
+#### Response 200
+
+```json
+{
+  "status": "OK",
+  "responseObject": {
+    "photos": [
+      {
+        "userId": "user123",
+        "photoType": "person",
+        "documentId": "b24777a3-4577-4e25-845d-40099800df25",
+        "photoId": "c8165989-4683-45a5-b1ba-a6693f001471",
+        "imported": true,
+        "error": null
+      },
+      {
+        "userId": "user456",
+        "photoType": "person",
+        "documentId": "bde71b05-c153-47ed-a536-52e961f1d895",
+        "photoId": "d9577a5f-58a2-4ee3-87db-6f96c5bc6389",
+        "imported": true,
+        "error": null
+      },
+      {
+        "userId": "user789",
+        "photoType": "person",
+        "documentId": "bad12ae6-0321-4a63-84b7-f6a4c7ed7748",
+        "photoId": "bc2c9a84-6db4-4de3-b1d7-7f2a730733a1",
+        "imported": true,
+        "error": null
+      }
+    ]
+  }
+}
+```
+
 <!-- end -->
 
 ## Attachments REST API

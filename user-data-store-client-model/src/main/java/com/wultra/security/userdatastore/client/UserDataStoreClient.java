@@ -103,6 +103,15 @@ public interface UserDataStoreClient {
     void deletePhotos(String userId, String documentId) throws UserDataStoreClientException;
 
     /**
+     * Import photos.
+     *
+     * @param request Photo import request.
+     * @return Photo import response.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    PhotosImportResponse importPhotos(PhotosImportRequest request) throws UserDataStoreClientException;
+
+    /**
      * Fetch attachments.
      *
      * @param userId     User identifier.

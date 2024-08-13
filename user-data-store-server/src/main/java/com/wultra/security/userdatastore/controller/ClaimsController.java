@@ -61,7 +61,7 @@ class ClaimsController {
     public ObjectResponse<Object> fetchClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
         logger.info("action: fetchClaims, state: initiated, userId: {}, claim: {}", userId, claim);
         final Object claims = claimsService.fetchClaims(userId, Optional.ofNullable(claim));
-        logger.info("action: fetchClaims, state: succeeded, userId: {}, claim: {}", userId, claim);
+        logger.info("action: fetchClaims, state: imported, userId: {}, claim: {}", userId, claim);
         return new ObjectResponse<>(claims);
     }
 
@@ -80,7 +80,7 @@ class ClaimsController {
     public Response createClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
         logger.info("action: createClaims, state: initiated, userId: {}", userId);
         claimsService.createClaims(userId, claims);
-        logger.info("action: createClaims, state: succeeded, userId: {}", userId);
+        logger.info("action: createClaims, state: imported, userId: {}", userId);
         return new Response();
     }
 
@@ -99,7 +99,7 @@ class ClaimsController {
     public Response updateClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
         logger.info("action: updateClaims, state: initiated, userId: {}", userId);
         claimsService.updateClaims(userId, claims);
-        logger.info("action: updateClaims, state: succeeded, userId: {}", userId);
+        logger.info("action: updateClaims, state: imported, userId: {}", userId);
         return new Response();
     }
 
@@ -117,7 +117,7 @@ class ClaimsController {
     public Response deleteClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
         logger.info("action: deleteClaims, state: initiated, userId: {}, claim: {}", userId, claim);
         claimsService.deleteClaims(userId, claim);
-        logger.info("action: deleteClaims, state: succeeded, userId: {}, claim: {}", userId, claim);
+        logger.info("action: deleteClaims, state: imported, userId: {}, claim: {}", userId, claim);
         return new Response();
     }
 }
