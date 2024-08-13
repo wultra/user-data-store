@@ -38,7 +38,7 @@ public record EmbeddedPhotoImportRequest(
         String photoDataType,
         @NotBlank @Size(max = 32)
         String photoType,
-        @NotBlank @Base64
+        @NotBlank
         String photoData
 
 ) { }

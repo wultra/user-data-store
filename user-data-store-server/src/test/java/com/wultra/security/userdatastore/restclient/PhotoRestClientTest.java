@@ -31,7 +31,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.security.Security;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,6 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PhotoRestClientTest {
 
     private static final String USER_DATA_STORE_REST_URL = "http://localhost:%d/user-data-store";
+    private static final String PHOTO_BASE_64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC";
 
     @LocalServerPort
     private int serverPort;
@@ -132,17 +137,56 @@ class PhotoRestClientTest {
     }
 
     @Test
-    void testPhotoImport() throws Exception {
+    void testPhotoImportBase64Inline() throws Exception {
         EmbeddedPhotoImportRequest photoImportRequest = EmbeddedPhotoImportRequest.builder()
                 .userId("alice")
                 .photoDataType("base64_inline")
                 .photoType("person")
-                .photoData("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC")
+                .photoData(PHOTO_BASE_64)
                 .build();
         PhotosImportRequest importRequest = PhotosImportRequest.builder()
                 .photos(Collections.singletonList(photoImportRequest))
                 .build();
         PhotosImportResponse response = restClient.importPhotos(importRequest);
+        verifyImportResponse(response);
+    }
+
+    @Test
+    void testPhotoImportFileBase64() throws Exception {
+        Path tempFile = Files.createTempFile("photo", ".png");
+        Files.writeString(tempFile, PHOTO_BASE_64, StandardOpenOption.WRITE);
+        EmbeddedPhotoImportRequest photoImportRequest = EmbeddedPhotoImportRequest.builder()
+                .userId("alice")
+                .photoDataType("base64")
+                .photoType("person")
+                .photoData(tempFile.toAbsolutePath().toString())
+                .build();
+        PhotosImportRequest importRequest = PhotosImportRequest.builder()
+                .photos(Collections.singletonList(photoImportRequest))
+                .build();
+        PhotosImportResponse response = restClient.importPhotos(importRequest);
+        verifyImportResponse(response);
+    }
+
+    @Test
+    void testPhotoImportFileRaw() throws Exception {
+        Path tempFile = Files.createTempFile("photo", ".png");
+        byte[] imageData = Base64.getDecoder().decode(PHOTO_BASE_64);
+        Files.write(tempFile, imageData, StandardOpenOption.WRITE);
+        EmbeddedPhotoImportRequest photoImportRequest = EmbeddedPhotoImportRequest.builder()
+                .userId("alice")
+                .photoDataType("raw")
+                .photoType("person")
+                .photoData(tempFile.toAbsolutePath().toString())
+                .build();
+        PhotosImportRequest importRequest = PhotosImportRequest.builder()
+                .photos(Collections.singletonList(photoImportRequest))
+                .build();
+        PhotosImportResponse response = restClient.importPhotos(importRequest);
+        verifyImportResponse(response);
+    }
+
+    private void verifyImportResponse(PhotosImportResponse response) throws UserDataStoreClientException {
         assertEquals(1, response.photos().size());
         EmbeddedPhotoImportResponse result = response.photos().get(0);
         assertEquals("alice", result.userId());
@@ -151,5 +195,13 @@ class PhotoRestClientTest {
         assertNotNull(result.photoId());
         assertTrue(result.imported());
         assertNull(result.error());
+        PhotoResponse photoResponse = restClient.fetchPhotos("alice", result.documentId());
+        assertEquals(1, photoResponse.photos().size());
+        PhotoDto photo = photoResponse.photos().get(0);
+        assertEquals(result.photoId(), photo.id());
+        assertEquals(result.documentId(), photo.documentId());
+        assertEquals(result.photoType(), photo.photoType());
+        assertEquals(PHOTO_BASE_64, photo.photoData());
     }
+
 }
