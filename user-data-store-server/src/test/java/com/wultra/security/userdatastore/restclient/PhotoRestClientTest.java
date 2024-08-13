@@ -21,13 +21,8 @@ import com.wultra.core.rest.client.base.RestClientConfiguration;
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
 import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
-import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.EmbeddedPhotoCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
-import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
-import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
-import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
+import com.wultra.security.userdatastore.client.model.request.*;
+import com.wultra.security.userdatastore.client.model.response.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -136,4 +131,25 @@ class PhotoRestClientTest {
         assertThrows(UserDataStoreClientException.class, () -> restClient.createDocument(request));
     }
 
+    @Test
+    void testPhotoImport() throws Exception {
+        EmbeddedPhotoImportRequest photoImportRequest = EmbeddedPhotoImportRequest.builder()
+                .userId("alice")
+                .photoDataType("base64_inline")
+                .photoType("person")
+                .photoData("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC")
+                .build();
+        PhotosImportRequest importRequest = PhotosImportRequest.builder()
+                .photos(Collections.singletonList(photoImportRequest))
+                .build();
+        PhotosImportResponse response = restClient.importPhotos(importRequest);
+        assertEquals(1, response.photos().size());
+        EmbeddedPhotoImportResponse result = response.photos().get(0);
+        assertEquals("alice", result.userId());
+        assertEquals("person", result.photoType());
+        assertNotNull(result.documentId());
+        assertNotNull(result.photoId());
+        assertTrue(result.imported());
+        assertNull(result.error());
+    }
 }

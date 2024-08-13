@@ -44,7 +44,7 @@ public class ImportResultEntity implements Serializable {
     @Column(name = "id", nullable = false)
     private String id;
 
-    @Column(name = "import_path", nullable = false)
+    @Column(name = "import_path")
     private String importPath;
 
     @Column(name = "user_id", nullable = false)

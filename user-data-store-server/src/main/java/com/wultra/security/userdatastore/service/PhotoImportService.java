@@ -25,8 +25,9 @@ import com.wultra.security.userdatastore.client.model.response.DocumentCreateRes
 import com.wultra.security.userdatastore.model.entity.ImportResultEntity;
 import com.wultra.security.userdatastore.model.error.InvalidRequestException;
 import com.wultra.security.userdatastore.model.repository.ImportResultRepository;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -50,18 +51,23 @@ import java.util.UUID;
  */
 @Service
 @Slf4j
-@AllArgsConstructor
 public class PhotoImportService {
 
     private final DocumentService documentService;
     private final ImportResultRepository importResultRepository;
+
+    @Autowired
+    public PhotoImportService(@Lazy DocumentService documentService, ImportResultRepository importResultRepository) {
+        this.documentService = documentService;
+        this.importResultRepository = importResultRepository;
+    }
 
     public List<PhotoImportResultDto> importPhotos(final List<PhotoImportDto> photos) {
         return photos.stream().map(this::importPhoto).toList();
     }
 
     private PhotoImportResultDto importPhoto(final PhotoImportDto photo) {
-        final FetchResult result = switch(photo.photoType()) {
+        final FetchResult result = switch(photo.photoDataType()) {
             case "raw" -> {
                 final FetchResult rawResult = fetchPhoto(photo.photoData());
                 if (rawResult.error != null) {
