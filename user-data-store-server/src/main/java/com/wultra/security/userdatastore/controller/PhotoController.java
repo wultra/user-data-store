@@ -66,7 +66,7 @@ class PhotoController {
     public ObjectResponse<PhotoResponse> fetchPhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
         logger.info("action: fetchPhotos, state: initiated, userId: {}, documentId: {}", userId, documentId);
         final PhotoResponse photos = photoService.fetchPhotos(userId, Optional.ofNullable(documentId));
-        logger.info("action: fetchPhotos, state: imported, userId: {}, documentId: {}", userId, documentId);
+        logger.info("action: fetchPhotos, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new ObjectResponse<>(photos);
     }
 
@@ -84,7 +84,7 @@ class PhotoController {
     public ObjectResponse<PhotoCreateResponse> createPhoto(@Valid @RequestBody final ObjectRequest<PhotoCreateRequest> request) {
         logger.info("action: createPhoto, state: initiated, userId: {}, documentId: {}", request.getRequestObject().userId(), request.getRequestObject().documentId());
         final PhotoCreateResponse response = photoService.createPhoto(request.getRequestObject());
-        logger.info("action: createPhoto, state: imported, userId: {}, documentId: {}", request.getRequestObject().userId(), request.getRequestObject().documentId());
+        logger.info("action: createPhoto, state: succeeded, userId: {}, documentId: {}", request.getRequestObject().userId(), request.getRequestObject().documentId());
         return new ObjectResponse<>(response);
     }
 
@@ -102,7 +102,7 @@ class PhotoController {
     public Response updatePhoto(@NotBlank @Size(max = 36) @PathVariable("photoId") String photoId, @Valid @RequestBody final ObjectRequest<PhotoUpdateRequest> request) {
         logger.info("action: createPhoto, state: initiated, photoId: {}", photoId);
         photoService.updatePhoto(photoId, request.getRequestObject());
-        logger.info("action: createPhoto, state: imported, photoId: {}", photoId);
+        logger.info("action: createPhoto, state: succeeded, photoId: {}", photoId);
         return new Response();
     }
 
@@ -121,7 +121,7 @@ class PhotoController {
     public Response deletePhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("action: deletePhotos, state: initiated, userId: {}, documentId: {}", userId, documentId);
         photoService.deletePhotos(userId, Optional.ofNullable(documentId));
-        logger.info("action: deletePhotos, state: imported, userId: {}, documentId: {}", userId, documentId);
+        logger.info("action: deletePhotos, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new Response();
     }
 
@@ -139,7 +139,7 @@ class PhotoController {
     public ObjectResponse<PhotosImportResponse> importPhotos(@Valid @RequestBody final ObjectRequest<PhotosImportRequest> request) {
         logger.info("action: importPhotos, state: initiated");
         final PhotosImportResponse response = photoService.importPhotos(request.getRequestObject());
-        logger.info("action: importPhotos, state: imported");
+        logger.info("action: importPhotos, state: succeeded");
         return new ObjectResponse<>(response);
     }
 

@@ -26,7 +26,7 @@ Following endpoints are published in User Data Store RESTful API:
 - [POST /admin/photos](#create-a-photo) - Create a photo
 - [PUT /admin/photo/{photoId}](#update-a-photo) - Update a photo
 - [DELETE /admin/photos](#delete-photos) - Delete photos
-- [POST /admin/photos/import] - Import photos
+- [POST /admin/photos/import](#import-photos) - Import photos
 
 ### Attachment API
 

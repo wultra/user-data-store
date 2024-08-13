@@ -64,7 +64,7 @@ class AttachmentController {
     public ObjectResponse<AttachmentResponse> fetchAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
         logger.info("action: fetchAttachments, state: initiated, userId: {}, documentId: {}", userId, documentId);
         final AttachmentResponse attachments = attachmentService.fetchAttachments(userId, Optional.ofNullable(documentId));
-        logger.info("action: fetchAttachments, state: imported, userId: {}, documentId: {}", userId, documentId);
+        logger.info("action: fetchAttachments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new ObjectResponse<>(attachments);
     }
 
@@ -82,7 +82,7 @@ class AttachmentController {
     public ObjectResponse<AttachmentCreateResponse> createAttachment(@Valid @RequestBody final ObjectRequest<AttachmentCreateRequest> request) {
         logger.info("action: createAttachment, state: initiated, userId: {}", request.getRequestObject().userId());
         final AttachmentCreateResponse response = attachmentService.createAttachment(request.getRequestObject());
-        logger.info("action: createAttachment, state: imported, userId: {}", request.getRequestObject().userId());
+        logger.info("action: createAttachment, state: succeeded, userId: {}", request.getRequestObject().userId());
         return new ObjectResponse<>(response);
     }
 
@@ -100,7 +100,7 @@ class AttachmentController {
     public Response updateAttachment(@NotBlank @Size(max = 36) @PathVariable("attachmentId") String attachmentId, @Valid @RequestBody final ObjectRequest<AttachmentUpdateRequest> request) {
         logger.info("action: updateAttachment, state: initiated, attachmentId: {}", attachmentId);
         attachmentService.updateAttachment(attachmentId, request.getRequestObject());
-        logger.info("action: updateAttachment, state: imported, attachmentId: {}", attachmentId);
+        logger.info("action: updateAttachment, state: succeeded, attachmentId: {}", attachmentId);
         return new Response();
     }
 
@@ -119,7 +119,7 @@ class AttachmentController {
     public Response deleteAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("action: deleteAttachments, state: initiated, userId: {}, documentId: {}", userId, documentId);
         attachmentService.deleteAttachments(userId, Optional.ofNullable(documentId));
-        logger.info("action: deleteAttachments, state: imported, userId: {}, documentId: {}", userId, documentId);
+        logger.info("action: deleteAttachments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new Response();
     }
 

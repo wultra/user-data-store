@@ -61,7 +61,7 @@ class UserClaimsController {
     public ObjectResponse<Object> fetchClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
         logger.info("action: fetchClaims, state: initiated, userId: {}", userId);
         final Object userClaims = userClaimsService.fetchUserClaims(userId);
-        logger.info("action: fetchClaims, state: imported, userId: {}", userId);
+        logger.info("action: fetchClaims, state: succeeded, userId: {}", userId);
         return new ObjectResponse<>(userClaims);
     }
 
@@ -80,7 +80,7 @@ class UserClaimsController {
     public Response storeClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
         logger.info("action: storeClaims, state: initiated, userId: {}", userId);
         userClaimsService.createOrUpdateUserClaims(userId, claims);
-        logger.info("action: storeClaims, state: imported, userId: {}", userId);
+        logger.info("action: storeClaims, state: succeeded, userId: {}", userId);
         return new Response();
     }
 
@@ -98,7 +98,7 @@ class UserClaimsController {
     public Response deleteClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
         logger.info("action: deleteClaims, state: initiated, userId: {}", userId);
         userClaimsService.deleteUserClaims(userId);
-        logger.info("action: deleteClaims, state: imported, userId: {}", userId);
+        logger.info("action: deleteClaims, state: succeeded, userId: {}", userId);
         return new Response();
     }
 }

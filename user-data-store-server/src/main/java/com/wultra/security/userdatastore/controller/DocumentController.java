@@ -64,7 +64,7 @@ class DocumentController {
     public ObjectResponse<DocumentResponse> fetchDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("action: fetchDocuments, state: initiated, userId: {}, documentId: {}", userId, documentId);
         final DocumentResponse documents = documentService.fetchDocuments(userId, Optional.ofNullable(documentId));
-        logger.info("action: fetchDocuments, state: imported, userId: {}, documentId: {}", userId, documentId);
+        logger.info("action: fetchDocuments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new ObjectResponse<>(documents);
     }
 
@@ -82,7 +82,7 @@ class DocumentController {
     public ObjectResponse<DocumentCreateResponse> createDocument(@Valid @RequestBody final ObjectRequest<DocumentCreateRequest> request) {
         logger.info("action: createDocument, state: initiated, userId: {}", request.getRequestObject().userId());
         final DocumentCreateResponse response = documentService.createDocument(request.getRequestObject());
-        logger.info("action: createDocument, state: imported, userId: {}", request.getRequestObject().userId());
+        logger.info("action: createDocument, state: succeeded, userId: {}", request.getRequestObject().userId());
         return new ObjectResponse<>(response);
     }
 
@@ -101,7 +101,7 @@ class DocumentController {
     public Response updateDocument(@NotBlank @Size(max = 36) @PathVariable("documentId") String documentId, @Valid @RequestBody final ObjectRequest<DocumentUpdateRequest> request) {
         logger.info("action: updateDocument, state: initiated, userId: {}, documentId: {}", request.getRequestObject().userId(), documentId);
         documentService.updateDocument(documentId, request.getRequestObject());
-        logger.info("action: updateDocument, state: imported, userId: {}, documentId: {}", request.getRequestObject().userId(), documentId);
+        logger.info("action: updateDocument, state: succeeded, userId: {}, documentId: {}", request.getRequestObject().userId(), documentId);
         return new Response();
     }
 
@@ -120,7 +120,7 @@ class DocumentController {
     public Response deleteDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
         logger.info("action: deleteDocuments, state: initiated, userId: {}, documentId: {}", userId, documentId);
         documentService.deleteDocuments(userId, Optional.ofNullable(documentId));
-        logger.info("action: deleteDocuments, state: imported, userId: {}, documentId: {}", userId, documentId);
+        logger.info("action: deleteDocuments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
         return new Response();
     }
 
