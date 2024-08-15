@@ -194,7 +194,7 @@ class PhotoRestClientTest {
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
                 .build();
-        restClient.importPhotos(importRequest);
+        restClient.importPhotosCsv(importRequest);
         for (int i = 0; i < 100; i++){
             try {
                 verifyImportCsv("user_test_123");

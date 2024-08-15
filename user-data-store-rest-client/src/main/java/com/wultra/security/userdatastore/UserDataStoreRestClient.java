@@ -239,7 +239,7 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
-    public void importPhotos(PhotosImportCsvRequest request) throws UserDataStoreClientException {
+    public void importPhotosCsv(PhotosImportCsvRequest request) throws UserDataStoreClientException {
         post("/admin/photos/import/csv", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, Response.class);
     }
 
