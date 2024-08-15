@@ -26,7 +26,8 @@ Following endpoints are published in User Data Store RESTful API:
 - [POST /admin/photos](#create-a-photo) - Create a photo
 - [PUT /admin/photo/{photoId}](#update-a-photo) - Update a photo
 - [DELETE /admin/photos](#delete-photos) - Delete photos
-- [POST /admin/photos/import](#import-photos) - Import photos
+- [POST /admin/photos/import](#import-photos) - Import photos synchronously
+- [POST /admin/photos/import/csv](#import-photos-from-csv) - Import photos asynchronously from CSV
 
 ### Attachment API
 
@@ -742,6 +743,76 @@ Import photos synchronously.
       }
     ]
   }
+}
+```
+
+<!-- end -->
+
+<!-- begin api POST /admin/photos/import/csv -->
+### Import Photos from CSV
+
+Import photos synchronously from CSV.
+
+<!-- begin remove -->
+
+<table>
+    <tr>
+        <td>Method</td>
+        <td><code>POST</code></td>
+    </tr>
+    <tr>
+        <td>Resource URI</td>
+        <td><code>/admin/photos/import/csv</code></td>
+    </tr>
+</table>
+<!-- end -->
+
+#### Request
+
+- Headers:
+  - `Authorization: Basic ...`
+
+```json
+{
+  "importPaths": [
+    "http://myserver.com/photos/import1.csv",
+    "http://myserver.com/photos/import2.csv"
+  ]
+}
+```
+
+##### Request Params
+
+| Parameter                                                       | Type           | Description                                                                                                                                       |
+|-----------------------------------------------------------------|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `importPaths`<span class="required" title="Required">*</span>   | `List<String>` | List of paths to CSV files to import data from (either file paths or HTTP URIs).|
+
+The photos can be imported in raw format:
+
+```csv
+user123,raw,person,http://myserver.com/photos/photo123.png
+user456,raw,person,http://myserver.com/photos/photo456.png
+```
+
+The photos can also be imported in base64 format:
+
+```csv
+user123,base64,person,http://myserver.com/photos/photo123.txt
+user456,base64,person,http://myserver.com/photos/photo456.txt
+```
+
+The photos can also be imported as inline data in base64_inline format:
+
+```csv
+user123,base64_inline,person,FOKHjk...
+user456,base64_inline,person,WeqIsA...
+```
+
+#### Response 200
+
+```json
+{
+  "status": "OK",
 }
 ```
 
