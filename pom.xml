@@ -49,6 +49,7 @@
         <swagger-annotations-jakarta.version>2.2.22</swagger-annotations-jakarta.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.6.0</springdoc-openapi-starter-webmvc-ui.version>
         <logstash.version>7.4</logstash.version>
+        <commons-csv.version>1.11.0</commons-csv.version>
     </properties>
 
     <dependencies>

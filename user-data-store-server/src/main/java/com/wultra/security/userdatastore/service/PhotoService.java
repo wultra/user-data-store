@@ -35,6 +35,7 @@ import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import com.wultra.security.userdatastore.model.repository.PhotoRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -163,10 +164,14 @@ public class PhotoService {
                 .build();
     }
 
-
+    @Transactional
+    @Async
+    public void importPhotosCsv(PhotosImportCsvRequest requestObject) {
+        photoImportService.importPhotosCsv(requestObject.importPaths());
+    }
 
     private void audit(final String message, final String userId, final String documentId) {
-        final String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        final String loggedUsername = SecurityContextHolder.getContext().getAuthentication() != null ? SecurityContextHolder.getContext().getAuthentication().getName() : null;
         final AuditDetail auditDetail = AuditDetail.builder()
                 .type("photo")
                 .param("userId", userId)

@@ -146,7 +146,7 @@ public class AttachmentService {
     }
 
     private void audit(final String message, final String userId, final String documentId) {
-        final String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        final String loggedUsername = SecurityContextHolder.getContext().getAuthentication() != null ? SecurityContextHolder.getContext().getAuthentication().getName() : null;
         final AuditDetail auditDetail = AuditDetail.builder()
                 .type("attachment")
                 .param("userId", userId)

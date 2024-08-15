@@ -19,6 +19,7 @@ package com.wultra.security.userdatastore.controller;
 
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
+import com.wultra.security.userdatastore.client.model.request.PhotosImportCsvRequest;
 import com.wultra.security.userdatastore.client.model.request.PhotosImportRequest;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
@@ -141,6 +142,24 @@ class PhotoController {
         final PhotosImportResponse response = photoService.importPhotos(request.getRequestObject());
         logger.info("action: importPhotos, state: succeeded");
         return new ObjectResponse<>(response);
+    }
+
+    /**
+     * Import photos asynchronously from CSV.
+     *
+     * @param request Photo import from CSV request
+     * @return Response
+     */
+    @Operation(
+            summary = "Import photos from CSV",
+            description = "Import photos asynchronously from CSV."
+    )
+    @PostMapping("/admin/photos/import/csv")
+    public Response importPhotosCsv(@Valid @RequestBody final ObjectRequest<PhotosImportCsvRequest> request) {
+        logger.info("action: importPhotosCsv, state: initiated");
+        photoService.importPhotosCsv(request.getRequestObject());
+        logger.info("action: importPhotosCsv, state: succeeded");
+        return new Response();
     }
 
 }

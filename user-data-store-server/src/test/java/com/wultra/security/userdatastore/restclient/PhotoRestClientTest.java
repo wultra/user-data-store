@@ -186,6 +186,30 @@ class PhotoRestClientTest {
         verifyImportResponse(response);
     }
 
+    @Test
+    void testPhotoImportCsvBase64Inline() throws Exception {
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        Files.writeString(tempFile, "user_test_123,base64_inline,person," + PHOTO_BASE_64 +
+                "\n" + "user_test_456,base64_inline,person," + PHOTO_BASE_64);
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotos(importRequest);
+        for (int i = 0; i < 100; i++){
+            try {
+                verifyImportCsv("user_test_123");
+                verifyImportCsv("user_test_456");
+                if (i == 99) {
+                    throw new Exception("Import from CSV failed");
+                }
+                break;
+            } catch (Exception ex) {
+                Thread.sleep(10);
+                // wait
+            }
+        }
+    }
+
     private void verifyImportResponse(PhotosImportResponse response) throws UserDataStoreClientException {
         assertEquals(1, response.photos().size());
         EmbeddedPhotoImportResponse result = response.photos().get(0);
@@ -201,6 +225,14 @@ class PhotoRestClientTest {
         assertEquals(result.photoId(), photo.id());
         assertEquals(result.documentId(), photo.documentId());
         assertEquals(result.photoType(), photo.photoType());
+        assertEquals(PHOTO_BASE_64, photo.photoData());
+    }
+
+    private void verifyImportCsv(String userId) throws UserDataStoreClientException {
+        DocumentResponse documentResponse = restClient.fetchDocuments(userId, null);
+        PhotoResponse photoResponse = restClient.fetchPhotos(userId, documentResponse.documents().get(0).id());
+        assertEquals(1, photoResponse.photos().size());
+        PhotoDto photo = photoResponse.photos().get(0);
         assertEquals(PHOTO_BASE_64, photo.photoData());
     }
 

@@ -112,6 +112,14 @@ public interface UserDataStoreClient {
     PhotosImportResponse importPhotos(PhotosImportRequest request) throws UserDataStoreClientException;
 
     /**
+     * Import photos from CSV files.
+     *
+     * @param request Photo import from CSV files request.
+     * @throws UserDataStoreClientException Thrown in case REST API call fails.
+     */
+    void importPhotos(PhotosImportCsvRequest request) throws UserDataStoreClientException;
+
+    /**
      * Fetch attachments.
      *
      * @param userId     User identifier.
