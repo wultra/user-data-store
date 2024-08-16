@@ -35,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.Security;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -195,19 +196,39 @@ class PhotoRestClientTest {
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
                 .build();
         restClient.importPhotosCsv(importRequest);
-        for (int i = 0; i < 100; i++){
-            try {
-                verifyImportCsv("user_test_123");
-                verifyImportCsv("user_test_456");
-                if (i == 99) {
-                    throw new Exception("Import from CSV failed");
-                }
-                break;
-            } catch (Exception ex) {
-                Thread.sleep(10);
-                // wait
-            }
-        }
+        verifyImportCsv(Arrays.asList("user_test_123", "user_test_456"));
+    }
+
+    @Test
+    void testPhotoImportCsvBase64() throws Exception {
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        Path photo1 = Files.createTempFile("photos", ".txt");
+        Files.writeString(photo1, PHOTO_BASE_64);
+        Path photo2 = Files.createTempFile("photos", ".txt");
+        Files.writeString(photo2, PHOTO_BASE_64);
+        Files.writeString(tempFile, "user_test_123,base64,person," + photo1.toAbsolutePath() +
+                "\n" + "user_test_456,base64,person," + photo2.toAbsolutePath());
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotosCsv(importRequest);
+        verifyImportCsv(Arrays.asList("user_test_123", "user_test_456"));
+    }
+
+    @Test
+    void testPhotoImportCsvRaw() throws Exception {
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        Path photo1 = Files.createTempFile("photos", ".png");
+        Files.write(photo1, Base64.getDecoder().decode(PHOTO_BASE_64));
+        Path photo2 = Files.createTempFile("photos", ".png");
+        Files.write(photo2, Base64.getDecoder().decode(PHOTO_BASE_64));
+        Files.writeString(tempFile, "user_test_123,raw,person," + photo1.toAbsolutePath() +
+                "\n" + "user_test_456,raw,person," + photo2.toAbsolutePath());
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotosCsv(importRequest);
+        verifyImportCsv(Arrays.asList("user_test_123", "user_test_456"));
     }
 
     private void verifyImportResponse(PhotosImportResponse response) throws UserDataStoreClientException {
@@ -226,6 +247,25 @@ class PhotoRestClientTest {
         assertEquals(result.documentId(), photo.documentId());
         assertEquals(result.photoType(), photo.photoType());
         assertEquals(PHOTO_BASE_64, photo.photoData());
+    }
+
+    private void verifyImportCsv(List<String> userIds) {
+        userIds.forEach(userId -> {
+            for (int i = 0; i < 100; i++) {
+                try {
+                    verifyImportCsv(userId);
+                    if (i == 99) {
+                        throw new Exception("Import from CSV failed");
+                    }
+                    break;
+                } catch (Exception ex) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+            }
+        });
     }
 
     private void verifyImportCsv(String userId) throws UserDataStoreClientException {
