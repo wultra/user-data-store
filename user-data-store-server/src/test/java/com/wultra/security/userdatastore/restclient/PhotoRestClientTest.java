@@ -194,7 +194,7 @@ class PhotoRestClientTest {
                 .userId("alice")
                 .photoDataType("raw")
                 .photoType("person")
-                .photoData("http://localhost:8080/user-data-store/swagger-ui/favicon-32x32.png")
+                .photoData("http://localhost:" + serverPort + "/user-data-store/swagger-ui/favicon-32x32.png")
                 .build();
         PhotosImportRequest importRequest = PhotosImportRequest.builder()
                 .photos(Collections.singletonList(photoImportRequest))
@@ -250,7 +250,7 @@ class PhotoRestClientTest {
     @Test
     void testPhotoImportCsvUrl() throws Exception {
         Path tempFile = Files.createTempFile("photos", ".csv");
-        Files.writeString(tempFile, "user_test_url,raw,person,http://localhost:8080/user-data-store/swagger-ui/favicon-32x32.png");
+        Files.writeString(tempFile, "user_test_url,raw,person,http://localhost:" + serverPort + "/user-data-store/swagger-ui/favicon-32x32.png");
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
                 .build();
