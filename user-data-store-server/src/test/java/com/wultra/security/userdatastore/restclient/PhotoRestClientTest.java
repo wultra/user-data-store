@@ -35,6 +35,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.Security;
@@ -260,14 +261,8 @@ class PhotoRestClientTest {
     }
 
     @Test
-    void largeImageImportCsvTest() throws Exception {
-        BufferedImage image = new BufferedImage(512, 512, BufferedImage.TYPE_INT_RGB);
-        Random random = new Random();
-        for (int y = 0; y < 512; y++) {
-            for (int x = 0; x < 512; x++) {
-                image.setRGB(x, y, random.nextInt(0xFFFFFF));
-            }
-        }
+    void largeImageImportCsvRawTest() throws Exception {
+        BufferedImage image = generateRandomLargeImage();
         Path photoFile = Files.createTempFile("photo", ".png");
         ImageIO.write(image, "png", photoFile.toFile());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -281,6 +276,42 @@ class PhotoRestClientTest {
                 .build();
         restClient.importPhotosCsv(importRequest);
         verifyImportCsv(List.of("user_large_image_test"), imageBase64);
+    }
+
+    @Test
+    void largeImagesImportCsvBase64InlineTest() throws Exception {
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        List<String> userIds = new ArrayList<>();
+        Map<String, String> images = new HashMap<>();
+        for (int i = 0; i < 10; i++) {
+            BufferedImage image = generateRandomLargeImage();
+            Path photoFile = Files.createTempFile("photo", ".png");
+            ImageIO.write(image, "png", photoFile.toFile());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(image, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
+            String imageBase64 = Base64.getEncoder().encodeToString(imageBytes);
+            String userId = "user_large_image_test_" + i;
+            Files.writeString(tempFile, userId + ",base64_inline,person," + imageBase64 + "\n", StandardOpenOption.APPEND);
+            userIds.add(userId);
+            images.put(userId, imageBase64);
+        }
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotosCsv(importRequest);
+        userIds.forEach(userId -> verifyImportCsv(List.of(userId), images.get(userId)));
+    }
+
+    private BufferedImage generateRandomLargeImage() {
+        BufferedImage image = new BufferedImage(512, 512, BufferedImage.TYPE_INT_RGB);
+        Random random = new Random();
+        for (int y = 0; y < 512; y++) {
+            for (int x = 0; x < 512; x++) {
+                image.setRGB(x, y, random.nextInt(0xFFFFFF));
+            }
+        }
+        return image;
     }
 
     private void verifyImportResponse(PhotosImportResponse response, String expectedPhotoBase64) throws UserDataStoreClientException {
