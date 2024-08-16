@@ -126,7 +126,7 @@ class PhotoRestClientTest {
 
     @Test
     void testValidation_NullUser() {
-        PhotoCreateRequest photoRequest = new PhotoCreateRequest(null, "123", "test", "test_data", null);
+        PhotoCreateRequest photoRequest = new PhotoCreateRequest(null, "123", "test", PHOTO_BASE_64, null);
         assertThrows(UserDataStoreClientException.class, () -> restClient.createPhoto(photoRequest));
     }
 
