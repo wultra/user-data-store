@@ -206,8 +206,8 @@ class PhotoRestClientTest {
     @Test
     void testPhotoImportCsvBase64Inline() throws Exception {
         Path tempFile = Files.createTempFile("photos", ".csv");
-        Files.writeString(tempFile, "user_test_123,base64_inline,person," + PHOTO_BASE_64 +
-                "\n" + "user_test_456,base64_inline,person," + PHOTO_BASE_64);
+        Files.writeString(tempFile, "user_test_b64i_123,base64_inline,person," + PHOTO_BASE_64 +
+                "\n" + "user_test_b64i_456,base64_inline,person," + PHOTO_BASE_64);
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
                 .build();
@@ -222,8 +222,8 @@ class PhotoRestClientTest {
         Files.writeString(photo1, PHOTO_BASE_64);
         Path photo2 = Files.createTempFile("photos", ".txt");
         Files.writeString(photo2, PHOTO_BASE_64);
-        Files.writeString(tempFile, "user_test_123,base64,person," + photo1.toAbsolutePath() +
-                "\n" + "user_test_456,base64,person," + photo2.toAbsolutePath());
+        Files.writeString(tempFile, "user_test_b64_123,base64,person," + photo1.toAbsolutePath() +
+                "\n" + "user_test_b64_456,base64,person," + photo2.toAbsolutePath());
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
                 .build();
@@ -238,8 +238,8 @@ class PhotoRestClientTest {
         Files.write(photo1, Base64.getDecoder().decode(PHOTO_BASE_64));
         Path photo2 = Files.createTempFile("photos", ".png");
         Files.write(photo2, Base64.getDecoder().decode(PHOTO_BASE_64));
-        Files.writeString(tempFile, "user_test_123,raw,person," + photo1.toAbsolutePath() +
-                "\n" + "user_test_456,raw,person," + photo2.toAbsolutePath());
+        Files.writeString(tempFile, "user_test_raw_123,raw,person," + photo1.toAbsolutePath() +
+                "\n" + "user_test_raw_456,raw,person," + photo2.toAbsolutePath());
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
                 .build();
@@ -250,7 +250,7 @@ class PhotoRestClientTest {
     @Test
     void testPhotoImportCsvUrl() throws Exception {
         Path tempFile = Files.createTempFile("photos", ".csv");
-        Files.writeString(tempFile, "user_test_123,raw,person,http://localhost:8080/user-data-store/swagger-ui/favicon-32x32.png");
+        Files.writeString(tempFile, "user_test_url,raw,person,http://localhost:8080/user-data-store/swagger-ui/favicon-32x32.png");
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
                 .build();
@@ -279,11 +279,9 @@ class PhotoRestClientTest {
     private void verifyImportCsv(List<String> userIds, String expectedPhotoBase64) {
         userIds.forEach(userId -> {
             for (int i = 0; i < 100; i++) {
+                assertNotEquals(99, i);
                 try {
                     verifyImportCsv(userId, expectedPhotoBase64);
-                    if (i == 99) {
-                        throw new Exception("Import from CSV failed");
-                    }
                     break;
                 } catch (Exception ex) {
                     try {
