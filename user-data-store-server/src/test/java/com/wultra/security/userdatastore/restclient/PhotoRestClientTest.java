@@ -31,14 +31,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.Security;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,6 +70,7 @@ class PhotoRestClientTest {
         config.setHttpBasicAuthUsername("admin");
         config.setHttpBasicAuthPassword("admin");
         config.setBaseUrl(USER_DATA_STORE_REST_URL.formatted(serverPort));
+        config.setMaxInMemorySize(5_000_000);
         restClient = new UserDataStoreRestClient(config);
     }
 
@@ -258,6 +259,30 @@ class PhotoRestClientTest {
         verifyImportCsv(List.of("user_test_url"), PHOTO2_BASE_64);
     }
 
+    @Test
+    void largeImageImportCsvTest() throws Exception {
+        BufferedImage image = new BufferedImage(512, 512, BufferedImage.TYPE_INT_RGB);
+        Random random = new Random();
+        for (int y = 0; y < 512; y++) {
+            for (int x = 0; x < 512; x++) {
+                image.setRGB(x, y, random.nextInt(0xFFFFFF));
+            }
+        }
+        Path photoFile = Files.createTempFile("photo", ".png");
+        ImageIO.write(image, "png", photoFile.toFile());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", baos);
+        byte[] imageBytes = baos.toByteArray();
+        String imageBase64 = Base64.getEncoder().encodeToString(imageBytes);
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        Files.writeString(tempFile, "user_large_image_test,raw,person," + photoFile.toAbsolutePath());
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotosCsv(importRequest);
+        verifyImportCsv(List.of("user_large_image_test"), imageBase64);
+    }
+
     private void verifyImportResponse(PhotosImportResponse response, String expectedPhotoBase64) throws UserDataStoreClientException {
         assertEquals(1, response.photos().size());
         EmbeddedPhotoImportResponse result = response.photos().get(0);
@@ -278,14 +303,14 @@ class PhotoRestClientTest {
 
     private void verifyImportCsv(List<String> userIds, String expectedPhotoBase64) {
         userIds.forEach(userId -> {
-            for (int i = 0; i < 100; i++) {
-                assertNotEquals(99, i);
+            for (int i = 0; i < 10; i++) {
+                assertNotEquals(9, i);
                 try {
                     verifyImportCsv(userId, expectedPhotoBase64);
                     break;
                 } catch (Exception ex) {
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(100);
                     } catch (InterruptedException ignored) {
                     }
                 }
