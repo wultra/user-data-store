@@ -58,7 +58,7 @@ public class AttachmentEntity implements Serializable {
     @Column(name = "attachment_type", nullable = false)
     private String attachmentType;
 
-    @Column(name = "attachment_data", nullable = false)
+    @Column(name = "attachment_data", nullable = false, columnDefinition = "CLOB")
     private String attachmentData;
 
     @Enumerated(EnumType.STRING)

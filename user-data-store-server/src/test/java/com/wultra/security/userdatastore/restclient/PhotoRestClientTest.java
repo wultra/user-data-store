@@ -55,6 +55,7 @@ class PhotoRestClientTest {
 
     private static final String USER_DATA_STORE_REST_URL = "http://localhost:%d/user-data-store";
     private static final String PHOTO_BASE_64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC";
+    private static final String PHOTO2_BASE_64 = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAkFBMVEUAAAAQM0QWNUYWNkYXNkYALjoWNUYYOEUXN0YaPEUPMUAUM0QVNUYWNkYWNUYWNUUWNUYVNEYWNkYWNUYWM0eF6i0XNkchR0OB5SwzZj9wyTEvXkA3az5apTZ+4C5DgDt31C9frjU5bz5uxTI/eDxzzjAmT0IsWUEeQkVltzR62S6D6CxIhzpKijpJiDpOkDl4b43lAAAAFXRSTlMAFc304QeZ/vj+ECB3xKlGilPXvS2Ka/h0AAABfklEQVR42oVT2XaCMBAdJRAi7pYJa2QHxbb//3ctSSAUPfa+THLmzj4DBvZpvyauS9b7kw3PWDkWsrD6fFQhQ9dZLfVbC5M88CWCPERr+8fLZodJ5M8QJbjbGL1H2M1fIGfEm+wJN+bGCSc6EXtNS/8FSrq2VX6YDv++XLpJ8SgDWMnwqznGo6alcTbIxB2CHKn8VFikk2mMV2lEnV+CJd9+jJlxXmMr5dW14YCqwgbFpO8FNvJxwwM4TPWPo5QalEsRMAcusXpi58/QUEWPL0AK1ThM5oQCUyXPoPINkdd922VBw4XgTV9zDGWWFrgjIQs4vwvOg6xr+6gbCTqE+DYhlMGX0CF2OknK5gQ2JrkDh/W6TOEbYDeVecKbJtyNXiCfGmW7V93J2hDus1bDfhxWbIZVYDXITA7Lo6E0Ktgg9eB4KWuR44aj7ppBVPazhQH7/M/KgWe9X1qAg8XypT6nxIMJH+T94QCsLvj29IYwZxyO9/F8vCbO9tX5/wDGjEZ7vrgFZwAAAABJRU5ErkJggg==";
 
     @LocalServerPort
     private int serverPort;
@@ -149,7 +150,7 @@ class PhotoRestClientTest {
                 .photos(Collections.singletonList(photoImportRequest))
                 .build();
         PhotosImportResponse response = restClient.importPhotos(importRequest);
-        verifyImportResponse(response);
+        verifyImportResponse(response, PHOTO_BASE_64);
     }
 
     @Test
@@ -166,7 +167,7 @@ class PhotoRestClientTest {
                 .photos(Collections.singletonList(photoImportRequest))
                 .build();
         PhotosImportResponse response = restClient.importPhotos(importRequest);
-        verifyImportResponse(response);
+        verifyImportResponse(response, PHOTO_BASE_64);
     }
 
     @Test
@@ -184,7 +185,22 @@ class PhotoRestClientTest {
                 .photos(Collections.singletonList(photoImportRequest))
                 .build();
         PhotosImportResponse response = restClient.importPhotos(importRequest);
-        verifyImportResponse(response);
+        verifyImportResponse(response, PHOTO_BASE_64);
+    }
+
+    @Test
+    void testPhotoImportUrl() throws Exception {
+        EmbeddedPhotoImportRequest photoImportRequest = EmbeddedPhotoImportRequest.builder()
+                .userId("alice")
+                .photoDataType("raw")
+                .photoType("person")
+                .photoData("http://localhost:8080/user-data-store/swagger-ui/favicon-32x32.png")
+                .build();
+        PhotosImportRequest importRequest = PhotosImportRequest.builder()
+                .photos(Collections.singletonList(photoImportRequest))
+                .build();
+        PhotosImportResponse response = restClient.importPhotos(importRequest);
+        verifyImportResponse(response, PHOTO2_BASE_64);
     }
 
     @Test
@@ -196,7 +212,7 @@ class PhotoRestClientTest {
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
                 .build();
         restClient.importPhotosCsv(importRequest);
-        verifyImportCsv(Arrays.asList("user_test_123", "user_test_456"));
+        verifyImportCsv(Arrays.asList("user_test_b64i_123", "user_test_b64i_456"), PHOTO_BASE_64);
     }
 
     @Test
@@ -212,7 +228,7 @@ class PhotoRestClientTest {
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
                 .build();
         restClient.importPhotosCsv(importRequest);
-        verifyImportCsv(Arrays.asList("user_test_123", "user_test_456"));
+        verifyImportCsv(Arrays.asList("user_test_b64_123", "user_test_b64_456"), PHOTO_BASE_64);
     }
 
     @Test
@@ -228,10 +244,21 @@ class PhotoRestClientTest {
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
                 .build();
         restClient.importPhotosCsv(importRequest);
-        verifyImportCsv(Arrays.asList("user_test_123", "user_test_456"));
+        verifyImportCsv(Arrays.asList("user_test_raw_123", "user_test_raw_456"), PHOTO_BASE_64);
     }
 
-    private void verifyImportResponse(PhotosImportResponse response) throws UserDataStoreClientException {
+    @Test
+    void testPhotoImportCsvUrl() throws Exception {
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        Files.writeString(tempFile, "user_test_123,raw,person,http://localhost:8080/user-data-store/swagger-ui/favicon-32x32.png");
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotosCsv(importRequest);
+        verifyImportCsv(List.of("user_test_url"), PHOTO2_BASE_64);
+    }
+
+    private void verifyImportResponse(PhotosImportResponse response, String expectedPhotoBase64) throws UserDataStoreClientException {
         assertEquals(1, response.photos().size());
         EmbeddedPhotoImportResponse result = response.photos().get(0);
         assertEquals("alice", result.userId());
@@ -246,14 +273,14 @@ class PhotoRestClientTest {
         assertEquals(result.photoId(), photo.id());
         assertEquals(result.documentId(), photo.documentId());
         assertEquals(result.photoType(), photo.photoType());
-        assertEquals(PHOTO_BASE_64, photo.photoData());
+        assertEquals(expectedPhotoBase64, photo.photoData());
     }
 
-    private void verifyImportCsv(List<String> userIds) {
+    private void verifyImportCsv(List<String> userIds, String expectedPhotoBase64) {
         userIds.forEach(userId -> {
             for (int i = 0; i < 100; i++) {
                 try {
-                    verifyImportCsv(userId);
+                    verifyImportCsv(userId, expectedPhotoBase64);
                     if (i == 99) {
                         throw new Exception("Import from CSV failed");
                     }
@@ -268,12 +295,12 @@ class PhotoRestClientTest {
         });
     }
 
-    private void verifyImportCsv(String userId) throws UserDataStoreClientException {
+    private void verifyImportCsv(String userId, String expectedPhotoBase64) throws UserDataStoreClientException {
         DocumentResponse documentResponse = restClient.fetchDocuments(userId, null);
         PhotoResponse photoResponse = restClient.fetchPhotos(userId, documentResponse.documents().get(0).id());
         assertEquals(1, photoResponse.photos().size());
         PhotoDto photo = photoResponse.photos().get(0);
-        assertEquals(PHOTO_BASE_64, photo.photoData());
+        assertEquals(expectedPhotoBase64, photo.photoData());
     }
 
 }

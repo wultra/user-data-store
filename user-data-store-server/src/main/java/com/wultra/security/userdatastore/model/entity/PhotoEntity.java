@@ -58,7 +58,7 @@ public class PhotoEntity implements Serializable {
     @Column(name = "photo_type", nullable = false)
     private String photoType;
 
-    @Column(name = "photo_data", nullable = false)
+    @Column(name = "photo_data", nullable = false, columnDefinition = "CLOB")
     private String photoData;
 
     @Enumerated(EnumType.STRING)
