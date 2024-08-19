@@ -39,7 +39,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.Security;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -333,18 +335,13 @@ class PhotoRestClientTest {
 
     private void verifyImportCsv(List<String> userIds, String expectedPhotoBase64) {
         userIds.forEach(userId -> {
-            for (int i = 0; i < 10; i++) {
-                assertNotEquals(9, i);
-                try {
-                    verifyImportCsv(userId, expectedPhotoBase64);
-                    break;
-                } catch (Exception ex) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ignored) {
-                    }
-                }
-            }
+            await().atMost(1, TimeUnit.SECONDS)
+                    .pollInterval(100, TimeUnit.MILLISECONDS)
+                    .ignoreExceptions()
+                    .until(() -> {
+                        verifyImportCsv(userId, expectedPhotoBase64);
+                        return true;
+                    });
         });
     }
 
