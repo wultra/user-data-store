@@ -29,6 +29,7 @@ import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -163,7 +164,9 @@ public class ClaimsService {
     }
 
     private void audit(final String message, final String userId) {
-        final String loggedUsername = SecurityContextHolder.getContext().getAuthentication() != null ? SecurityContextHolder.getContext().getAuthentication().getName() : null;
+        final String loggedUsername = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(Authentication::getName)
+                .orElse(null);
         final AuditDetail auditDetail = AuditDetail.builder()
                 .type("claims")
                 .param("userId", userId)
@@ -173,7 +176,9 @@ public class ClaimsService {
     }
 
     private void audit(final String message, final String userId, final String claim) {
-        final String loggedUsername = SecurityContextHolder.getContext().getAuthentication() != null ? SecurityContextHolder.getContext().getAuthentication().getName() : null;
+        final String loggedUsername = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(Authentication::getName)
+                .orElse(null);
         final AuditDetail auditDetail = AuditDetail.builder()
                 .type("claims")
                 .param("userId", userId)
