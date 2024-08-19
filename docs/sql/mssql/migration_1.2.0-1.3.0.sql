@@ -21,3 +21,7 @@ GO
 -- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml::6::Roman Strobl
 ALTER TABLE uds_attachment ADD CONSTRAINT fk_uds_attachment_document_id FOREIGN KEY (document_id) REFERENCES uds_document (id);
 GO
+
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240812-import-result.xml::1::Roman Strobl
+CREATE TABLE uds_import_result (id varchar(36) NOT NULL, import_path varchar(255), user_id varchar(255) NOT NULL, document_id varchar(36) NOT NULL, photo_id varchar(36), attachment_id varchar(36), imported bit NOT NULL, error varchar(255), timestamp_created datetime2 CONSTRAINT DF_uds_import_result_timestamp_created DEFAULT GETDATE(), CONSTRAINT PK_UDS_IMPORT_RESULT PRIMARY KEY (id));
+GO

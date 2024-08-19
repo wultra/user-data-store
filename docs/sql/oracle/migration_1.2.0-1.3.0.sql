@@ -54,3 +54,6 @@ INSERT INTO uds_document (
                 timestamp_last_updated
             FROM
                 uds_user_claims;
+
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240812-import-result.xml::1::Roman Strobl
+CREATE TABLE uds_import_result (id VARCHAR2(36) NOT NULL, import_path VARCHAR2(255), user_id VARCHAR2(255) NOT NULL, document_id VARCHAR2(36) NOT NULL, photo_id VARCHAR2(36), attachment_id VARCHAR2(36), imported BOOLEAN NOT NULL, error VARCHAR2(255), timestamp_created TIMESTAMP DEFAULT sysdate, CONSTRAINT PK_UDS_IMPORT_RESULT PRIMARY KEY (id));

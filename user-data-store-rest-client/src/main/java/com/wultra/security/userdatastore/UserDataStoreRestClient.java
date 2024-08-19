@@ -234,6 +234,16 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
+    public PhotosImportResponse importPhotos(PhotosImportRequest request) throws UserDataStoreClientException {
+        return post("/admin/photos/import", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, PhotosImportResponse.class);
+    }
+
+    @Override
+    public void importPhotosCsv(PhotosImportCsvRequest request) throws UserDataStoreClientException {
+        post("/admin/photos/import/csv", request, EMPTY_MULTI_MAP, EMPTY_MULTI_MAP, Response.class);
+    }
+
+    @Override
     public AttachmentResponse fetchAttachments(String userId, String documentId) throws UserDataStoreClientException {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.put("userId", Collections.singletonList(userId));

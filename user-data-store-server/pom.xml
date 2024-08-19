@@ -108,6 +108,12 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>${commons-csv.version}</version>
+        </dependency>
+
         <!-- Wultra Dependencies -->
         <dependency>
             <groupId>io.getlime.core</groupId>

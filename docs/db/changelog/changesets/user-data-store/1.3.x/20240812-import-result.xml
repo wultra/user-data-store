@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="1" author="Roman Strobl">
+        <createTable tableName="uds_import_result">
+            <column name="id" type="VARCHAR(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="import_path" type="VARCHAR(255)"/>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="photo_id" type="VARCHAR(36)"/>
+            <column name="attachment_id" type="VARCHAR(36)"/>
+            <column name="imported" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="error" type="VARCHAR(255)"/>
+            <column name="timestamp_created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="${now}" />
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

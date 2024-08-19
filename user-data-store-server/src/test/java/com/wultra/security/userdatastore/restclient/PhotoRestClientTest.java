@@ -21,13 +21,8 @@ import com.wultra.core.rest.client.base.RestClientConfiguration;
 import com.wultra.security.userdatastore.UserDataStoreRestClient;
 import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
 import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
-import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.EmbeddedPhotoCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
-import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
-import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
-import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
+import com.wultra.security.userdatastore.client.model.request.*;
+import com.wultra.security.userdatastore.client.model.response.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -36,10 +31,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.security.Security;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -54,6 +56,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PhotoRestClientTest {
 
     private static final String USER_DATA_STORE_REST_URL = "http://localhost:%d/user-data-store";
+    private static final String PHOTO_BASE_64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC";
+    private static final String PHOTO2_BASE_64 = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAkFBMVEUAAAAQM0QWNUYWNkYXNkYALjoWNUYYOEUXN0YaPEUPMUAUM0QVNUYWNkYWNUYWNUUWNUYVNEYWNkYWNUYWM0eF6i0XNkchR0OB5SwzZj9wyTEvXkA3az5apTZ+4C5DgDt31C9frjU5bz5uxTI/eDxzzjAmT0IsWUEeQkVltzR62S6D6CxIhzpKijpJiDpOkDl4b43lAAAAFXRSTlMAFc304QeZ/vj+ECB3xKlGilPXvS2Ka/h0AAABfklEQVR42oVT2XaCMBAdJRAi7pYJa2QHxbb//3ctSSAUPfa+THLmzj4DBvZpvyauS9b7kw3PWDkWsrD6fFQhQ9dZLfVbC5M88CWCPERr+8fLZodJ5M8QJbjbGL1H2M1fIGfEm+wJN+bGCSc6EXtNS/8FSrq2VX6YDv++XLpJ8SgDWMnwqznGo6alcTbIxB2CHKn8VFikk2mMV2lEnV+CJd9+jJlxXmMr5dW14YCqwgbFpO8FNvJxwwM4TPWPo5QalEsRMAcusXpi58/QUEWPL0AK1ThM5oQCUyXPoPINkdd922VBw4XgTV9zDGWWFrgjIQs4vwvOg6xr+6gbCTqE+DYhlMGX0CF2OknK5gQ2JrkDh/W6TOEbYDeVecKbJtyNXiCfGmW7V93J2hDus1bDfhxWbIZVYDXITA7Lo6E0Ktgg9eB4KWuR44aj7ppBVPazhQH7/M/KgWe9X1qAg8XypT6nxIMJH+T94QCsLvj29IYwZxyO9/F8vCbO9tX5/wDGjEZ7vrgFZwAAAABJRU5ErkJggg==";
 
     @LocalServerPort
     private int serverPort;
@@ -68,6 +72,7 @@ class PhotoRestClientTest {
         config.setHttpBasicAuthUsername("admin");
         config.setHttpBasicAuthPassword("admin");
         config.setBaseUrl(USER_DATA_STORE_REST_URL.formatted(serverPort));
+        config.setMaxInMemorySize(5_000_000);
         restClient = new UserDataStoreRestClient(config);
     }
 
@@ -124,7 +129,7 @@ class PhotoRestClientTest {
 
     @Test
     void testValidation_NullUser() {
-        PhotoCreateRequest photoRequest = new PhotoCreateRequest(null, "123", "test", "test_data", null);
+        PhotoCreateRequest photoRequest = new PhotoCreateRequest(null, "123", "test", PHOTO_BASE_64, null);
         assertThrows(UserDataStoreClientException.class, () -> restClient.createPhoto(photoRequest));
     }
 
@@ -134,6 +139,218 @@ class PhotoRestClientTest {
         List<EmbeddedPhotoCreateRequest> photos = Collections.singletonList(photoRequest);
         DocumentCreateRequest request = new DocumentCreateRequest("alice", "photo", "image_base64", "1", null, "{}", Collections.emptyMap(), photos, Collections.emptyList());
         assertThrows(UserDataStoreClientException.class, () -> restClient.createDocument(request));
+    }
+
+    @Test
+    void testPhotoImportBase64Inline() throws Exception {
+        EmbeddedPhotoImportRequest photoImportRequest = EmbeddedPhotoImportRequest.builder()
+                .userId("alice")
+                .photoDataType("base64_inline")
+                .photoType("person")
+                .photoData(PHOTO_BASE_64)
+                .build();
+        PhotosImportRequest importRequest = PhotosImportRequest.builder()
+                .photos(Collections.singletonList(photoImportRequest))
+                .build();
+        PhotosImportResponse response = restClient.importPhotos(importRequest);
+        verifyImportResponse(response, PHOTO_BASE_64);
+    }
+
+    @Test
+    void testPhotoImportFileBase64() throws Exception {
+        Path tempFile = Files.createTempFile("photo", ".png");
+        Files.writeString(tempFile, PHOTO_BASE_64, StandardOpenOption.WRITE);
+        EmbeddedPhotoImportRequest photoImportRequest = EmbeddedPhotoImportRequest.builder()
+                .userId("alice")
+                .photoDataType("base64")
+                .photoType("person")
+                .photoData(tempFile.toAbsolutePath().toString())
+                .build();
+        PhotosImportRequest importRequest = PhotosImportRequest.builder()
+                .photos(Collections.singletonList(photoImportRequest))
+                .build();
+        PhotosImportResponse response = restClient.importPhotos(importRequest);
+        verifyImportResponse(response, PHOTO_BASE_64);
+    }
+
+    @Test
+    void testPhotoImportFileRaw() throws Exception {
+        Path tempFile = Files.createTempFile("photo", ".png");
+        byte[] imageData = Base64.getDecoder().decode(PHOTO_BASE_64);
+        Files.write(tempFile, imageData, StandardOpenOption.WRITE);
+        EmbeddedPhotoImportRequest photoImportRequest = EmbeddedPhotoImportRequest.builder()
+                .userId("alice")
+                .photoDataType("raw")
+                .photoType("person")
+                .photoData(tempFile.toAbsolutePath().toString())
+                .build();
+        PhotosImportRequest importRequest = PhotosImportRequest.builder()
+                .photos(Collections.singletonList(photoImportRequest))
+                .build();
+        PhotosImportResponse response = restClient.importPhotos(importRequest);
+        verifyImportResponse(response, PHOTO_BASE_64);
+    }
+
+    @Test
+    void testPhotoImportUrl() throws Exception {
+        EmbeddedPhotoImportRequest photoImportRequest = EmbeddedPhotoImportRequest.builder()
+                .userId("alice")
+                .photoDataType("raw")
+                .photoType("person")
+                .photoData("http://localhost:" + serverPort + "/user-data-store/swagger-ui/favicon-32x32.png")
+                .build();
+        PhotosImportRequest importRequest = PhotosImportRequest.builder()
+                .photos(Collections.singletonList(photoImportRequest))
+                .build();
+        PhotosImportResponse response = restClient.importPhotos(importRequest);
+        verifyImportResponse(response, PHOTO2_BASE_64);
+    }
+
+    @Test
+    void testPhotoImportCsvBase64Inline() throws Exception {
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        Files.writeString(tempFile, "user_test_b64i_123,base64_inline,person," + PHOTO_BASE_64 +
+                "\n" + "user_test_b64i_456,base64_inline,person," + PHOTO_BASE_64);
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotosCsv(importRequest);
+        verifyImportCsv(Arrays.asList("user_test_b64i_123", "user_test_b64i_456"), PHOTO_BASE_64);
+    }
+
+    @Test
+    void testPhotoImportCsvBase64() throws Exception {
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        Path photo1 = Files.createTempFile("photos", ".txt");
+        Files.writeString(photo1, PHOTO_BASE_64);
+        Path photo2 = Files.createTempFile("photos", ".txt");
+        Files.writeString(photo2, PHOTO_BASE_64);
+        Files.writeString(tempFile, "user_test_b64_123,base64,person," + photo1.toAbsolutePath() +
+                "\n" + "user_test_b64_456,base64,person," + photo2.toAbsolutePath());
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotosCsv(importRequest);
+        verifyImportCsv(Arrays.asList("user_test_b64_123", "user_test_b64_456"), PHOTO_BASE_64);
+    }
+
+    @Test
+    void testPhotoImportCsvRaw() throws Exception {
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        Path photo1 = Files.createTempFile("photos", ".png");
+        Files.write(photo1, Base64.getDecoder().decode(PHOTO_BASE_64));
+        Path photo2 = Files.createTempFile("photos", ".png");
+        Files.write(photo2, Base64.getDecoder().decode(PHOTO_BASE_64));
+        Files.writeString(tempFile, "user_test_raw_123,raw,person," + photo1.toAbsolutePath() +
+                "\n" + "user_test_raw_456,raw,person," + photo2.toAbsolutePath());
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotosCsv(importRequest);
+        verifyImportCsv(Arrays.asList("user_test_raw_123", "user_test_raw_456"), PHOTO_BASE_64);
+    }
+
+    @Test
+    void testPhotoImportCsvUrl() throws Exception {
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        Files.writeString(tempFile, "user_test_url,raw,person,http://localhost:" + serverPort + "/user-data-store/swagger-ui/favicon-32x32.png");
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotosCsv(importRequest);
+        verifyImportCsv(List.of("user_test_url"), PHOTO2_BASE_64);
+    }
+
+    @Test
+    void largeImageImportCsvRawTest() throws Exception {
+        BufferedImage image = generateRandomLargeImage();
+        Path photoFile = Files.createTempFile("photo", ".png");
+        ImageIO.write(image, "png", photoFile.toFile());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", baos);
+        byte[] imageBytes = baos.toByteArray();
+        String imageBase64 = Base64.getEncoder().encodeToString(imageBytes);
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        Files.writeString(tempFile, "user_large_image_test,raw,person," + photoFile.toAbsolutePath());
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotosCsv(importRequest);
+        verifyImportCsv(List.of("user_large_image_test"), imageBase64);
+    }
+
+    @Test
+    void largeImagesImportCsvBase64InlineTest() throws Exception {
+        Path tempFile = Files.createTempFile("photos", ".csv");
+        List<String> userIds = new ArrayList<>();
+        Map<String, String> images = new HashMap<>();
+        for (int i = 0; i < 10; i++) {
+            BufferedImage image = generateRandomLargeImage();
+            Path photoFile = Files.createTempFile("photo", ".png");
+            ImageIO.write(image, "png", photoFile.toFile());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(image, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
+            String imageBase64 = Base64.getEncoder().encodeToString(imageBytes);
+            String userId = "user_large_image_test_" + i;
+            Files.writeString(tempFile, userId + ",base64_inline,person," + imageBase64 + "\n", StandardOpenOption.APPEND);
+            userIds.add(userId);
+            images.put(userId, imageBase64);
+        }
+        PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
+                .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .build();
+        restClient.importPhotosCsv(importRequest);
+        userIds.forEach(userId -> verifyImportCsv(List.of(userId), images.get(userId)));
+    }
+
+    private BufferedImage generateRandomLargeImage() {
+        BufferedImage image = new BufferedImage(512, 512, BufferedImage.TYPE_INT_RGB);
+        Random random = new Random();
+        for (int y = 0; y < 512; y++) {
+            for (int x = 0; x < 512; x++) {
+                image.setRGB(x, y, random.nextInt(0xFFFFFF));
+            }
+        }
+        return image;
+    }
+
+    private void verifyImportResponse(PhotosImportResponse response, String expectedPhotoBase64) throws UserDataStoreClientException {
+        assertEquals(1, response.photos().size());
+        EmbeddedPhotoImportResponse result = response.photos().get(0);
+        assertEquals("alice", result.userId());
+        assertEquals("person", result.photoType());
+        assertNotNull(result.documentId());
+        assertNotNull(result.photoId());
+        assertTrue(result.imported());
+        assertNull(result.error());
+        PhotoResponse photoResponse = restClient.fetchPhotos("alice", result.documentId());
+        assertEquals(1, photoResponse.photos().size());
+        PhotoDto photo = photoResponse.photos().get(0);
+        assertEquals(result.photoId(), photo.id());
+        assertEquals(result.documentId(), photo.documentId());
+        assertEquals(result.photoType(), photo.photoType());
+        assertEquals(expectedPhotoBase64, photo.photoData());
+    }
+
+    private void verifyImportCsv(List<String> userIds, String expectedPhotoBase64) {
+        userIds.forEach(userId -> {
+            await().atMost(1, TimeUnit.SECONDS)
+                    .pollInterval(100, TimeUnit.MILLISECONDS)
+                    .ignoreExceptions()
+                    .until(() -> {
+                        verifyImportCsv(userId, expectedPhotoBase64);
+                        return true;
+                    });
+        });
+    }
+
+    private void verifyImportCsv(String userId, String expectedPhotoBase64) throws UserDataStoreClientException {
+        DocumentResponse documentResponse = restClient.fetchDocuments(userId, null);
+        PhotoResponse photoResponse = restClient.fetchPhotos(userId, documentResponse.documents().get(0).id());
+        assertEquals(1, photoResponse.photos().size());
+        PhotoDto photo = photoResponse.photos().get(0);
+        assertEquals(expectedPhotoBase64, photo.photoData());
     }
 
 }

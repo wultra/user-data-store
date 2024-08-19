@@ -20,11 +20,13 @@ package com.wultra.security.userdatastore.service;
 import com.wultra.core.audit.base.Audit;
 import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.client.model.dto.PhotoDto;
-import com.wultra.security.userdatastore.client.model.request.EmbeddedPhotoCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
-import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
+import com.wultra.security.userdatastore.client.model.dto.PhotoImportDto;
+import com.wultra.security.userdatastore.client.model.dto.PhotoImportResultDto;
+import com.wultra.security.userdatastore.client.model.request.*;
+import com.wultra.security.userdatastore.client.model.response.EmbeddedPhotoImportResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
+import com.wultra.security.userdatastore.client.model.response.PhotosImportResponse;
 import com.wultra.security.userdatastore.converter.PhotoConverter;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.entity.PhotoEntity;
@@ -33,6 +35,8 @@ import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import com.wultra.security.userdatastore.model.repository.PhotoRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +61,7 @@ public class PhotoService {
     private final Audit audit;
     private final EncryptionService encryptionService;
     private final PhotoConverter photoConverter;
+    private final PhotoImportService photoImportService;
 
     @Transactional(readOnly = true)
     public PhotoResponse fetchPhotos(final String userId, final Optional<String> documentId) {
@@ -146,9 +151,30 @@ public class PhotoService {
         audit("action: deletePhotos, userId: {}", userId, null);
     }
 
+    @Transactional
+    public PhotosImportResponse importPhotos(PhotosImportRequest requestObject) {
+        final List<PhotoImportDto> photos = requestObject.photos().stream()
+                .map(photoConverter::toPhotoImport)
+                .toList();
+        final List<PhotoImportResultDto> result = photoImportService.importPhotos(photos);
+        final List<EmbeddedPhotoImportResponse> responsePhotos = result.stream()
+                .map(photoConverter::toPhotoImportResponse)
+                .toList();
+        return PhotosImportResponse.builder()
+                .photos(responsePhotos)
+                .build();
+    }
+
+    @Transactional
+    @Async
+    public void importPhotosCsv(PhotosImportCsvRequest requestObject) {
+        photoImportService.importPhotosCsv(requestObject.importPaths());
+    }
 
     private void audit(final String message, final String userId, final String documentId) {
-        final String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        final String loggedUsername = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(Authentication::getName)
+                .orElse(null);
         final AuditDetail auditDetail = AuditDetail.builder()
                 .type("photo")
                 .param("userId", userId)
@@ -157,4 +183,5 @@ public class PhotoService {
                 .build();
         audit.info(message, auditDetail, userId);
     }
+
 }

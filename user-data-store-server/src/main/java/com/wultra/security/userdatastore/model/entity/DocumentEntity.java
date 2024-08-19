@@ -60,7 +60,7 @@ public class DocumentEntity implements Serializable {
     @Column(name = "external_id")
     private String externalId;
 
-    @Column(name = "document_data", nullable = false)
+    @Column(name = "document_data", nullable = false, columnDefinition = "CLOB")
     private String documentData;
 
     @Column(name = "attributes", nullable = false)

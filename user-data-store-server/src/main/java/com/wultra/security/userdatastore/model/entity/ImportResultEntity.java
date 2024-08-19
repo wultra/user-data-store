@@ -28,60 +28,57 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * Entity for attachments.
+ * Entity for import result.
  *
  * @author Roman Strobl, roman.strobl@wultra.com
  */
 @Entity
-@Table(name = "uds_attachment")
+@Table(name = "uds_import_result")
 @Getter
 @Setter
-public class AttachmentEntity implements Serializable {
+public class ImportResultEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 6667938502679127302L;
+    private static final long serialVersionUID = 743666156963790739L;
 
     @Id
     @Column(name = "id", nullable = false)
     private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "document_id", referencedColumnName = "id", nullable = false)
-    private DocumentEntity document;
+    @Column(name = "import_path")
+    private String importPath;
 
     @Column(name = "user_id", nullable = false)
     private String userId;
 
-    @Column(name = "external_id")
-    private String externalId;
+    @Column(name = "document_id", nullable = false)
+    private String documentId;
 
-    @Column(name = "attachment_type", nullable = false)
-    private String attachmentType;
+    @Column(name = "photo_id")
+    private String photoId;
 
-    @Column(name = "attachment_data", nullable = false, columnDefinition = "CLOB")
-    private String attachmentData;
+    @Column(name = "attachment_id")
+    private String attachmentId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "encryption_mode", nullable = false)
-    private EncryptionMode encryptionMode;
+    @Column(name = "imported", nullable = false)
+    private boolean imported;
+
+    @Column(name = "error")
+    private String error;
 
     @Column(name = "timestamp_created", nullable = false)
     private LocalDateTime timestampCreated = LocalDateTime.now();
-
-    @Column(name = "timestamp_last_updated")
-    private LocalDateTime timestampLastUpdated;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || !this.getClass().equals(ProxyUtils.getUserClass(o))) return false;
-        AttachmentEntity that = (AttachmentEntity) o;
-        return document.equals(that.document) && attachmentType.equals(that.attachmentType) && timestampCreated.equals(that.timestampCreated);
+        ImportResultEntity that = (ImportResultEntity) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(document, attachmentType, timestampCreated);
+        return Objects.hashCode(id);
     }
-    
 }

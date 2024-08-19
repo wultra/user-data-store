@@ -31,6 +31,7 @@ import com.wultra.security.userdatastore.model.repository.DocumentHistoryReposit
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -151,7 +152,9 @@ public class DocumentService {
     }
 
     private void audit(final String message, final String userId, final String documentId) {
-        final String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        final String loggedUsername = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(Authentication::getName)
+                .orElse(null);
         final AuditDetail auditDetail = AuditDetail.builder()
                 .type("document")
                 .param("userId", userId)
