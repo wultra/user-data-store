@@ -48,11 +48,6 @@ GO
 CREATE NONCLUSTERED INDEX audit_log_type ON audit_log(audit_type);
 GO
 
--- Changeset user-data-store/0.1.x/20230322-audit-indexes.xml::5::Lubos Racansky
--- Create a new index on audit_param(audit_log_id)
-CREATE NONCLUSTERED INDEX audit_param_log ON audit_param(audit_log_id);
-GO
-
 -- Changeset user-data-store/0.1.x/20230322-audit-indexes.xml::6::Lubos Racansky
 -- Create a new index on audit_param(timestamp_created)
 CREATE NONCLUSTERED INDEX audit_param_timestamp ON audit_param(timestamp_created);
