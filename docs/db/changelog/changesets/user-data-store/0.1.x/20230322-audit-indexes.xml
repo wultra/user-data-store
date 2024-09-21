@@ -58,19 +58,7 @@
         <rollback />
     </changeSet>
 
-    <changeSet id="5" logicalFilePath="user-data-store/0.1.x/20230322-audit-indexes.xml" author="Lubos Racansky">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists tableName="audit_param" indexName="audit_param_log" />
-            </not>
-        </preConditions>
-        <comment>Create a new index on audit_param(audit_log_id)</comment>
-        <createIndex tableName="audit_param" indexName="audit_param_log">
-            <column name="audit_log_id" />
-        </createIndex>
-        <!-- no rollback on purpose, the audit tables may be shared across several components -->
-        <rollback />
-    </changeSet>
+    <!-- changeSet id="5" was removed because it clashes with an index generated for the primary key column -->
 
     <changeSet id="6" logicalFilePath="user-data-store/0.1.x/20230322-audit-indexes.xml" author="Lubos Racansky">
         <preConditions onFail="MARK_RAN">
