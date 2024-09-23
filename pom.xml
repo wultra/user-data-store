@@ -50,6 +50,7 @@
         <springdoc-openapi-starter-webmvc-ui.version>2.6.0</springdoc-openapi-starter-webmvc-ui.version>
         <logstash.version>8.0</logstash.version>
         <commons-csv.version>1.11.0</commons-csv.version>
+        <ojdbc-version>23.5.0.24.07</ojdbc-version>
     </properties>
 
     <dependencies>
