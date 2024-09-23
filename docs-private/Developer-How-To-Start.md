@@ -66,7 +66,7 @@ mvn clean package
 ### Build the docker image
 
 ```shell
-docker build . -t user-data-store:0.1.0-SNAPSHOT
+docker build . -t user-data-store:0.3.0
 ```
 
 
@@ -79,5 +79,5 @@ docker build . -t user-data-store:0.1.0-SNAPSHOT
 ### Run the docker image
 
 ```shell
-docker run -p 80:8080 -e USER_DATA_STORE_DATASOURCE_USERNAME='powerauth' -e USER_DATA_STORE_DATASOURCE_PASSWORD='' user-data-store:0.1.0-SNAPSHOT 
+docker run -p 80:8080 -e USER_DATA_STORE_DATASOURCE_USERNAME='powerauth' -e USER_DATA_STORE_DATASOURCE_PASSWORD='' user-data-store:0.3.0 
 ```
