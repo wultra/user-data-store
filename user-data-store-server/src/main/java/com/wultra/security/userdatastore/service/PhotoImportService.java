@@ -120,7 +120,7 @@ public class PhotoImportService {
         final List<List<String>> parsedData = new ArrayList<>();
         try (
                 ByteArrayInputStream is = new ByteArrayInputStream(csvData);
-                InputStreamReader isr = new InputStreamReader(is)
+                InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)
         ) {
             final Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(isr);
             for (CSVRecord record : records) {
