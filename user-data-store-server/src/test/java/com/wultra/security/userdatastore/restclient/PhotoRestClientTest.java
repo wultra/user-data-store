@@ -148,6 +148,7 @@ class PhotoRestClientTest {
                 .photoDataType("base64_inline")
                 .photoType("person")
                 .photoData(PHOTO_BASE_64)
+                .attributes(Map.of("tag", "test"))
                 .build();
         PhotosImportRequest importRequest = PhotosImportRequest.builder()
                 .photos(Collections.singletonList(photoImportRequest))
@@ -165,6 +166,7 @@ class PhotoRestClientTest {
                 .photoDataType("base64")
                 .photoType("person")
                 .photoData(tempFile.toAbsolutePath().toString())
+                .attributes(Map.of("tag", "test"))
                 .build();
         PhotosImportRequest importRequest = PhotosImportRequest.builder()
                 .photos(Collections.singletonList(photoImportRequest))
@@ -183,6 +185,7 @@ class PhotoRestClientTest {
                 .photoDataType("raw")
                 .photoType("person")
                 .photoData(tempFile.toAbsolutePath().toString())
+                .attributes(Map.of("tag", "test"))
                 .build();
         PhotosImportRequest importRequest = PhotosImportRequest.builder()
                 .photos(Collections.singletonList(photoImportRequest))
@@ -198,6 +201,7 @@ class PhotoRestClientTest {
                 .photoDataType("raw")
                 .photoType("person")
                 .photoData("http://localhost:" + serverPort + "/user-data-store/swagger-ui/favicon-32x32.png")
+                .attributes(Map.of("tag", "test"))
                 .build();
         PhotosImportRequest importRequest = PhotosImportRequest.builder()
                 .photos(Collections.singletonList(photoImportRequest))
@@ -213,6 +217,7 @@ class PhotoRestClientTest {
                 "\n" + "user_test_b64i_456,base64_inline,person," + PHOTO_BASE_64);
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .attributes(Map.of("tag", "test"))
                 .build();
         restClient.importPhotosCsv(importRequest);
         verifyImportCsv(Arrays.asList("user_test_b64i_123", "user_test_b64i_456"), PHOTO_BASE_64);
@@ -229,6 +234,7 @@ class PhotoRestClientTest {
                 "\n" + "user_test_b64_456,base64,person," + photo2.toAbsolutePath());
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .attributes(Map.of("tag", "test"))
                 .build();
         restClient.importPhotosCsv(importRequest);
         verifyImportCsv(Arrays.asList("user_test_b64_123", "user_test_b64_456"), PHOTO_BASE_64);
@@ -245,6 +251,7 @@ class PhotoRestClientTest {
                 "\n" + "user_test_raw_456,raw,person," + photo2.toAbsolutePath());
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .attributes(Map.of("tag", "test"))
                 .build();
         restClient.importPhotosCsv(importRequest);
         verifyImportCsv(Arrays.asList("user_test_raw_123", "user_test_raw_456"), PHOTO_BASE_64);
@@ -256,6 +263,7 @@ class PhotoRestClientTest {
         Files.writeString(tempFile, "user_test_url,raw,person,http://localhost:" + serverPort + "/user-data-store/swagger-ui/favicon-32x32.png");
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .attributes(Map.of("tag", "test"))
                 .build();
         restClient.importPhotosCsv(importRequest);
         verifyImportCsv(List.of("user_test_url"), PHOTO2_BASE_64);
@@ -274,6 +282,7 @@ class PhotoRestClientTest {
         Files.writeString(tempFile, "user_large_image_test,raw,person," + photoFile.toAbsolutePath());
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .attributes(Map.of("tag", "test"))
                 .build();
         restClient.importPhotosCsv(importRequest);
         verifyImportCsv(List.of("user_large_image_test"), imageBase64);
@@ -299,6 +308,7 @@ class PhotoRestClientTest {
         }
         PhotosImportCsvRequest importRequest = PhotosImportCsvRequest.builder()
                 .importPaths(Collections.singletonList(tempFile.toAbsolutePath().toString()))
+                .attributes(Map.of("tag", "test"))
                 .build();
         restClient.importPhotosCsv(importRequest);
         userIds.forEach(userId -> verifyImportCsv(List.of(userId), images.get(userId)));
@@ -324,6 +334,8 @@ class PhotoRestClientTest {
         assertNotNull(result.photoId());
         assertTrue(result.imported());
         assertNull(result.error());
+        DocumentResponse documentResponse = restClient.fetchDocuments("alice", result.documentId());
+        assertEquals(Map.of("tag", "test"), documentResponse.documents().get(0).attributes());
         PhotoResponse photoResponse = restClient.fetchPhotos("alice", result.documentId());
         assertEquals(1, photoResponse.photos().size());
         PhotoDto photo = photoResponse.photos().get(0);
@@ -347,6 +359,7 @@ class PhotoRestClientTest {
 
     private void verifyImportCsv(String userId, String expectedPhotoBase64) throws UserDataStoreClientException {
         DocumentResponse documentResponse = restClient.fetchDocuments(userId, null);
+        assertEquals(Map.of("tag", "test"), documentResponse.documents().get(0).attributes());
         PhotoResponse photoResponse = restClient.fetchPhotos(userId, documentResponse.documents().get(0).id());
         assertEquals(1, photoResponse.photos().size());
         PhotoDto photo = photoResponse.photos().get(0);

@@ -17,11 +17,12 @@
  */
 package com.wultra.security.userdatastore.client.model.request;
 
-import com.wultra.security.userdatastore.client.model.validation.constraints.Base64;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
+
+import java.util.Map;
 
 /**
  * Request class for import of photos.
@@ -39,6 +40,7 @@ public record EmbeddedPhotoImportRequest(
         @NotBlank @Size(max = 32)
         String photoType,
         @NotBlank
-        String photoData
+        String photoData,
+        Map<String, Object> attributes
 
 ) { }

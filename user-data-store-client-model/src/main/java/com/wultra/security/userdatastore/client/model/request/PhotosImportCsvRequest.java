@@ -22,6 +22,7 @@ import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Request class for importing photos from CSV files.
@@ -33,6 +34,7 @@ import java.util.List;
 public record PhotosImportCsvRequest(
 
         @Valid
-        List<String> importPaths
+        List<String> importPaths,
+        Map<String, Object> attributes
 
 ) { }
