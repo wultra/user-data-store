@@ -168,7 +168,7 @@ public class PhotoService {
     @Transactional
     @Async
     public void importPhotosCsv(PhotosImportCsvRequest requestObject) {
-        photoImportService.importPhotosCsv(requestObject.importPaths());
+        photoImportService.importPhotosCsv(requestObject.importPaths(), requestObject.attributes());
     }
 
     private void audit(final String message, final String userId, final String documentId) {

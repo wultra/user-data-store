@@ -65,6 +65,7 @@ public class PhotoConverter {
                 .photoDataType(photo.photoDataType())
                 .photoType(photo.photoType())
                 .photoData(photo.photoData())
+                .attributes(photo.attributes())
                 .build();
     }
 

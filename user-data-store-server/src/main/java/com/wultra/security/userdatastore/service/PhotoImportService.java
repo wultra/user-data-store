@@ -67,21 +67,21 @@ public class PhotoImportService {
         return photos.stream().map(this::importPhoto).toList();
     }
 
-    public void importPhotosCsv(final List<String> csvPaths) {
-        csvPaths.forEach(this::importCsv);
+    public void importPhotosCsv(final List<String> csvPaths, final Map<String, Object> attributes) {
+        csvPaths.forEach(path -> importCsv(path, attributes));
     }
 
-    private void importCsv(final String csvPath) {
+    private void importCsv(final String csvPath, Map<String, Object> attributes) {
         final FetchResult result = fetchFromPath(csvPath);
         if (result.error == null) {
             final List<List<String>> parsedData = parseCsv(result.data);
             if (parsedData != null) {
-                parsedData.forEach(this::importCsvRow);
+                parsedData.forEach(data -> importCsvRow(data, attributes));
             }
         }
     }
 
-    private void importCsvRow(final List<String> csvRow) {
+    private void importCsvRow(final List<String> csvRow, final Map<String, Object> attributes) {
         if (csvRow.size() != 4) {
             logger.warn("Invalid CSV import format");
             return;
@@ -91,6 +91,7 @@ public class PhotoImportService {
                 .photoDataType(csvRow.get(1))
                 .photoType(csvRow.get(2))
                 .photoData(csvRow.get(3))
+                .attributes(attributes)
                 .build();
         importPhoto(photo);
     }
@@ -113,7 +114,7 @@ public class PhotoImportService {
             persistImportResult(handleError(photo.userId(), photo.photoType(), result.error));
         }
 
-        return createNewPhoto(photo.userId(), photo.photoType(), result.importPath, result.data);
+        return createNewPhoto(photo.userId(), photo.photoType(), result.importPath, result.data, photo.attributes());
     }
 
     public static List<List<String>> parseCsv(byte[] csvData) {
@@ -136,7 +137,7 @@ public class PhotoImportService {
         return parsedData;
     }
 
-    private PhotoImportResultDto createNewPhoto(final String userId, final String photoType, final String importPath, final byte[] photoBase64) {
+    private PhotoImportResultDto createNewPhoto(final String userId, final String photoType, final String importPath, final byte[] photoBase64, final Map<String, Object> attributes) {
         final EmbeddedPhotoCreateRequest photoCreateRequest = EmbeddedPhotoCreateRequest.builder()
                 .photoType(photoType)
                 .photoData(new String(photoBase64, StandardCharsets.UTF_8))
@@ -146,6 +147,7 @@ public class PhotoImportService {
                 .documentType("data")
                 .dataType("image_base64")
                 .documentData("{}")
+                .attributes(attributes)
                 .photos(Collections.singletonList(photoCreateRequest))
                 .build();
         final DocumentCreateResponse response = documentService.createDocument(documentCreateRequest);
