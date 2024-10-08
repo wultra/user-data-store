@@ -60,7 +60,7 @@ public class WebSecurityConfiguration {
             logger.info("Initializing HTTP basic authentication.");
             http.httpBasic(httpBasic -> httpBasic.realmName(realm));
         } else if (authType == AuthType.OAUTH2) {
-            logger.info("Initializing AUTH2 authentication.");
+            logger.info("Initializing OAUTH2 authentication.");
             http.oauth2ResourceServer(oauth2 -> oauth2.jwt(configurer ->
                     configurer.jwtAuthenticationConverter(jwtAuthenticationConverter(rolesClaim))));
         }
