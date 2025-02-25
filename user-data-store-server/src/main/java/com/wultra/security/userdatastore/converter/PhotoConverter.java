@@ -50,6 +50,7 @@ public class PhotoConverter {
 
         return PhotoDto.builder()
                 .id(entity.getId())
+                .userId(entity.getUserId())
                 .documentId(entity.getDocument().getId())
                 .photoData(encryptionService.decryptPhoto(entity))
                 .photoType(entity.getPhotoType())
