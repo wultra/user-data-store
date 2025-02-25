@@ -19,7 +19,6 @@ package com.wultra.security.userdatastore.converter;
 
 import com.wultra.security.userdatastore.client.model.dto.AttachmentDto;
 import com.wultra.security.userdatastore.model.entity.AttachmentEntity;
-import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import com.wultra.security.userdatastore.service.EncryptionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -47,6 +46,7 @@ public class AttachmentConverter {
 
         return AttachmentDto.builder()
                 .id(entity.getId())
+                .userId(entity.getUserId())
                 .documentId(entity.getDocument().getId())
                 .attachmentData(encryptionService.decryptAttachment(entity))
                 .attachmentType(entity.getAttachmentType())
