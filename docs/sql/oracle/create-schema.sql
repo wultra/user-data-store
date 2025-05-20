@@ -1,3 +1,12 @@
+-- *********************************************************************
+-- Update Database Script
+-- *********************************************************************
+-- Change Log: ./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml
+-- Ran at: 20.05.25 7:44
+-- Against: null@offline:oracle
+-- Liquibase version: 4.31.1
+-- *********************************************************************
+
 -- Changeset user-data-store/0.1.x/20230220-initial-schema.xml::1::Lubos Racansky
 -- Create a new table uds_user_claims
 CREATE TABLE uds_user_claims (user_id VARCHAR2(255) NOT NULL, claims CLOB NOT NULL, encryption_mode VARCHAR2(255) DEFAULT 'NO_ENCRYPTION' NOT NULL, timestamp_created TIMESTAMP DEFAULT sysdate, timestamp_last_updated TIMESTAMP, CONSTRAINT PK_UDS_USER_CLAIMS PRIMARY KEY (user_id));
@@ -55,3 +64,68 @@ CREATE INDEX audit_param_value ON audit_param(param_value);
 ALTER TABLE audit_log MODIFY audit_type NULL;
 
 -- Changeset user-data-store/1.0.x/20231003-add-tag-1.0.0::1::Lubos Racansky
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml::1::Roman Strobl
+CREATE TABLE uds_document (id VARCHAR2(36) NOT NULL, user_id VARCHAR2(255) NOT NULL, document_type VARCHAR2(32) NOT NULL, data_type VARCHAR2(32) NOT NULL, document_data_id VARCHAR2(255), external_id VARCHAR2(255), document_data CLOB NOT NULL, attributes CLOB NOT NULL, encryption_mode VARCHAR2(255) DEFAULT 'NO_ENCRYPTION' NOT NULL, timestamp_created TIMESTAMP DEFAULT sysdate, timestamp_last_updated TIMESTAMP, CONSTRAINT PK_UDS_DOCUMENT PRIMARY KEY (id));
+
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml::2::Roman Strobl
+CREATE TABLE uds_document_history (id VARCHAR2(36) NOT NULL, document_id VARCHAR2(36) NOT NULL, user_id VARCHAR2(255) NOT NULL, document_type VARCHAR2(32) NOT NULL, data_type VARCHAR2(32) NOT NULL, document_data_id VARCHAR2(255), external_id VARCHAR2(255), document_data CLOB NOT NULL, attributes CLOB NOT NULL, encryption_mode VARCHAR2(255) DEFAULT 'NO_ENCRYPTION' NOT NULL, timestamp_created TIMESTAMP DEFAULT sysdate, CONSTRAINT PK_UDS_DOCUMENT_HISTORY PRIMARY KEY (id));
+
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml::3::Roman Strobl
+CREATE TABLE uds_photo (id VARCHAR2(36) NOT NULL, user_id VARCHAR2(255) NOT NULL, document_id VARCHAR2(36) NOT NULL, external_id VARCHAR2(255), photo_type VARCHAR2(32) NOT NULL, photo_data CLOB NOT NULL, encryption_mode VARCHAR2(255) DEFAULT 'NO_ENCRYPTION' NOT NULL, timestamp_created TIMESTAMP DEFAULT sysdate, timestamp_last_updated TIMESTAMP, CONSTRAINT PK_UDS_PHOTO PRIMARY KEY (id));
+
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml::4::Roman Strobl
+ALTER TABLE uds_photo ADD CONSTRAINT fk_uds_photo_document_id FOREIGN KEY (document_id) REFERENCES uds_document (id);
+
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml::5::Roman Strobl
+CREATE TABLE uds_attachment (id VARCHAR2(36) NOT NULL, user_id VARCHAR2(255) NOT NULL, document_id VARCHAR2(36) NOT NULL, external_id VARCHAR2(255), attachment_type VARCHAR2(32) NOT NULL, attachment_data CLOB NOT NULL, encryption_mode VARCHAR2(255) DEFAULT 'NO_ENCRYPTION' NOT NULL, timestamp_created TIMESTAMP DEFAULT sysdate, timestamp_last_updated TIMESTAMP, CONSTRAINT PK_UDS_ATTACHMENT PRIMARY KEY (id));
+
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml::6::Roman Strobl
+ALTER TABLE uds_attachment ADD CONSTRAINT fk_uds_attachment_document_id FOREIGN KEY (document_id) REFERENCES uds_document (id);
+
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240614-migrate-data-1.3.0.xml::3::Roman Strobl
+CREATE OR REPLACE FUNCTION uuid_generate_v4
+RETURN RAW IS
+    v_uuid RAW(16);
+
+BEGIN
+SELECT SYS_GUID() INTO v_uuid FROM DUAL;
+RETURN v_uuid;
+END;
+
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240614-migrate-data-1.3.0.xml::4::Roman Strobl
+INSERT INTO uds_document (
+    id,
+    user_id,
+    document_type,
+    data_type,
+    document_data_id,
+    external_id,
+    document_data,
+    attributes,
+    encryption_mode,
+    timestamp_created,
+    timestamp_last_updated
+)
+SELECT
+    uuid_generate_v4(),
+    user_id,
+    'profile',
+    'claims',
+    NULL,
+    NULL,
+    claims,
+    '{}',
+    encryption_mode,
+    timestamp_created,
+    timestamp_last_updated
+FROM
+    uds_user_claims;
+
+-- Changeset docs/db/changelog/changesets/user-data-store/1.3.x/20240812-import-result.xml::1::Roman Strobl
+CREATE TABLE uds_import_result (id VARCHAR2(36) NOT NULL, import_path VARCHAR2(255), user_id VARCHAR2(255) NOT NULL, document_id VARCHAR2(36) NOT NULL, photo_id VARCHAR2(36), attachment_id VARCHAR2(36), imported BOOLEAN NOT NULL, error VARCHAR2(255), timestamp_created TIMESTAMP DEFAULT sysdate, CONSTRAINT PK_UDS_IMPORT_RESULT PRIMARY KEY (id));
+
+-- Changeset user-data-store/1.3.x/20240813-add-tag-1.3.0.xml::1::Lubos Racansky
+-- Changeset user-data-store/1.4.x/20250520-shedlock.xml::1::Lubos Racansky
+-- Create a new table shedlock
+CREATE TABLE shedlock (name VARCHAR2(64) NOT NULL, lock_until TIMESTAMP NOT NULL, locked_at TIMESTAMP NOT NULL, locked_by VARCHAR2(255) NOT NULL, CONSTRAINT PK_SHEDLOCK PRIMARY KEY (name));
+
