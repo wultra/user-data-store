@@ -31,12 +31,12 @@ The name of the role is case-sensitive.
 (Mind that the role name without the `ROLE_` prefix is used, unlike the basic authentication where the authority is inserted in the database table `uds_authorities`.)
 The claim name may be changed in the configuration `user-data-store.security.auth.oauth2.roles-claim=roles`.
 
-| Property                                                | Default Value | Description                                                                                                                           |
-|---------------------------------------------------------|---------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `user-data-store.security.auth.type`                    | `BASIC_HTTP`  | `BASIC_HTTP` for basic HTTP authentication or `OAUTH` for OpenID Connect. If OAUTH enabled, the properties bellow must be configured. |
-| `user-data-store.security.auth.oauth2.roles-claim`      | `roles`       | A name of the claim in the JWT that contains the user roles.                                                                          |
-| `spring.security.oauth2.resource-server.jwt.issuer-uri` |               | URL of the provider, e.g. `https://sts.windows.net/example/`                                                                          |
-| `spring.security.oauth2.resource-server.jwt.audiences`  |               | A comma-separated list of allowed `aud` JWT claim values to be validated.                                                             |
+| Property                                                | Default Value | Description                                                                                                                            |
+|---------------------------------------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `user-data-store.security.auth.type`                    | `BASIC_HTTP`  | `BASIC_HTTP` for basic HTTP authentication or `OAUTH2` for OpenID Connect. If OAUTH enabled, the properties bellow must be configured. |
+| `user-data-store.security.auth.oauth2.roles-claim`      | `roles`       | A name of the claim in the JWT that contains the user roles.                                                                           |
+| `spring.security.oauth2.resource-server.jwt.issuer-uri` |               | URL of the provider, e.g. `https://sts.windows.net/example/`                                                                           |
+| `spring.security.oauth2.resource-server.jwt.audiences`  |               | A comma-separated list of allowed `aud` JWT claim values to be validated.                                                              |
 
 See the [Spring Security documentation](https://docs.spring.io/spring-security/reference/servlet/oauth2/index.html#oauth2-client-log-users-in) and [OpenID Connect UserInfo endpoint](https://connect2id.com/products/server/docs/api/userinfo) for details.
 

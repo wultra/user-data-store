@@ -20,6 +20,8 @@ package com.wultra.security.userdatastore.client.model.dto;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.Map;
+
 /**
  * Photo import model class.
  *
@@ -32,6 +34,7 @@ public record PhotoImportDto(
         String userId,
         String photoDataType,
         String photoType,
-        String photoData
+        String photoData,
+        Map<String, Object> attributes
 
 ) { }
