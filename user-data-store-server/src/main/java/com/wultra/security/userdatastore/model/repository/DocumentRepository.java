@@ -35,8 +35,9 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, String
 
     List<DocumentEntity> findAllByUserIdAndDataType(String userId, String dataType);
 
-    int deleteAllByUserId(String userId);
+    void deleteAllByUserId(String userId);
 
-    int deleteAllByUserIdAndId(String userId, String id);
+    // TODO (racansky, 2025-09-23) Spring Boot 3.5.6 bug, returning primitive number queries fail with ClassCastException https://github.com/spring-projects/spring-data-jpa/issues/4015
+    Integer deleteAllByUserIdAndId(String userId, String id);
 
 }

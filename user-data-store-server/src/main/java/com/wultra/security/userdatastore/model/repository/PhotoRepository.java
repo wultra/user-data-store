@@ -36,8 +36,8 @@ public interface PhotoRepository extends JpaRepository<PhotoEntity, String> {
 
     List<PhotoEntity> findAllByUserIdAndDocument(String userId, DocumentEntity documentEntity);
 
-    int deleteAllByUserId(String userId);
+    void deleteAllByUserId(String userId);
 
-    int deleteAllByUserIdAndDocument(String userId, DocumentEntity documentEntity);
+    void deleteAllByUserIdAndDocument(String userId, DocumentEntity documentEntity);
 
 }
