@@ -4,7 +4,7 @@ KEEP_RUNNING=${KEEP_RUNNING:-false}
 KEEP_RUNNING_PORT=${KEEP_RUNNING_PORT:-666}
 
 liquibase --headless=true --log-level=INFO \
-    --changeLogFile="changelog/user-data-store-server/db.changelog-module.xml" \
+    --changeLogFile="changelog/user-data-store/db.changelog-module.xml" \
     --username="${POWERAUTH_SERVER_DATASOURCE_USERNAME:-}" \
     --password="${POWERAUTH_SERVER_DATASOURCE_PASSWORD:-}" \
     --url="${POWERAUTH_SERVER_DATASOURCE_URL}" \

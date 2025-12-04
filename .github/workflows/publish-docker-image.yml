@@ -106,7 +106,7 @@ jobs:
     - name: Copy liquibase files
       run: |
         mkdir -p ./user-data-store-server/docker-init/liquibase/data/
-        cp -r ./docs/db/changelog/changesets/user-data-store-server ./user-data-store-server/docker-init/liquibase/data
+        cp -r ./docs/db/changelog/changesets/user-data-store ./user-data-store-server/docker-init/liquibase/data
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx
