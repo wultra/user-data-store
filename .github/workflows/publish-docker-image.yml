@@ -102,7 +102,7 @@ jobs:
     - name: Prepare SBOM files
       run: |
         mkdir -p ./user-data-store-server/docker/sbom
-        unzip -p ./user-data-store-server/docker/images-and-libs/user-data-store-server.war WEB-INF/classes/META-INF/sbom/application.cdx.json > ./powerauth-java-server/docker/sbom/user-data-store-server.cdx.json
+        unzip -p ./user-data-store-server/docker/images-and-libs/user-data-store.war WEB-INF/classes/META-INF/sbom/application.cdx.json > ./user-data-store-server/docker/sbom/user-data-store.cdx.json
     - name: Copy liquibase files
       run: |
         mkdir -p ./user-data-store-server/docker-init/liquibase/data/
@@ -183,5 +183,5 @@ jobs:
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
         IMAGES: ${{ steps.digests.outputs.TAGS_DIGESTS }}
-        INPUT_FILES: '/sbom/user-data-store-server.cdx.json'
+        INPUT_FILES: '/sbom/user-data-store.cdx.json'
         INPUT_FILES_PATH: './user-data-store-server/docker/sbom'
