@@ -98,7 +98,7 @@ jobs:
       run: |
         mkdir -p ./user-data-store-server/docker/images-and-libs
         mvn -U -DuseInternalRepo=true --no-transfer-progress package
-        cp ./user-data-store-server/target/user-data-store-server*.war ./user-data-store-server/docker/images-and-libs/user-data-store-server.war
+        cp ./user-data-store-server/target/user-data-store*.war ./user-data-store-server/docker/images-and-libs/user-data-store-server.war
     - name: Prepare SBOM files
       run: |
         mkdir -p ./user-data-store-server/docker/sbom
