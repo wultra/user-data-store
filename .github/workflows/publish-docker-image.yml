@@ -50,7 +50,8 @@ jobs:
 
   build:
     runs-on: 'ubuntu-latest'
-    environment: docker-publish
+    needs: set-environment
+    environment: ${{ needs.set-environment.outputs.environment }}
     env:
       # these are global secrets - for readonly access to artifactory
       INTERNAL_USERNAME: ${{ secrets.JFROG_USERNAME }}
