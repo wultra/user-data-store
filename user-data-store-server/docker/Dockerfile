@@ -10,6 +10,7 @@ ENV JAVA_HOME=/opt/java/openjdk \
     PKG_RELEASE=1~jammy \
     LOGBACK_CONF=/opt/logback/conf \
     TZ=UTC \
+    APP_PATH="/app/user-data-store.war" \
     LQ_ENABLED=true
 
 ENV PATH=$PATH:$LB_HOME
@@ -38,7 +39,7 @@ RUN apt-get -y update  \
 COPY ./docs/db/changelog $LB_HOME/db/changelog
 
 # Deploy and run applications
-COPY ./user-data-store-server/target/user-data-store.war user-data-store.war
+COPY ./user-data-store-server/target/user-data-store.war "${APP_PATH}"
 
 # Docker configuration
 EXPOSE 8080

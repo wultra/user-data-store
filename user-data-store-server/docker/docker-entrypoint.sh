@@ -9,4 +9,4 @@ if [ "${LQ_ENABLED}" = "true" ]; then
     update
 fi
 
-java ${JAVA_OPTS:-} -jar user-data-store.war
+java ${JAVA_OPTS:-} -jar /app/user-data-store.war
