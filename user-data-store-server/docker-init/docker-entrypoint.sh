@@ -4,7 +4,7 @@ KEEP_RUNNING=${KEEP_RUNNING:-false}
 KEEP_RUNNING_PORT=${KEEP_RUNNING_PORT:-666}
 
 liquibase --headless=true --log-level=INFO \
-    --changeLogFile="changelog/db.changelog-module.xml" \
+    --changeLogFile="changelog/db.changelog-master.xml" \
     --username="${USER_DATA_STORE_DATASOURCE_USERNAME:-}" \
     --password="${USER_DATA_STORE_DATASOURCE_PASSWORD:-}" \
     --url="${USER_DATA_STORE_DATASOURCE_URL}" \
