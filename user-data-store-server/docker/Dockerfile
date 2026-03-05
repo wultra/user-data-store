@@ -36,7 +36,7 @@ RUN apt-get -y update  \
     && groupadd -r powerauth && useradd -r -g powerauth -s /sbin/nologin powerauth
 
 # Copy new Liquibase data
-COPY ./docs/db/changelog $LB_HOME/db/changelog
+COPY docs/db/changelog/changesets/user-data-store $LB_HOME/db/changelog
 
 # Deploy and run applications
 COPY ./user-data-store-server/target/user-data-store.war "${APP_PATH}"
