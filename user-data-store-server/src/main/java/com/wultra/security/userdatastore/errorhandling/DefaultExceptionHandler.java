@@ -22,7 +22,7 @@ import com.wultra.security.userdatastore.model.error.InvalidRequestException;
 import com.wultra.security.userdatastore.model.error.RequestValidationException;
 import com.wultra.security.userdatastore.model.error.ResourceAlreadyExistsException;
 import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
-import io.getlime.core.rest.model.base.response.ErrorResponse;
+import com.wultra.core.rest.model.base.response.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -18,8 +18,8 @@
 package com.wultra.security.userdatastore.controller;
 
 import com.wultra.security.userdatastore.service.ClaimsService;
-import io.getlime.core.rest.model.base.response.ObjectResponse;
-import io.getlime.core.rest.model.base.response.Response;
+import com.wultra.core.rest.model.base.response.ObjectResponse;
+import com.wultra.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
