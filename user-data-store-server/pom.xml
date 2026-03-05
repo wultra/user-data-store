@@ -128,19 +128,19 @@
 
         <!-- Wultra Dependencies -->
         <dependency>
-            <groupId>io.getlime.core</groupId>
+            <groupId>com.wultra.core</groupId>
             <artifactId>audit-base</artifactId>
             <version>${wultra-core.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>io.getlime.core</groupId>
+            <groupId>com.wultra.core</groupId>
             <artifactId>rest-model-base</artifactId>
             <version>${wultra-core.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>io.getlime.security</groupId>
+            <groupId>com.wultra.security</groupId>
             <artifactId>powerauth-java-crypto</artifactId>
             <version>${powerauth-crypto.version}</version>
         </dependency>

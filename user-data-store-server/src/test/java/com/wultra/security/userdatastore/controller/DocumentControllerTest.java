@@ -24,7 +24,7 @@ import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequ
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.config.WebSecurityConfiguration;
 import com.wultra.security.userdatastore.service.DocumentService;
-import io.getlime.core.rest.model.base.request.ObjectRequest;
+import com.wultra.core.rest.model.base.request.ObjectRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
