@@ -23,7 +23,7 @@ import com.wultra.security.userdatastore.client.model.request.AttachmentCreateRe
 import com.wultra.security.userdatastore.client.model.response.AttachmentResponse;
 import com.wultra.security.userdatastore.config.WebSecurityConfiguration;
 import com.wultra.security.userdatastore.service.AttachmentService;
-import io.getlime.core.rest.model.base.request.ObjectRequest;
+import com.wultra.core.rest.model.base.request.ObjectRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
