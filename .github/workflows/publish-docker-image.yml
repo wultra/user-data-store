@@ -72,7 +72,6 @@ jobs:
         with:
           module_to_build: 'user-data-store-server'
           project_path: ''
-          output_name: 'user-data-store'
           generate_sbom: 'true'
 
       - name: Resolve Docker tags
