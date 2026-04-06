@@ -43,7 +43,7 @@
     <properties>
         <java.version>17</java.version>
 
-        <wultra-core.version>2.0.0</wultra-core.version>
+        <wultra-core.version>2.1.0</wultra-core.version>
         <powerauth-crypto.version>2.0.1</powerauth-crypto.version>
 
         <swagger-annotations-jakarta.version>2.2.45</swagger-annotations-jakarta.version>
