@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="1" author="Roman Strobl">
+    <changeSet id="1" logicalFilePath="user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml" author="Roman Strobl">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="uds_document"/>
@@ -38,7 +38,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2" author="Roman Strobl">
+    <changeSet id="2" logicalFilePath="user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml" author="Roman Strobl">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="uds_document_history"/>
@@ -75,7 +75,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="3" author="Roman Strobl">
+    <changeSet id="3" logicalFilePath="user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml" author="Roman Strobl">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="uds_photo"/>
@@ -106,7 +106,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="4" author="Roman Strobl">
+    <changeSet id="4" logicalFilePath="user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml" author="Roman Strobl">
         <preConditions onFail="MARK_RAN">
             <not>
                 <foreignKeyConstraintExists foreignKeyName="fk_uds_photo_document_id" />
@@ -120,7 +120,7 @@
                 referencedColumnNames="id"/>
     </changeSet>
 
-    <changeSet id="5" author="Roman Strobl">
+    <changeSet id="5" logicalFilePath="user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml" author="Roman Strobl">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="uds_attachment"/>
@@ -151,7 +151,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="6" author="Roman Strobl">
+    <changeSet id="6" logicalFilePath="user-data-store/1.3.x/20240514-refactor-uds-1.3.0.xml" author="Roman Strobl">
         <preConditions onFail="MARK_RAN">
             <not>
                 <foreignKeyConstraintExists foreignKeyName="fk_uds_attachment_document_id" />

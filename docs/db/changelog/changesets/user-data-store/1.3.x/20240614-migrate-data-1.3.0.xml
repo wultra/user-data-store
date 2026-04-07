@@ -3,13 +3,13 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="1" author="Roman Strobl" dbms="postgresql">
+    <changeSet id="1" logicalFilePath="user-data-store/1.3.x/20240614-migrate-data-1.3.0.xml" author="Roman Strobl" dbms="postgresql">
         <sql>
             CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
         </sql>
     </changeSet>
 
-    <changeSet id="2" author="Roman Strobl" dbms="postgresql">
+    <changeSet id="2" logicalFilePath="user-data-store/1.3.x/20240614-migrate-data-1.3.0.xml" author="Roman Strobl" dbms="postgresql">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM uds_document;
@@ -46,7 +46,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="3" author="Roman Strobl" dbms="oracle">
+    <changeSet id="3" logicalFilePath="user-data-store/1.3.x/20240614-migrate-data-1.3.0.xml" author="Roman Strobl" dbms="oracle">
         <sql>
             CREATE OR REPLACE FUNCTION uuid_generate_v4
                 RETURN RAW IS
@@ -58,7 +58,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="4" author="Roman Strobl" dbms="oracle">
+    <changeSet id="4" logicalFilePath="user-data-store/1.3.x/20240614-migrate-data-1.3.0.xml" author="Roman Strobl" dbms="oracle">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM uds_document;
