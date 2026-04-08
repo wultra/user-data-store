@@ -2,9 +2,9 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: ./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml
--- Ran at: 20.05.25 7:44
+-- Ran at: 4/7/26, 3:27 PM
 -- Against: null@offline:oracle
--- Liquibase version: 4.31.1
+-- Liquibase version: 4.33.0
 -- *********************************************************************
 
 -- Changeset user-data-store/0.1.x/20230220-initial-schema.xml::1::Lubos Racansky
@@ -128,4 +128,12 @@ CREATE TABLE uds_import_result (id VARCHAR2(36) NOT NULL, import_path VARCHAR2(2
 -- Changeset user-data-store/1.4.x/20250520-shedlock.xml::1::Lubos Racansky
 -- Create a new table shedlock
 CREATE TABLE shedlock (name VARCHAR2(64) NOT NULL, lock_until TIMESTAMP NOT NULL, locked_at TIMESTAMP NOT NULL, locked_by VARCHAR2(255) NOT NULL, CONSTRAINT PK_SHEDLOCK PRIMARY KEY (name));
+
+-- Changeset user-data-store/1.6.x/20260407-add-subject-id-to-audit-log.xml::1::Pavel Sindelar
+-- Add column subject_id to audit_log
+ALTER TABLE audit_log ADD subject_id VARCHAR2(256);
+
+-- Changeset user-data-store/1.6.x/20260407-add-subject-id-to-audit-log.xml::2::Pavel Sindelar
+-- Create index on audit_log(subject_id)
+CREATE INDEX audit_log_subject_id_idx ON audit_log(subject_id);
 

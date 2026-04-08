@@ -6,6 +6,7 @@ This page contains User Data Store migration instructions.
 When updating across multiple versions, you need to perform all migration steps additively.
 <!-- end -->
 
+- [User Data Store 1.6.0](./User-Data-Store-1.6.0.md)
 - [User Data Store 1.5.0](./User-Data-Store-1.5.0.md)
 - [User Data Store 1.4.0](./User-Data-Store-1.4.0.md)
 - [User Data Store 1.3.0](./User-Data-Store-1.3.0.md)

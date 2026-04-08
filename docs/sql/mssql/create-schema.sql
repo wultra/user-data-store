@@ -2,9 +2,9 @@
 -- Update Database Script
 -- *********************************************************************
 -- Change Log: ./docs/db/changelog/changesets/user-data-store/db.changelog-module.xml
--- Ran at: 20.05.25 7:46
+-- Ran at: 4/7/26, 3:29 PM
 -- Against: null@offline:mssql
--- Liquibase version: 4.31.1
+-- Liquibase version: 4.33.0
 -- *********************************************************************
 
 -- Changeset user-data-store/0.1.x/20230220-initial-schema.xml::1::Lubos Racansky
@@ -111,3 +111,14 @@ GO
 -- Create a new table shedlock
 CREATE TABLE shedlock (name varchar(64) NOT NULL, lock_until datetime2 NOT NULL, locked_at datetime2 NOT NULL, locked_by varchar(255) NOT NULL, CONSTRAINT PK_SHEDLOCK PRIMARY KEY (name));
 GO
+
+-- Changeset user-data-store/1.6.x/20260407-add-subject-id-to-audit-log.xml::1::Pavel Sindelar
+-- Add column subject_id to audit_log
+ALTER TABLE audit_log ADD subject_id varchar(256);
+GO
+
+-- Changeset user-data-store/1.6.x/20260407-add-subject-id-to-audit-log.xml::2::Pavel Sindelar
+-- Create index on audit_log(subject_id)
+CREATE NONCLUSTERED INDEX audit_log_subject_id_idx ON audit_log(subject_id);
+GO
+
