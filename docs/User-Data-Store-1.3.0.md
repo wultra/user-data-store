@@ -15,3 +15,7 @@ For manual changes use SQL scripts:
 - [PostgreSQL script](./sql/postgresql/migration_1.2.0-1.3.0.sql)
 - [Oracle script](./sql/oracle/migration_1.2.0-1.3.0.sql)
 - [MSSQL script](./sql/mssql/migration_1.2.0-1.3.0.sql)
+
+### PostgreSQL Migration Specifics for Azure
+
+The migration script uses `uuid_generate_v4()` which requires the `uuid-ossp` extension. In Azure Database for PostgreSQL, this extension may not be allowed by default. Allow this extension in case you use Azure Database for PostgreSQL.
