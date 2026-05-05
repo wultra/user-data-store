@@ -4,4 +4,5 @@
 - [Database Structure](./Database-Structure.md)
 - [Deploying User Data Store](./Deploying-User-Data-Store.md)
 - [User Data Store REST API](./User-Data-Store-API.md)
+- [Artifact Signing](./Artifact-Signing.md)
 - [Migration Instructions](./Migration-Instructions.md)
