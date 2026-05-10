@@ -51,6 +51,7 @@
         <logstash.version>8.0</logstash.version>
         <commons-csv.version>1.11.0</commons-csv.version>
         <ojdbc-version>23.5.0.24.07</ojdbc-version>
+        <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -114,6 +115,14 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>${cyclonedx-maven-plugin.version}</version>
+                <configuration>
+                    <skipNotDeployed>false</skipNotDeployed>
+                </configuration>
             </plugin>
         </plugins>
     </build>
