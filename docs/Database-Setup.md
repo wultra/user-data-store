@@ -67,14 +67,14 @@ Without this step, the application will fail to start during Liquibase migration
 
 User Data Store uses [Liquibase](https://www.liquibase.org/) to manage the database schema. The schema is created and kept up-to-date automatically when the application starts.
 
-You can also run Liquibase manually using the [Liquibase CLI](https://docs.liquibase.com/tools-integrations/cli/home.html). The main changelog file is located at `docs/db/changelog/db.changelog-master.xml` in the User Data Store distribution:
+You can also run Liquibase manually using the [Liquibase CLI](https://docs.liquibase.com/tools-integrations/cli/home.html). In the User Data Store distribution, the main changelog file is `db/changelog/db.changelog-master.xml` relative to the `docs/` directory:
 
 ```shell
 liquibase \
   --url=jdbc:postgresql://localhost:5432/user_data_store \
   --username=user_data_store \
   --password=$PASSWORD$ \
-  --changeLogFile=docs/db/changelog/db.changelog-master.xml \
+  --changeLogFile=db/changelog/db.changelog-master.xml \
   update
 ```
 
