@@ -7,4 +7,5 @@
 - [Artifact Signing](./Artifact-Signing.md)
 - [Database Structure](./Database-Structure.md)
 - [User Data Store REST API](./User-Data-Store-API.md)
+- [Artifact Signing](./Artifact-Signing.md)
 - [Migration Instructions](./Migration-Instructions.md)
