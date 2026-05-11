@@ -19,7 +19,7 @@ For detailed REST API documentation, see [User Data Store REST API](./User-Data-
 ## Deployment Tutorials
 
 - [System Requirements](./System-Requirements.md)
-- [Database Setup](Database-Setup.md)
+- [Database Setup](./Database-Setup.md)
 - [Deploying User Data Store](./Deploying-User-Data-Store.md)
 - [Configuration Properties](./Configuration-Properties.md)
 - [Database Structure](./Database-Structure.md)

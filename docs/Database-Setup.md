@@ -60,7 +60,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 <!-- begin box warning -->
 **Azure Database for PostgreSQL:** The `uuid-ossp` extension is not enabled by default and must be explicitly allowed. In the Azure Portal, navigate to your PostgreSQL server → **Server parameters** → search for `azure.extensions` → add `UUID-OSSP` to the allowed list. Then create the extension in the database as shown above.
 
-Without this step, the application will fail to start on a fresh installation if your instance has never run a version prior to 1.3.0, or during migration to 1.3.0 if upgrading from an older version.
+Without this step, the application will fail to start during liquibase migration.
 <!-- end -->
 
 ## Run Liquibase
