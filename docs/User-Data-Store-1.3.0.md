@@ -18,4 +18,8 @@ For manual changes use SQL scripts:
 
 ### PostgreSQL Migration Specifics for Azure
 
-The migration script uses `uuid_generate_v4()` which requires the `uuid-ossp` extension. In Azure Database for PostgreSQL, this extension may not be allowed by default. Allow this extension in case you use Azure Database for PostgreSQL.
+The migration script uses `uuid_generate_v4()` which requires the `uuid-ossp` extension. In Azure Database for PostgreSQL, this extension may not be allow-listed by default.
+
+If you use Azure Database for PostgreSQL, add `uuid-ossp` to the server's `azure.extensions` setting before running the migration, and then enable the extension in the database.
+
+For the detailed Azure setup steps, see [Database Setup](./Database-Setup.md).
