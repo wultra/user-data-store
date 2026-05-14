@@ -17,8 +17,6 @@
  */
 package com.wultra.security.userdatastore;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wultra.core.rest.client.base.DefaultRestClient;
 import com.wultra.core.rest.client.base.RestClient;
 import com.wultra.core.rest.client.base.RestClientConfiguration;
@@ -48,7 +46,6 @@ import java.util.Collections;
 public class UserDataStoreRestClient implements UserDataStoreClient {
 
     private final RestClient restClient;
-    private final ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private static final MultiValueMap<String, String> EMPTY_MULTI_MAP = new LinkedMultiValueMap<>();
 
     /**
