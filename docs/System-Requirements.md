@@ -33,7 +33,7 @@ User Data Store can run on PostgreSQL, Oracle, and MS SQL Server databases.
 
 | Database Platform | Minimal Supported Version |
 |-------------------|---------------------------|
-| PostgreSQL        | 15                        |
+| PostgreSQL        | 14                        |
 | MS SQL Server     | SQL Server 2019           |
 | Oracle DB         | 19c                       |
 
