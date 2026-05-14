@@ -7,7 +7,7 @@ This guide contains instructions for migration from User Data Store version `1.5
 
 For convenience, you can use liquibase for your database migration.
 
-The main Liquibase script is located in path [db/changelog/db.changelog-master.xml](db/changelog/db.changelog-master.xml).
+The main Liquibase script is located in path [./docs/db/changelog/db.changelog-master.xml](db/changelog/db.changelog-master.xml).
 
 For manual changes use SQL scripts:
 
