@@ -17,14 +17,14 @@
  */
 package com.wultra.security.userdatastore.controller;
 
+import com.wultra.core.rest.model.base.request.ObjectRequest;
+import com.wultra.core.rest.model.base.response.ObjectResponse;
+import com.wultra.core.rest.model.base.response.Response;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.service.DocumentService;
-import com.wultra.core.rest.model.base.request.ObjectRequest;
-import com.wultra.core.rest.model.base.response.ObjectResponse;
-import com.wultra.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -35,6 +35,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * REST controller providing API for CRUD for user documents.
@@ -61,10 +62,14 @@ class DocumentController {
             description = "Return documents for the given user."
     )
     @GetMapping("/documents")
-    public ObjectResponse<DocumentResponse> fetchDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
-        logger.info("action: fetchDocuments, state: initiated, userId: {}, documentId: {}", userId, documentId);
-        final DocumentResponse documents = documentService.fetchDocuments(userId, Optional.ofNullable(documentId));
-        logger.info("action: fetchDocuments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
+    public ObjectResponse<DocumentResponse> fetchDocuments(
+            @NotBlank @Size(max = 255) @RequestParam String userId,
+            @Size(max = 255) @RequestParam(required = false) String documentId,
+            @Size(max = 255) @RequestParam(required = false) String documentType,
+            @RequestParam(required = false) Set<String> attributes) {
+        logger.info("action: fetchDocuments, state: initiated, userId: {}, documentId: {}, documentType: {}, attributes: {}", userId, documentId, documentType, attributes);
+        final DocumentResponse documents = documentService.fetchDocuments(userId, documentId, documentType, attributes);
+        logger.info("action: fetchDocuments, state: succeeded");
         return new ObjectResponse<>(documents);
     }
 

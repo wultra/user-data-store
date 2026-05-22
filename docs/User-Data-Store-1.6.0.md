@@ -22,3 +22,15 @@ Added a new indexed column `subject_id` holding an identifier linking the audit 
 <!-- begin box warning -->
 The auditing tables may be already updated in your database schema if the database schema is not separated for different PowerAuth applications. In case the column `audit_log.subject_id` and its index `audit_log_subject_id_idx` are already present, you can safely skip this migration step.
 <!-- end -->
+
+
+## REST API Changes
+
+### GET `/documents` Filtering
+
+The `GET /documents` endpoint now supports two additional optional query parameters used to filter the returned documents:
+
+- `documentType` - return only documents of the given document type.
+- `attributes` - return only the listed attribute keys in the `attributes` map of each document. The parameter can be repeated or provided as a comma-separated list (e.g. `attributes=firstName,lastName`).
+
+Both parameters are optional and can be combined. When neither is provided, the endpoint behaves as in previous versions and returns all documents with all attributes.
