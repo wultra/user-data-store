@@ -1,15 +1,17 @@
 # Docker image of the powerauth cloud application
-FROM ibm-semeru-runtimes:open-21.0.2_13-jre
+FROM ibm-semeru-runtimes:open-21.0.7_6-jre
 
 LABEL maintainer="Lubos Racansky <lubos.racansky@wultra.com>"
 
 # Prepare environment variables
 ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
-    LB_VERSION=4.25.1 \
+    LB_VERSION=4.30.0 \
     PKG_RELEASE=1~jammy \
     LOGBACK_CONF=/opt/logback/conf \
-    TZ=UTC
+    TZ=UTC \
+    APP_PATH="/app/user-data-store.war" \
+    LQ_ENABLED=true
 
 ENV PATH=$PATH:$LB_HOME
 
@@ -20,7 +22,7 @@ RUN apt-get -y update  \
 # Install Liquibase, inspired by https://github.com/mobtitude/liquibase/blob/master/Dockerfile
     && set -x \
     && wget -q -O /tmp/liquibase.tar.gz "https://github.com/liquibase/liquibase/releases/download/v$LB_VERSION/liquibase-$LB_VERSION.tar.gz" \
-    && [ "8b2b7aa8ec755d4ee52fa0210cd2a244fd16ed695fc4a72245562950776d2a56  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
+    && echo "184ffd609518091da42d6cd75e883b4f6ff1763cce8883e95fc99f7f05ca262d  /tmp/liquibase.tar.gz" | sha256sum -c - \
     && mkdir -p "$LB_HOME" \
     && tar -xzf /tmp/liquibase.tar.gz -C "$LB_HOME" \
     && rm -rf "$LB_HOME/sdk" "$LB_HOME/examples" \
@@ -34,10 +36,10 @@ RUN apt-get -y update  \
     && groupadd -r powerauth && useradd -r -g powerauth -s /sbin/nologin powerauth
 
 # Copy new Liquibase data
-COPY docs/db/changelog $LB_HOME/db/changelog
+COPY docs/db/changelog/changesets/user-data-store $LB_HOME/db/changelog
 
 # Deploy and run applications
-COPY user-data-store-server/target/user-data-store.war user-data-store.war
+COPY ./user-data-store-server/target/user-data-store-server*.war "${APP_PATH}"
 
 # Docker configuration
 EXPOSE 8080
@@ -46,8 +48,8 @@ STOPSIGNAL SIGQUIT
 # Add PowerAuth User
 USER powerauth
 
-COPY user-data-store-server/docker/deploy/conf/logback/* $LOGBACK_CONF/
+COPY ./user-data-store-server/docker/deploy/conf/logback/* $LOGBACK_CONF/
 
 # Define entry point with mandatory commands (nginx)
-COPY user-data-store-server/docker/deploy/docker-entrypoint.sh /
+COPY ./user-data-store-server/docker/docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -37,7 +37,6 @@
     </properties>
 
     <build>
-        <finalName>user-data-store</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
