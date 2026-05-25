@@ -41,8 +41,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -129,6 +128,16 @@ class DocumentControllerTest {
                 .andExpect(jsonPath("$.status", is("OK")))
                 .andExpect(jsonPath("$.responseObject.documents[0].userId", is("alice")))
                 .andExpect(jsonPath("$.responseObject.documents[0].documentType", is("profile")));
+    }
+
+    @WithMockUser(roles = "READ")
+    @Test
+    void testGet_invalidAttributesFormat() throws Exception {
+        mvc.perform(get("/documents?userId=alice&attributes=firstNameAlice")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verify(service, never()).fetchDocuments(any());
     }
 
    @WithMockUser(roles = "WRITE")

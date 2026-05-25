@@ -78,7 +78,12 @@ class DefaultExceptionHandler {
      * @param e Exception.
      * @return Response with error details.
      */
-    @ExceptionHandler({InvalidRequestException.class, ConstraintViolationException.class, MethodArgumentNotValidException.class, RequestValidationException.class})
+    @ExceptionHandler({
+            InvalidRequestException.class,
+            ConstraintViolationException.class,
+            MethodArgumentNotValidException.class,
+            RequestValidationException.class,
+            IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvalidRequestException(final Exception e) {
         logger.warn("Error occurred when processing request object: {}", e.getMessage());
