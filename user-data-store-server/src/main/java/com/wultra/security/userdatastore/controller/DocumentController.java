@@ -72,18 +72,19 @@ class DocumentController {
             description = "Return documents for the given user, optionally filtered by document ID, document type, " +
                     "and required attribute key-value pairs."
     )
+    @Parameter(
+            name = "attributes",
+            description = "Required attribute key-value pairs encoded as `key:value`. " +
+                    "Repeat the parameter for multiple pairs, e.g. " +
+                    "`?attributes=firstName:Alice&attributes=lastName:Adams`. " +
+                    "Only documents whose `attributes` map contains all the given pairs are returned.",
+            example = "firstName:Alice"
+    )
     @GetMapping("/documents")
     public ObjectResponse<DocumentResponse> fetchDocuments(
             @NotBlank @Size(max = 255) @RequestParam String userId,
             @Size(max = 255) @RequestParam(required = false) String documentId,
             @Size(max = 255) @RequestParam(required = false) String documentType,
-            @Parameter(
-                    description = "Required attribute key-value pairs encoded as `key:value`. " +
-                            "Repeat the parameter for multiple pairs, e.g. " +
-                            "`?attributes=firstName:Alice&attributes=lastName:Adams`. " +
-                            "Only documents whose `attributes` map contains all the given pairs are returned.",
-                    example = "firstName:Alice"
-            )
             @RequestParam(required = false) List<String> attributes) {
 
         logger.info("action: fetchDocuments, state: initiated, userId: {}, documentId: {}, documentType: {}, attributes: {}", userId, documentId, documentType, attributes);
