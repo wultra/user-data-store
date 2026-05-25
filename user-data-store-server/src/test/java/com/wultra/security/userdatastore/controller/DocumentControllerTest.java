@@ -18,13 +18,13 @@
 package com.wultra.security.userdatastore.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wultra.core.rest.model.base.request.ObjectRequest;
 import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.config.WebSecurityConfiguration;
 import com.wultra.security.userdatastore.service.DocumentService;
-import com.wultra.core.rest.model.base.request.ObjectRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -78,7 +78,10 @@ class DocumentControllerTest {
                 ))))
                 .build();
         DocumentResponse response = new DocumentResponse(Collections.singletonList(document));
-        when(service.fetchDocuments("alice", null, null, Map.of()))
+        when(service.fetchDocuments(DocumentService.DocumentsRequest.builder()
+                .userId("alice")
+                .attributes(Map.of())
+                .build()))
                 .thenReturn(response);
 
         mvc.perform(get("/documents?userId=alice")
@@ -137,16 +140,6 @@ class DocumentControllerTest {
         ));
         final var documentCreateRequest = new DocumentCreateRequest("alice", "profile", "claims",
                 "83692", null, documentData, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
-        final Map<String, Object> requestBody = Map.of(
-                "userId", "alice",
-                "documentType", "profile",
-                "dataType", "claims",
-                "documentDataId", "83692",
-                "documentData", documentData,
-                "attributes", Collections.emptyMap(),
-                "photos", Collections.emptyList(),
-                "attachments", Collections.emptyList()
-        );
 
         final String requestBodyJson = new ObjectMapper().writeValueAsString(new ObjectRequest<>(documentCreateRequest));
         mvc.perform(post("/admin/documents")
@@ -180,15 +173,6 @@ class DocumentControllerTest {
         ));
         final var documentUpdateRequest = new DocumentUpdateRequest("alice", "profile", "claims",
                 "83692", null, documentData, Collections.emptyMap());
-        final Map<String, Object> requestBody = Map.of(
-                "userId", "alice",
-                "id", "1",
-                "documentType", "profile",
-                "dataType", "claims",
-                "documentDataId", "83692",
-                "documentData", documentData,
-                "attributes", Collections.emptyMap()
-        );
 
         final String requestBodyJson = new ObjectMapper().writeValueAsString(new ObjectRequest<>(documentUpdateRequest));
         mvc.perform(put("/admin/documents/1")

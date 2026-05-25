@@ -30,6 +30,7 @@ import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.DocumentHistoryRepository;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.Authentication;
@@ -63,23 +64,16 @@ public class DocumentService {
      * Fetch documents for the given user, optionally filtered by document identifier, document type,
      * and a map of required attribute key-value pairs.
      *
-     * @param userId user identifier; must not be {@code null}
-     * @param documentId optional document identifier; when provided, a single document with this ID is returned
-     *                   (the {@code documentType} and {@code attributes} parameters are ignored in this case)
-     * @param documentType optional document type; when provided (and {@code documentId} is {@code null}),
-     *                     only documents of this type are returned
-     * @param attributes optional map of required attribute key-value pairs; when provided and non-empty,
-     *                   only documents whose {@code attributes} map contains all of the given entries are returned
+     * @param request parameters for fetching documents
      * @return response containing the matching documents
      * @throws ResourceNotFoundException when {@code documentId} is provided but no such document exists
      */
     @Transactional(readOnly = true)
-    // TODO Lubos - introduce parameter object to avoid too many parameters
-    public DocumentResponse fetchDocuments(
-            final String userId,
-            final @Nullable String documentId,
-            final @Nullable String documentType,
-            final Map<String, String> attributes) {
+    public DocumentResponse fetchDocuments(final DocumentsRequest request) {
+        final String userId = request.userId();
+        final String documentId = request.documentId();
+        final String documentType = request.documentType();
+        final Map<String, String> attributes = request.attributes();
 
         if (documentId != null) {
             final DocumentEntity documentEntity = documentRepository.findById(documentId).orElseThrow(
@@ -217,5 +211,24 @@ public class DocumentService {
         historyEntity.setAttributes(documentEntity.getAttributes());
         historyEntity.setTimestampCreated(LocalDateTime.now());
         documentHistoryRepository.save(historyEntity);
+    }
+
+    /**
+     * Parameter object for {@link DocumentService#fetchDocuments(DocumentsRequest)}.
+     *
+     * @param userId user identifier; must not be {@code null}
+     * @param documentId optional document identifier; when provided, a single document with this ID is returned
+     *                   (the {@code documentType} and {@code attributes} parameters are ignored in this case)
+     * @param documentType optional document type; when provided (and {@code documentId} is {@code null}),
+     *                     only documents of this type are returned
+     * @param attributes required attribute key-value pairs; when non-empty, only documents whose {@code attributes}
+     *                   map contains all of the given entries are returned; never {@code null}, use empty map when no filter
+     */
+    @Builder
+    public record DocumentsRequest(
+            String userId,
+            @Nullable String documentId,
+            @Nullable String documentType,
+            Map<String, String> attributes) {
     }
 }

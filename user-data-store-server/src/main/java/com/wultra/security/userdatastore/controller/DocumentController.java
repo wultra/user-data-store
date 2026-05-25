@@ -88,8 +88,13 @@ class DocumentController {
             @RequestParam(required = false) List<String> attributes) {
 
         logger.info("action: fetchDocuments, state: initiated, userId: {}, documentId: {}, documentType: {}, attributes: {}", userId, documentId, documentType, attributes);
-        final Map<String, String> attributeFilter = parseAttributes(attributes);
-        final DocumentResponse documents = documentService.fetchDocuments(userId, documentId, documentType, attributeFilter);
+        final var request = DocumentService.DocumentsRequest.builder()
+                .userId(userId)
+                .documentId(documentId)
+                .documentType(documentType)
+                .attributes(parseAttributes(attributes))
+                .build();
+        final DocumentResponse documents = documentService.fetchDocuments(request);
         logger.info("action: fetchDocuments, state: succeeded");
         return new ObjectResponse<>(documents);
     }
