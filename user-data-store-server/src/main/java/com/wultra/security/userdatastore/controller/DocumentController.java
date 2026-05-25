@@ -32,13 +32,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * REST controller providing API for CRUD for user documents.
@@ -84,6 +85,7 @@ class DocumentController {
                     example = "firstName:Alice"
             )
             @RequestParam(required = false) List<String> attributes) {
+
         logger.info("action: fetchDocuments, state: initiated, userId: {}, documentId: {}, documentType: {}, attributes: {}", userId, documentId, documentType, attributes);
         final Map<String, String> attributeFilter = parseAttributes(attributes);
         final DocumentResponse documents = documentService.fetchDocuments(userId, documentId, documentType, attributeFilter);
@@ -98,21 +100,21 @@ class DocumentController {
      * @return parsed map of attribute filters, or empty when no entries are provided
      */
     private static Map<String, String> parseAttributes(final List<String> attributes) {
-        if (attributes == null || attributes.isEmpty()) {
+        if (attributes == null) {
             return Map.of();
         }
-        final Map<String, String> result = new LinkedHashMap<>();
-        for (final String entry : attributes) {
-            if (entry == null || entry.isEmpty()) {
-                continue;
-            }
-            final int separator = entry.indexOf(':');
-            if (separator <= 0) {
-                throw new IllegalArgumentException("Invalid attribute filter '%s', expected format 'key:value'".formatted(entry));
-            }
-            result.put(entry.substring(0, separator), entry.substring(separator + 1));
+        return attributes.stream()
+                .filter(StringUtils::hasText)
+                .map(DocumentController::parseAttribute)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b));
+    }
+
+    private static Map.Entry<String, String> parseAttribute(final String entry) {
+        final int separator = entry.indexOf(':');
+        if (separator <= 0) {
+            throw new IllegalArgumentException("Invalid attribute filter '%s', expected format 'key:value'".formatted(entry));
         }
-        return result;
+        return Map.entry(entry.substring(0, separator), entry.substring(separator + 1));
     }
 
     /**
