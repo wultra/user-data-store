@@ -97,7 +97,7 @@ class DocumentController {
                 .attributes(parseAttributes(attributes))
                 .build();
         final DocumentResponse documents = documentService.fetchDocuments(request);
-        logger.info("action: fetchDocuments, state: succeeded");
+        logger.info("action: fetchDocuments, state: succeeded, count: {}", documents.documents().size());
         return new ObjectResponse<>(documents);
     }
 
