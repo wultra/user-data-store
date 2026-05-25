@@ -21,20 +21,22 @@ import com.wultra.core.rest.client.base.DefaultRestClient;
 import com.wultra.core.rest.client.base.RestClient;
 import com.wultra.core.rest.client.base.RestClientConfiguration;
 import com.wultra.core.rest.client.base.RestClientException;
+import com.wultra.core.rest.model.base.request.ObjectRequest;
+import com.wultra.core.rest.model.base.response.ObjectResponse;
+import com.wultra.core.rest.model.base.response.Response;
 import com.wultra.security.userdatastore.client.UserDataStoreClient;
 import com.wultra.security.userdatastore.client.model.error.UserDataStoreClientException;
 import com.wultra.security.userdatastore.client.model.request.*;
 import com.wultra.security.userdatastore.client.model.response.*;
-import com.wultra.core.rest.model.base.request.ObjectRequest;
-import com.wultra.core.rest.model.base.response.ObjectResponse;
-import com.wultra.core.rest.model.base.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Class implementing a User Data Store REST client.
@@ -171,11 +173,20 @@ public class UserDataStoreRestClient implements UserDataStoreClient {
     }
 
     @Override
-    public DocumentResponse fetchDocuments(String userId, String documentId) throws UserDataStoreClientException {
+    public DocumentResponse fetchDocuments(final DocumentGetRequest request) throws UserDataStoreClientException {
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.put("userId", Collections.singletonList(userId));
-        if (documentId != null) {
-            queryParams.put("documentId", Collections.singletonList(documentId));
+        queryParams.put("userId", Collections.singletonList(request.userId()));
+        if (request.documentId() != null) {
+            queryParams.put("documentId", Collections.singletonList(request.documentId()));
+        }
+        if (request.documentType() != null) {
+            queryParams.put("documentType", Collections.singletonList(request.documentType()));
+        }
+        if (!CollectionUtils.isEmpty(request.attributes())) {
+            final List<String> attributeList = request.attributes().entrySet().stream()
+                    .map(e -> e.getKey() + ":" + e.getValue())
+                    .toList();
+            queryParams.put("attributes", attributeList);
         }
         return get("/documents", queryParams, EMPTY_MULTI_MAP, DocumentResponse.class);
     }

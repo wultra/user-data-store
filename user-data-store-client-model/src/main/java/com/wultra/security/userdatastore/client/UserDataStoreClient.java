@@ -31,12 +31,11 @@ public interface UserDataStoreClient {
     /**
      * Fetch documents.
      *
-     * @param userId     User identifier.
-     * @param documentId Optional document identifier.
+     * @param request Document fetch request.
      * @return Documents.
      * @throws UserDataStoreClientException Thrown in case REST API call fails.
      */
-    DocumentResponse fetchDocuments(String userId, String documentId) throws UserDataStoreClientException;
+    DocumentResponse fetchDocuments(DocumentGetRequest request) throws UserDataStoreClientException;
 
     /**
      * Create a document.
