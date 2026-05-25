@@ -69,15 +69,17 @@ class DocumentController {
      */
     @Operation(
             summary = "Return documents",
-            description = "Return documents for the given user, optionally filtered by document ID, document type, " +
-                    "and required attribute key-value pairs."
+            description = """
+                    Return documents for the given user, optionally filtered by document ID, document type,
+                    and required attribute key-value pairs."""
     )
     @Parameter(
             name = "attributes",
-            description = "Required attribute key-value pairs encoded as `key:value`. " +
-                    "Repeat the parameter for multiple pairs, e.g. " +
-                    "`?attributes=firstName:Alice&attributes=lastName:Adams`. " +
-                    "Only documents whose `attributes` map contains all the given pairs are returned.",
+            description = """
+                    Required attribute key-value pairs encoded as `key:value`.
+                    Repeat the parameter for multiple pairs, e.g.
+                    `?attributes=firstName:Alice&attributes=lastName:Adams`.
+                    Only documents whose `attributes` map contains all the given pairs are returned.""",
             example = "firstName:Alice"
     )
     @GetMapping("/documents")
