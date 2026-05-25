@@ -26,6 +26,7 @@ import com.wultra.security.userdatastore.client.model.response.DocumentCreateRes
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.service.DocumentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -34,8 +35,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * REST controller providing API for CRUD for user documents.
@@ -54,23 +57,62 @@ class DocumentController {
      * Return documents for the given user.
      *
      * @param userId user identifier
-     * @param documentId optional document identifier
+     * @param documentId optional document identifier; when provided, {@code documentType} and {@code attributes} are ignored
+     * @param documentType optional document type; when provided, only documents of this type are returned
+     * @param attributes optional list of required attribute key-value pairs in the form {@code key:value};
+     *                   only documents whose {@code attributes} map contains all the given pairs are returned.
+     *                   Spring MVC does not support direct binding of a named query parameter into a
+     *                   {@code Map<String, String>}, so the pairs are encoded as a repeatable list parameter,
+     *                   e.g. {@code ?attributes=firstName:Alice&attributes=lastName:Adams}
      * @return user documents
      */
     @Operation(
             summary = "Return documents",
-            description = "Return documents for the given user."
+            description = "Return documents for the given user, optionally filtered by document ID, document type, " +
+                    "and required attribute key-value pairs."
     )
     @GetMapping("/documents")
     public ObjectResponse<DocumentResponse> fetchDocuments(
             @NotBlank @Size(max = 255) @RequestParam String userId,
             @Size(max = 255) @RequestParam(required = false) String documentId,
             @Size(max = 255) @RequestParam(required = false) String documentType,
-            @RequestParam(required = false) Set<String> attributes) {
+            @Parameter(
+                    description = "Required attribute key-value pairs encoded as `key:value`. " +
+                            "Repeat the parameter for multiple pairs, e.g. " +
+                            "`?attributes=firstName:Alice&attributes=lastName:Adams`. " +
+                            "Only documents whose `attributes` map contains all the given pairs are returned.",
+                    example = "firstName:Alice"
+            )
+            @RequestParam(required = false) List<String> attributes) {
         logger.info("action: fetchDocuments, state: initiated, userId: {}, documentId: {}, documentType: {}, attributes: {}", userId, documentId, documentType, attributes);
-        final DocumentResponse documents = documentService.fetchDocuments(userId, documentId, documentType, attributes);
+        final Map<String, String> attributeFilter = parseAttributes(attributes);
+        final DocumentResponse documents = documentService.fetchDocuments(userId, documentId, documentType, attributeFilter);
         logger.info("action: fetchDocuments, state: succeeded");
         return new ObjectResponse<>(documents);
+    }
+
+    /**
+     * Parse attribute filter pairs in the form {@code key:value} into a map.
+     *
+     * @param attributes list of {@code key:value} pairs; may be {@code null} or empty
+     * @return parsed map of attribute filters, or empty when no entries are provided
+     */
+    private static Map<String, String> parseAttributes(final List<String> attributes) {
+        if (attributes == null || attributes.isEmpty()) {
+            return Map.of();
+        }
+        final Map<String, String> result = new LinkedHashMap<>();
+        for (final String entry : attributes) {
+            if (entry == null || entry.isEmpty()) {
+                continue;
+            }
+            final int separator = entry.indexOf(':');
+            if (separator <= 0) {
+                throw new IllegalArgumentException("Invalid attribute filter '%s', expected format 'key:value'".formatted(entry));
+            }
+            result.put(entry.substring(0, separator), entry.substring(separator + 1));
+        }
+        return result;
     }
 
     /**

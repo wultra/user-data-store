@@ -31,6 +31,6 @@ The auditing tables may be already updated in your database schema if the databa
 The `GET /documents` endpoint now supports two additional optional query parameters used to filter the returned documents:
 
 - `documentType` - return only documents of the given document type.
-- `attributes` - return only the listed attribute keys in the `attributes` map of each document. The parameter can be repeated or provided as a comma-separated list (e.g. `attributes=firstName,lastName`).
+- `attributes` - return only documents whose `attributes` map contains all of the given key-value pairs. The parameter accepts entries in the form `key:value` and can be repeated (e.g. `attributes=firstName:Alice&attributes=lastName:Adams`).
 
-Both parameters are optional and can be combined. When neither is provided, the endpoint behaves as in previous versions and returns all documents with all attributes.
+Both parameters are optional and can be combined. When neither is provided, the endpoint behaves as in previous versions and returns all documents.

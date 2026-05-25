@@ -78,7 +78,7 @@ class DocumentControllerTest {
                 ))))
                 .build();
         DocumentResponse response = new DocumentResponse(Collections.singletonList(document));
-        when(service.fetchDocuments("alice", null, null, null))
+        when(service.fetchDocuments("alice", null, null, Map.of()))
                 .thenReturn(response);
 
         mvc.perform(get("/documents?userId=alice")

@@ -61,30 +61,30 @@ public class DocumentService {
 
     /**
      * Fetch documents for the given user, optionally filtered by document identifier, document type,
-     * and a set of attribute keys to retain in the response.
+     * and a map of required attribute key-value pairs.
      *
      * @param userId user identifier; must not be {@code null}
      * @param documentId optional document identifier; when provided, a single document with this ID is returned
-     *                   (the {@code documentType} parameter is ignored in this case)
+     *                   (the {@code documentType} and {@code attributes} parameters are ignored in this case)
      * @param documentType optional document type; when provided (and {@code documentId} is {@code null}),
      *                     only documents of this type are returned
-     * @param attributes optional set of attribute keys; when provided and non-empty, each returned document's
-     *                   {@code attributes} map is pruned to contain only the listed keys
+     * @param attributes optional map of required attribute key-value pairs; when provided and non-empty,
+     *                   only documents whose {@code attributes} map contains all of the given entries are returned
      * @return response containing the matching documents
      * @throws ResourceNotFoundException when {@code documentId} is provided but no such document exists
      */
     @Transactional(readOnly = true)
-    // TODO Lubos - filter by both key and value; introduce parameter object to avoid too many parameters
+    // TODO Lubos - introduce parameter object to avoid too many parameters
     public DocumentResponse fetchDocuments(
             final String userId,
             final @Nullable String documentId,
             final @Nullable String documentType,
-            final @Nullable Set<String> attributes) {
+            final Map<String, String> attributes) {
 
         if (documentId != null) {
             final DocumentEntity documentEntity = documentRepository.findById(documentId).orElseThrow(
                     () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
-            final DocumentDto document = filterAttributes(documentConverter.toDocument(documentEntity), attributes);
+            final DocumentDto document = documentConverter.toDocument(documentEntity);
             audit("action: fetchDocuments, userId: {}, documentId: {}", userId, documentId);
             return new DocumentResponse(Collections.singletonList(document));
         }
@@ -93,34 +93,23 @@ public class DocumentService {
 
         final List<DocumentDto> documents = documentEntities.stream()
                 .map(documentConverter::toDocument)
-                .map(document -> filterAttributes(document, attributes))
+                .filter(document -> matchesAttributes(document, attributes))
                 .toList();
         audit("action: fetchDocuments, userId: {}", userId, null);
         return new DocumentResponse(documents);
     }
 
-    private static DocumentDto filterAttributes(final DocumentDto document, final Set<String> attributes) {
-        if (document == null || CollectionUtils.isEmpty(attributes) || CollectionUtils.isEmpty(document.attributes())) {
-            return document;
+    private static boolean matchesAttributes(final DocumentDto document, final Map<String, String> attributes) {
+        if (CollectionUtils.isEmpty(attributes)) {
+            return true;
         }
-        final Map<String, Object> filtered = new LinkedHashMap<>();
-        document.attributes().forEach((key, value) -> {
-            if (attributes.contains(key)) {
-                filtered.put(key, value);
-            }
-        });
-        return DocumentDto.builder()
-                .id(document.id())
-                .userId(document.userId())
-                .documentType(document.documentType())
-                .dataType(document.dataType())
-                .documentDataId(document.documentDataId())
-                .externalId(document.externalId())
-                .documentData(document.documentData())
-                .attributes(filtered)
-                .timestampCreated(document.timestampCreated())
-                .timestampLastUpdated(document.timestampLastUpdated())
-                .build();
+        if (document == null || CollectionUtils.isEmpty(document.attributes())) {
+            return false;
+        }
+        final Map<String, Object> documentAttributes = document.attributes();
+        return attributes.entrySet().stream().allMatch(entry ->
+                documentAttributes.containsKey(entry.getKey())
+                        && Objects.equals(Objects.toString(documentAttributes.get(entry.getKey()), null), entry.getValue()));
     }
 
     @Transactional
