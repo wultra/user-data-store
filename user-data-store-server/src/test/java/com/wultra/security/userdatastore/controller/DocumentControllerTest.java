@@ -101,6 +101,36 @@ class DocumentControllerTest {
                 .andExpect(jsonPath("$.responseObject.documents[0].documentData", containsString("\"https://claims.example.com/department\":\"engineering\"")));
     }
 
+    @WithMockUser(roles = "READ")
+    @Test
+    void testGet_withAttributes() throws Exception {
+        DocumentDto document = DocumentDto.builder()
+                .userId("alice")
+                .documentType("profile")
+                .dataType("claims")
+                .documentDataId("83692")
+                .build();
+        DocumentResponse response = new DocumentResponse(Collections.singletonList(document));
+        final Map<String, String> expectedAttributes = Map.of(
+            "firstName", "Alice",
+            "lastName", "Adams");
+        when(service.fetchDocuments(DocumentService.DocumentsRequest.builder()
+                .userId("alice")
+                .documentType("profile")
+                .attributes(expectedAttributes)
+                .build()))
+                .thenReturn(response);
+
+        mvc.perform(get("/documents?userId=alice&documentType=profile&attributes=firstName:Alice&attributes=lastName:Adams")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status", is("OK")))
+                .andExpect(jsonPath("$.responseObject.documents[0].userId", is("alice")))
+                .andExpect(jsonPath("$.responseObject.documents[0].documentType", is("profile")));
+    }
+
    @WithMockUser(roles = "WRITE")
    @Test
    void testGet_wrongRoles() throws Exception {
