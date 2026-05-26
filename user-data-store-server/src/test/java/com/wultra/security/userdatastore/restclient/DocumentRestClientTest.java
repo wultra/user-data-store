@@ -156,6 +156,26 @@ class DocumentRestClientTest {
     }
 
     @Test
+    void testFetchByDocumentType() throws Exception {
+        final DocumentCreateRequest request = new DocumentCreateRequest("alice", "invoice", "test_data_type", "1", null, "test_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        final DocumentCreateResponse response = restClient.createDocument(request);
+        assertNotNull(response.id());
+
+        final DocumentCreateRequest request2 = new DocumentCreateRequest("alice", "receipt", "test_data_type", "2", null, "test_data2", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        restClient.createDocument(request2);
+
+        final DocumentGetRequest documentGetRequest = DocumentGetRequest.builder()
+                .userId("alice")
+                .documentType("invoice")
+                .build();
+        final DocumentResponse documentResponse = restClient.fetchDocuments(documentGetRequest);
+        assertFalse(documentResponse.documents().isEmpty());
+        documentResponse.documents().forEach(doc -> assertEquals("invoice", doc.documentType()));
+
+        restClient.deleteDocuments("alice", null);
+    }
+
+    @Test
     void testValidation_NullUser() {
         DocumentCreateRequest request = new DocumentCreateRequest(null, "test_type", "test_data_type", "1", null, "test_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
         assertThrows(UserDataStoreClientException.class, () -> restClient.createDocument(request));
