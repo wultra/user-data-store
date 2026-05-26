@@ -111,8 +111,8 @@ class DocumentControllerTest {
                 .build();
         DocumentResponse response = new DocumentResponse(Collections.singletonList(document));
         final Map<String, String> expectedAttributes = Map.of(
-            "firstName", "Alice",
-            "lastName", "Adams");
+            "status", "active",
+            "category", "contract");
         when(service.fetchDocuments(DocumentService.DocumentsRequest.builder()
                 .userId("alice")
                 .documentType("profile")
@@ -120,7 +120,7 @@ class DocumentControllerTest {
                 .build()))
                 .thenReturn(response);
 
-        mvc.perform(get("/documents?userId=alice&documentType=profile&attributes=firstName:Alice&attributes=lastName:Adams")
+        mvc.perform(get("/documents?userId=alice&documentType=profile&attributes=status:active&attributes=category:contract")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
@@ -133,7 +133,7 @@ class DocumentControllerTest {
     @WithMockUser(roles = "READ")
     @Test
     void testGet_invalidAttributesFormat() throws Exception {
-        mvc.perform(get("/documents?userId=alice&attributes=firstNameAlice")
+        mvc.perform(get("/documents?userId=alice&attributes=statusActive")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 

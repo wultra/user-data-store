@@ -64,7 +64,7 @@ class DocumentController {
      *                   only documents whose {@code attributes} map contains all the given pairs are returned.
      *                   Spring MVC does not support direct binding of a named query parameter into a
      *                   {@code Map<String, String>}, so the pairs are encoded as a repeatable list parameter,
-     *                   e.g. {@code ?attributes=firstName:Alice&attributes=lastName:Adams}
+     *                   e.g. {@code ?attributes=status:active&attributes=category:contract}
      * @return user documents
      */
     @Operation(
@@ -78,9 +78,9 @@ class DocumentController {
             description = """
                     Required attribute key-value pairs encoded as `key:value`.
                     Repeat the parameter for multiple pairs, e.g.
-                    `?attributes=firstName:Alice&attributes=lastName:Adams`.
+                    `?attributes=status:active&attributes=category:contract`.
                     Only documents whose `attributes` map contains all the given pairs are returned.""",
-            example = "firstName:Alice"
+            example = "status:active"
     )
     @GetMapping("/documents")
     public ObjectResponse<DocumentResponse> fetchDocuments(
