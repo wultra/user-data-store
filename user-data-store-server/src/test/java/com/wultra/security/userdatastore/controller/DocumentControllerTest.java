@@ -18,13 +18,13 @@
 package com.wultra.security.userdatastore.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wultra.core.rest.model.base.request.ObjectRequest;
 import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.config.WebSecurityConfiguration;
 import com.wultra.security.userdatastore.service.DocumentService;
-import com.wultra.core.rest.model.base.request.ObjectRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -41,8 +41,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -78,7 +77,10 @@ class DocumentControllerTest {
                 ))))
                 .build();
         DocumentResponse response = new DocumentResponse(Collections.singletonList(document));
-        when(service.fetchDocuments("alice", Optional.empty()))
+        when(service.fetchDocuments(DocumentService.DocumentsRequest.builder()
+                .userId("alice")
+                .attributes(Map.of())
+                .build()))
                 .thenReturn(response);
 
         mvc.perform(get("/documents?userId=alice")
@@ -96,6 +98,46 @@ class DocumentControllerTest {
                 .andExpect(jsonPath("$.responseObject.documents[0].documentData", containsString("\"email\":\"alice@example.com\"")))
                 .andExpect(jsonPath("$.responseObject.documents[0].documentData", containsString("\"birthdate\":\"1975-12-31\"")))
                 .andExpect(jsonPath("$.responseObject.documents[0].documentData", containsString("\"https://claims.example.com/department\":\"engineering\"")));
+    }
+
+    @WithMockUser(roles = "READ")
+    @Test
+    void testGet_withAttributes() throws Exception {
+        DocumentDto document = DocumentDto.builder()
+                .userId("alice")
+                .documentType("profile")
+                .dataType("claims")
+                .documentDataId("83692")
+                .build();
+        DocumentResponse response = new DocumentResponse(Collections.singletonList(document));
+        final Map<String, String> expectedAttributes = Map.of(
+            "status", "active",
+            "category", "contract");
+        when(service.fetchDocuments(DocumentService.DocumentsRequest.builder()
+                .userId("alice")
+                .documentType("profile")
+                .attributes(expectedAttributes)
+                .build()))
+                .thenReturn(response);
+
+        mvc.perform(get("/documents?userId=alice&documentType=profile&attributes=status:active&attributes=category:contract")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status", is("OK")))
+                .andExpect(jsonPath("$.responseObject.documents[0].userId", is("alice")))
+                .andExpect(jsonPath("$.responseObject.documents[0].documentType", is("profile")));
+    }
+
+    @WithMockUser(roles = "READ")
+    @Test
+    void testGet_invalidAttributesFormat() throws Exception {
+        mvc.perform(get("/documents?userId=alice&attributes=statusActive")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verify(service, never()).fetchDocuments(any());
     }
 
    @WithMockUser(roles = "WRITE")
@@ -137,16 +179,6 @@ class DocumentControllerTest {
         ));
         final var documentCreateRequest = new DocumentCreateRequest("alice", "profile", "claims",
                 "83692", null, documentData, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
-        final Map<String, Object> requestBody = Map.of(
-                "userId", "alice",
-                "documentType", "profile",
-                "dataType", "claims",
-                "documentDataId", "83692",
-                "documentData", documentData,
-                "attributes", Collections.emptyMap(),
-                "photos", Collections.emptyList(),
-                "attachments", Collections.emptyList()
-        );
 
         final String requestBodyJson = new ObjectMapper().writeValueAsString(new ObjectRequest<>(documentCreateRequest));
         mvc.perform(post("/admin/documents")
@@ -180,15 +212,6 @@ class DocumentControllerTest {
         ));
         final var documentUpdateRequest = new DocumentUpdateRequest("alice", "profile", "claims",
                 "83692", null, documentData, Collections.emptyMap());
-        final Map<String, Object> requestBody = Map.of(
-                "userId", "alice",
-                "id", "1",
-                "documentType", "profile",
-                "dataType", "claims",
-                "documentDataId", "83692",
-                "documentData", documentData,
-                "attributes", Collections.emptyMap()
-        );
 
         final String requestBodyJson = new ObjectMapper().writeValueAsString(new ObjectRequest<>(documentUpdateRequest));
         mvc.perform(put("/admin/documents/1")

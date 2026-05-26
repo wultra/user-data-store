@@ -95,11 +95,15 @@ class DocumentRestClientTest {
         DocumentCreateRequest request = new DocumentCreateRequest("alice", "test", "test_type", "1", null, "test_data", Collections.emptyMap(), photos, attachments);
         DocumentCreateResponse response = restClient.createDocument(request);
 
-        DocumentResponse documentResponse = restClient.fetchDocuments("alice", response.id());
+        final DocumentGetRequest documentGetRequest = DocumentGetRequest.builder()
+                .userId("alice")
+                .documentId(response.id())
+                .build();
+        final DocumentResponse documentResponse = restClient.fetchDocuments(documentGetRequest);
         assertEquals(1, documentResponse.documents().size());
 
         restClient.deleteDocuments("alice", response.id());
-        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchDocuments("alice", response.id()));
+        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchDocuments(documentGetRequest));
     }
 
     @Test
@@ -109,7 +113,11 @@ class DocumentRestClientTest {
         assertNotNull(response.id());
         assertNotNull(response.documentDataId());
 
-        DocumentResponse documentResponse = restClient.fetchDocuments("alice", response.id());
+        final DocumentGetRequest documentGetRequest1 = DocumentGetRequest.builder()
+                .userId("alice")
+                .documentId(response.id())
+                .build();
+        final DocumentResponse documentResponse = restClient.fetchDocuments(documentGetRequest1);
         assertEquals(1, documentResponse.documents().size());
         DocumentDto document = documentResponse.documents().get(0);
         assertNotNull(document.id());
@@ -126,7 +134,11 @@ class DocumentRestClientTest {
         DocumentUpdateRequest updateRequest = new DocumentUpdateRequest("bob", "test_type2", "test_data_type2", "2", "3", "test_data2", attributes);
         restClient.updateDocument(document.id(), updateRequest);
 
-        DocumentResponse documentResponse2 = restClient.fetchDocuments("bob", response.id());
+        final DocumentGetRequest documentGetRequest2 = DocumentGetRequest.builder()
+                .userId("bob")
+                .documentId(response.id())
+                .build();
+        final DocumentResponse documentResponse2 = restClient.fetchDocuments(documentGetRequest2);
         assertEquals(1, documentResponse2.documents().size());
         DocumentDto document2 = documentResponse2.documents().get(0);
         assertNotNull(document2.id());
@@ -140,7 +152,48 @@ class DocumentRestClientTest {
 
         restClient.deleteDocuments("bob", response.id());
 
-        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchDocuments("bob", response.id()));
+        assertThrows(UserDataStoreClientException.class, () -> restClient.fetchDocuments(documentGetRequest2));
+    }
+
+    @Test
+    void testFetchByDocumentType() throws Exception {
+        final DocumentCreateRequest request = new DocumentCreateRequest("alice", "invoice", "test_data_type", "1", null, "test_data", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        final DocumentCreateResponse response = restClient.createDocument(request);
+        assertNotNull(response.id());
+
+        final DocumentCreateRequest request2 = new DocumentCreateRequest("alice", "receipt", "test_data_type", "2", null, "test_data2", Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        restClient.createDocument(request2);
+
+        final DocumentGetRequest documentGetRequest = DocumentGetRequest.builder()
+                .userId("alice")
+                .documentType("invoice")
+                .build();
+        final DocumentResponse documentResponse = restClient.fetchDocuments(documentGetRequest);
+        assertFalse(documentResponse.documents().isEmpty());
+        documentResponse.documents().forEach(document -> assertEquals("invoice", document.documentType()));
+
+        restClient.deleteDocuments("alice", null);
+    }
+
+    @Test
+    void testFetchByAttributes() throws Exception {
+        final Map<String, Object> attributes1 = Map.of("department", "engineering");
+        final DocumentCreateRequest request = new DocumentCreateRequest("alice", "profile", "test_data_type", "1", null, "test_data", attributes1, Collections.emptyList(), Collections.emptyList());
+        restClient.createDocument(request);
+
+        final Map<String, Object> attributes2 = Map.of("department", "marketing");
+        DocumentCreateRequest request2 = new DocumentCreateRequest("alice", "profile", "test_data_type", "2", null, "test_data2", attributes2, Collections.emptyList(), Collections.emptyList());
+        restClient.createDocument(request2);
+
+        final DocumentGetRequest documentGetRequest = DocumentGetRequest.builder()
+                .userId("alice")
+                .attributes(Map.of("department", "engineering"))
+                .build();
+        final DocumentResponse documentResponse = restClient.fetchDocuments(documentGetRequest);
+        assertFalse(documentResponse.documents().isEmpty());
+        documentResponse.documents().forEach(document -> assertEquals("engineering", document.attributes().get("department")));
+
+        restClient.deleteDocuments("alice", null);
     }
 
     @Test

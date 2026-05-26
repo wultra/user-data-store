@@ -30,7 +30,9 @@ import com.wultra.security.userdatastore.model.error.ResourceNotFoundException;
 import com.wultra.security.userdatastore.model.repository.DocumentHistoryRepository;
 import com.wultra.security.userdatastore.model.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -58,19 +60,50 @@ public class DocumentService {
     private final AttachmentService attachmentService;
     private final DocumentConverter documentConverter;
 
+    /**
+     * Fetch documents for the given user, optionally filtered by document identifier, document type,
+     * and a map of required attribute key-value pairs.
+     *
+     * @param request parameters for fetching documents
+     * @return response containing the matching documents
+     * @throws ResourceNotFoundException when {@code documentId} is provided but no such document exists
+     */
     @Transactional(readOnly = true)
-    public DocumentResponse fetchDocuments(final String userId, final Optional<String> documentId) {
-        if (documentId.isPresent()) {
-            final DocumentEntity documentEntity = documentRepository.findById(documentId.get()).orElseThrow(
-                    () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId.get())));
+    public DocumentResponse fetchDocuments(final DocumentsRequest request) {
+        final String userId = request.userId();
+        final String documentId = request.documentId();
+        final String documentType = request.documentType();
+        final Map<String, String> attributes = request.attributes();
+
+        if (documentId != null) {
+            final DocumentEntity documentEntity = documentRepository.findById(documentId).orElseThrow(
+                    () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
             final DocumentDto document = documentConverter.toDocument(documentEntity);
-            audit("action: fetchDocuments, userId: {}, documentId: {}", userId, documentId.get());
+            audit("action: fetchDocuments, userId: {}, documentId: {}", userId, documentId);
             return new DocumentResponse(Collections.singletonList(document));
         }
-        final List<DocumentEntity> documentEntities = documentRepository.findAllByUserId(userId);
-        final List<DocumentDto> documents = documentEntities.stream().map(documentConverter::toDocument).toList();
+
+        final List<DocumentEntity> documentEntities = documentRepository.findAllByUserId(userId, documentType);
+
+        final List<DocumentDto> documents = documentEntities.stream()
+                .map(documentConverter::toDocument)
+                .filter(document -> matchesAttributes(document, attributes))
+                .toList();
         audit("action: fetchDocuments, userId: {}", userId, null);
         return new DocumentResponse(documents);
+    }
+
+    private static boolean matchesAttributes(final DocumentDto document, final Map<String, String> attributes) {
+        if (CollectionUtils.isEmpty(attributes)) {
+            return true;
+        }
+        if (document == null || CollectionUtils.isEmpty(document.attributes())) {
+            return false;
+        }
+        final Map<String, Object> documentAttributes = document.attributes();
+        return attributes.entrySet().stream().allMatch(entry ->
+                documentAttributes.containsKey(entry.getKey())
+                        && Objects.equals(Objects.toString(documentAttributes.get(entry.getKey()), null), entry.getValue()));
     }
 
     @Transactional
@@ -178,5 +211,24 @@ public class DocumentService {
         historyEntity.setAttributes(documentEntity.getAttributes());
         historyEntity.setTimestampCreated(LocalDateTime.now());
         documentHistoryRepository.save(historyEntity);
+    }
+
+    /**
+     * Parameter object for {@link DocumentService#fetchDocuments(DocumentsRequest)}.
+     *
+     * @param userId user identifier; must not be {@code null}
+     * @param documentId optional document identifier; when provided, a single document with this ID is returned
+     *                   (the {@code documentType} and {@code attributes} parameters are ignored in this case)
+     * @param documentType optional document type; when provided (and {@code documentId} is {@code null}),
+     *                     only documents of this type are returned
+     * @param attributes required attribute key-value pairs; when non-empty, only documents whose {@code attributes}
+     *                   map contains all of the given entries are returned; never {@code null}, use empty map when no filter
+     */
+    @Builder
+    public record DocumentsRequest(
+            String userId,
+            @Nullable String documentId,
+            @Nullable String documentType,
+            Map<String, String> attributes) {
     }
 }

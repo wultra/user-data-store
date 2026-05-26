@@ -15,6 +15,7 @@ For manual changes use SQL scripts:
 - [Oracle script](./sql/oracle/migration_1.5.0-1.6.0.sql)
 - [MSSQL script](./sql/mssql/migration_1.5.0-1.6.0.sql)
 
+
 ### `audit_log` Table
 
 Added a new indexed column `subject_id` holding an identifier linking the audit record to an entity it is related to (e.g. user ID for user-related audit records).
@@ -22,3 +23,44 @@ Added a new indexed column `subject_id` holding an identifier linking the audit 
 <!-- begin box warning -->
 The auditing tables may be already updated in your database schema if the database schema is not separated for different PowerAuth applications. In case the column `audit_log.subject_id` and its index `audit_log_subject_id_idx` are already present, you can safely skip this migration step.
 <!-- end -->
+
+
+## REST API Changes
+
+
+### GET `/documents` Filtering
+
+The `GET /documents` endpoint now supports two additional optional query parameters used to filter the returned documents:
+
+- `documentType` - return only documents of the given document type.
+- `attributes` - return only documents whose `attributes` map contains all of the given key-value pairs. The parameter accepts entries in the form `key:value` and can be repeated (e.g. `attributes=status:active&attributes=category:contract`).
+
+Both parameters are optional and can be combined. When neither is provided, the endpoint behaves as in previous versions and returns all documents.
+
+
+## Java Client Changes
+
+
+### Breaking: `UserDataStoreClient.fetchDocuments` Signature Changed
+
+The overloaded methods `fetchDocuments(String userId, String documentId)` have been replaced with a single method accepting a request object:
+
+```java
+DocumentResponse fetchDocuments(DocumentGetRequest request) throws UserDataStoreClientException;
+```
+
+Use `DocumentGetRequest.builder()` to construct the request:
+
+```java
+// Before
+client.fetchDocuments("alice", documentId);
+
+// After
+client.fetchDocuments(DocumentGetRequest.builder()
+        .userId("alice")
+        .documentId(documentId)
+        .build());
+```
+
+The new `DocumentGetRequest` also supports `documentType` and `attributes` fields for filtering.
+

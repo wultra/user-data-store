@@ -334,7 +334,10 @@ class PhotoRestClientTest {
         assertNotNull(result.photoId());
         assertTrue(result.imported());
         assertNull(result.error());
-        DocumentResponse documentResponse = restClient.fetchDocuments("alice", result.documentId());
+        final DocumentResponse documentResponse = restClient.fetchDocuments(DocumentGetRequest.builder()
+                .userId("alice")
+                .documentId(result.documentId())
+                .build());
         assertEquals(Map.of("tag", "test"), documentResponse.documents().get(0).attributes());
         PhotoResponse photoResponse = restClient.fetchPhotos("alice", result.documentId());
         assertEquals(1, photoResponse.photos().size());
@@ -358,7 +361,9 @@ class PhotoRestClientTest {
     }
 
     private void verifyImportCsv(String userId, String expectedPhotoBase64) throws UserDataStoreClientException {
-        DocumentResponse documentResponse = restClient.fetchDocuments(userId, null);
+        final DocumentResponse documentResponse = restClient.fetchDocuments(DocumentGetRequest.builder()
+                .userId(userId)
+                .build());
         assertEquals(Map.of("tag", "test"), documentResponse.documents().get(0).attributes());
         PhotoResponse photoResponse = restClient.fetchPhotos(userId, documentResponse.documents().get(0).id());
         assertEquals(1, photoResponse.photos().size());

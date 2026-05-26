@@ -19,6 +19,9 @@ package com.wultra.security.userdatastore.model.repository;
 
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,13 +34,20 @@ import java.util.List;
 @Repository
 public interface DocumentRepository extends JpaRepository<DocumentEntity, String> {
 
-    List<DocumentEntity> findAllByUserId(String userId);
+    /**
+     * Find all documents for the given user, optionally filtered by document type.
+     *
+     * @param userId user identifier
+     * @param documentType optional document type; when {@code null}, the filter is not applied
+     * @return matching documents
+     */
+    @Query("SELECT d FROM DocumentEntity d WHERE d.userId = :userId AND (:documentType IS NULL OR d.documentType = :documentType)")
+    List<DocumentEntity> findAllByUserId(@Param("userId") String userId, @Param("documentType") @Nullable String documentType);
 
     List<DocumentEntity> findAllByUserIdAndDataType(String userId, String dataType);
 
     void deleteAllByUserId(String userId);
 
-    // TODO (racansky, 2025-09-23) Spring Boot 3.5.6 bug, returning primitive number queries fail with ClassCastException https://github.com/spring-projects/spring-data-jpa/issues/4015
-    Integer deleteAllByUserIdAndId(String userId, String id);
+    int deleteAllByUserIdAndId(String userId, String id);
 
 }

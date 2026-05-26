@@ -17,24 +17,29 @@
  */
 package com.wultra.security.userdatastore.controller;
 
+import com.wultra.core.rest.model.base.request.ObjectRequest;
+import com.wultra.core.rest.model.base.response.ObjectResponse;
+import com.wultra.core.rest.model.base.response.Response;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
 import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
 import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
 import com.wultra.security.userdatastore.service.DocumentService;
-import com.wultra.core.rest.model.base.request.ObjectRequest;
-import com.wultra.core.rest.model.base.response.ObjectResponse;
-import com.wultra.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * REST controller providing API for CRUD for user documents.
@@ -53,19 +58,71 @@ class DocumentController {
      * Return documents for the given user.
      *
      * @param userId user identifier
-     * @param documentId optional document identifier
+     * @param documentId optional document identifier; when provided, {@code documentType} and {@code attributes} are ignored
+     * @param documentType optional document type; when provided, only documents of this type are returned
+     * @param attributes optional list of required attribute key-value pairs in the form {@code key:value};
+     *                   only documents whose {@code attributes} map contains all the given pairs are returned.
+     *                   Spring MVC does not support direct binding of a named query parameter into a
+     *                   {@code Map<String, String>}, so the pairs are encoded as a repeatable list parameter,
+     *                   e.g. {@code ?attributes=status:active&attributes=category:contract}
      * @return user documents
      */
     @Operation(
             summary = "Return documents",
-            description = "Return documents for the given user."
+            description = """
+                    Return documents for the given user, optionally filtered by document ID, document type,
+                    and required attribute key-value pairs."""
+    )
+    @Parameter(
+            name = "attributes",
+            description = """
+                    Required attribute key-value pairs encoded as `key:value`.
+                    Repeat the parameter for multiple pairs, e.g.
+                    `?attributes=status:active&attributes=category:contract`.
+                    Only documents whose `attributes` map contains all the given pairs are returned.""",
+            example = "status:active"
     )
     @GetMapping("/documents")
-    public ObjectResponse<DocumentResponse> fetchDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
-        logger.info("action: fetchDocuments, state: initiated, userId: {}, documentId: {}", userId, documentId);
-        final DocumentResponse documents = documentService.fetchDocuments(userId, Optional.ofNullable(documentId));
-        logger.info("action: fetchDocuments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
+    public ObjectResponse<DocumentResponse> fetchDocuments(
+            @NotBlank @Size(max = 255) @RequestParam String userId,
+            @Size(max = 255) @RequestParam(required = false) String documentId,
+            @Size(max = 255) @RequestParam(required = false) String documentType,
+            @RequestParam(required = false) List<String> attributes) {
+
+        logger.info("action: fetchDocuments, state: initiated, userId: {}, documentId: {}, documentType: {}, attributes: {}", userId, documentId, documentType, attributes);
+        final var request = DocumentService.DocumentsRequest.builder()
+                .userId(userId)
+                .documentId(documentId)
+                .documentType(documentType)
+                .attributes(parseAttributes(attributes))
+                .build();
+        final DocumentResponse documents = documentService.fetchDocuments(request);
+        logger.info("action: fetchDocuments, state: succeeded, count: {}", documents.documents().size());
         return new ObjectResponse<>(documents);
+    }
+
+    /**
+     * Parse attribute filter pairs in the form {@code key:value} into a map.
+     *
+     * @param attributes list of {@code key:value} pairs; may be {@code null} or empty
+     * @return parsed map of attribute filters, or empty when no entries are provided
+     */
+    private static Map<String, String> parseAttributes(final List<String> attributes) {
+        if (attributes == null) {
+            return Map.of();
+        }
+        return attributes.stream()
+                .filter(StringUtils::hasText)
+                .map(DocumentController::parseAttribute)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b));
+    }
+
+    private static Map.Entry<String, String> parseAttribute(final String entry) {
+        final int separator = entry.indexOf(':');
+        if (separator <= 0) {
+            throw new IllegalArgumentException("Invalid attribute filter '%s', expected format 'key:value'".formatted(entry));
+        }
+        return Map.entry(entry.substring(0, separator), entry.substring(separator + 1));
     }
 
     /**
