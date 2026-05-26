@@ -170,7 +170,28 @@ class DocumentRestClientTest {
                 .build();
         final DocumentResponse documentResponse = restClient.fetchDocuments(documentGetRequest);
         assertFalse(documentResponse.documents().isEmpty());
-        documentResponse.documents().forEach(doc -> assertEquals("invoice", doc.documentType()));
+        documentResponse.documents().forEach(document -> assertEquals("invoice", document.documentType()));
+
+        restClient.deleteDocuments("alice", null);
+    }
+
+    @Test
+    void testFetchByAttributes() throws Exception {
+        final Map<String, Object> attributes1 = Map.of("department", "engineering");
+        final DocumentCreateRequest request = new DocumentCreateRequest("alice", "profile", "test_data_type", "1", null, "test_data", attributes1, Collections.emptyList(), Collections.emptyList());
+        restClient.createDocument(request);
+
+        final Map<String, Object> attributes2 = Map.of("department", "marketing");
+        DocumentCreateRequest request2 = new DocumentCreateRequest("alice", "profile", "test_data_type", "2", null, "test_data2", attributes2, Collections.emptyList(), Collections.emptyList());
+        restClient.createDocument(request2);
+
+        final DocumentGetRequest documentGetRequest = DocumentGetRequest.builder()
+                .userId("alice")
+                .attributes(Map.of("department", "engineering"))
+                .build();
+        final DocumentResponse documentResponse = restClient.fetchDocuments(documentGetRequest);
+        assertFalse(documentResponse.documents().isEmpty());
+        documentResponse.documents().forEach(document -> assertEquals("engineering", document.attributes().get("department")));
 
         restClient.deleteDocuments("alice", null);
     }
