@@ -33,6 +33,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -84,13 +86,13 @@ public class UserClaimsService {
         }
         documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE).stream().findAny()
                 .ifPresentOrElse(entity -> {
-                    logger.debug("Updating claims of user ID: {}", userId);
+                    logger.debug("Updating claims", kv("userId", userId));
                     encryptionService.encryptDocumentData(entity, claimsAsString);
                     entity.setTimestampLastUpdated(LocalDateTime.now());
                     audit("action: updateUserClaims, userId: {}, documentId: {}", userId, entity.getId());
                 },
                 () -> {
-                    logger.debug("Creating new claims of user ID: {}", userId);
+                    logger.debug("Creating new claims", kv("userId", userId));
                     final DocumentEntity entity = new DocumentEntity();
                     entity.setId(UUID.randomUUID().toString());
                     entity.setUserId(userId);

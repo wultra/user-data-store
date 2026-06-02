@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
@@ -193,7 +195,7 @@ public class EncryptionService {
             baos.write(encrypted);
             return Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (GenericCryptoException | CryptoProviderException | InvalidKeyException | IOException e) {
-            logger.error("Unable to encrypt claims for user ID: {}", userId, e);
+            logger.error("", kv("action", "encryptClaims"), kv("state", "failed"), kv("userId", userId), e);
             throw new EncryptionException("Unable to encrypt claims for user ID: " + userId, e);
         }
     }
@@ -216,7 +218,7 @@ public class EncryptionService {
             final byte[] decryptedClaims = aesEncryptionUtils.decrypt(encryptedClaims, iv, secretKey);
             return new String(decryptedClaims, StandardCharsets.UTF_8);
         } catch (InvalidKeyException | GenericCryptoException | CryptoProviderException e) {
-            logger.error("Unable to decrypt claims for user ID: {}", userId, e);
+            logger.error("", kv("action", "decryptClaims"), kv("state", "failed"), kv("userId", userId), e);
             throw new EncryptionException("Unable to decrypt claims for user ID: " + userId, e);
         }
     }
