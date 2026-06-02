@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 /**
  * Exception handler.
  *
@@ -53,8 +55,7 @@ class DefaultExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNoResourceFoundException(final NoResourceFoundException e) {
-        logger.warn("Error occurred when calling an API: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("", kv("action", "handleNoResourceFound"), kv("state", "failed"), e);
         return new ErrorResponse("ERROR_NOT_FOUND", "Resource not found.");
     }
 
@@ -67,8 +68,7 @@ class DefaultExceptionHandler {
     @ExceptionHandler(EncryptionException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleEncryptionException(final EncryptionException e) {
-        logger.warn("Error occurred when processing request object: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("", kv("action", "handleEncryptionException"), kv("state", "failed"), e);
         return new ErrorResponse("ENCRYPTION_ERROR", e.getMessage());
     }
 
@@ -86,8 +86,7 @@ class DefaultExceptionHandler {
             IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvalidRequestException(final Exception e) {
-        logger.warn("Error occurred when processing request object: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("", kv("action", "handleInvalidRequest"), kv("state", "failed"), e);
         return new ErrorResponse("INVALID_REQUEST", e.getMessage());
     }
 
@@ -100,8 +99,7 @@ class DefaultExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNotFoundException(final ResourceNotFoundException e) {
-        logger.warn("Error occurred when processing request object: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("", kv("action", "handleNotFoundException"), kv("state", "failed"), e);
         return new ErrorResponse("NOT_FOUND", e.getMessage());
     }
 
@@ -114,8 +112,7 @@ class DefaultExceptionHandler {
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleAlreadyExistsException(final ResourceAlreadyExistsException e) {
-        logger.warn("Error occurred when processing request object: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("", kv("action", "handleAlreadyExistsException"), kv("state", "failed"), e);
         return new ErrorResponse("ALREADY_EXISTS", e.getMessage());
     }
 

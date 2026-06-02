@@ -45,6 +45,8 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 /**
  * Service for importing photos.
  *
@@ -199,8 +201,7 @@ public class PhotoImportService {
                 }
                 return new FetchResult(path, null, "HTTP status code: " + response.statusCode());
             } catch (IOException | InterruptedException e) {
-                logger.info("Error occurred while downloading file: {}", e.getMessage());
-                logger.debug(e.getMessage(), e);
+                logger.error("Error occurred while downloading", kv("action", "fetchFromPath"), kv("state", "failed"), e);
                 return new FetchResult(path, null, "IO error: " + e.getMessage());
             }
         }
@@ -208,8 +209,7 @@ public class PhotoImportService {
             final byte[] dataBytes = Files.readAllBytes(Paths.get(path));
             return new FetchResult(path, dataBytes, null);
         } catch (IOException e) {
-            logger.info("Error occurred while reading file: {}", e.getMessage());
-            logger.debug(e.getMessage(), e);
+            logger.error("Error occurred while reading file", kv("action", "fetchFromPath"), kv("state", "failed"), e);
             return new FetchResult(path, null, "IO error: " + e.getMessage());
         }
     }
