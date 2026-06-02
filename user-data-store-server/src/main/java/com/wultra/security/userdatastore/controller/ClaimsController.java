@@ -26,6 +26,8 @@ import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -59,9 +61,9 @@ class ClaimsController {
     )
     @GetMapping("/claims")
     public ObjectResponse<Object> fetchClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
-        logger.info("action: fetchClaims, state: initiated, userId: {}, claim: {}", userId, claim);
+        logger.info("", kv("action", "fetchClaims"), kv("state", "initiated"), kv("userId", userId), kv("claim", claim));
         final Object claims = claimsService.fetchClaims(userId, Optional.ofNullable(claim));
-        logger.info("action: fetchClaims, state: succeeded, userId: {}, claim: {}", userId, claim);
+        logger.info("", kv("action", "fetchClaims"), kv("state", "succeeded"), kv("userId", userId), kv("claim", claim));
         return new ObjectResponse<>(claims);
     }
 
@@ -78,9 +80,9 @@ class ClaimsController {
     )
     @PostMapping("/admin/claims")
     public Response createClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
-        logger.info("action: createClaims, state: initiated, userId: {}", userId);
+        logger.info("", kv("action", "createClaims"), kv("state", "initiated"), kv("userId", userId));
         claimsService.createClaims(userId, claims);
-        logger.info("action: createClaims, state: succeeded, userId: {}", userId);
+        logger.info("", kv("action", "createClaims"), kv("state", "succeeded"), kv("userId", userId));
         return new Response();
     }
 
@@ -97,9 +99,9 @@ class ClaimsController {
     )
     @PutMapping("/admin/claims")
     public Response updateClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
-        logger.info("action: updateClaims, state: initiated, userId: {}", userId);
+        logger.info("", kv("action", "updateClaims"), kv("state", "initiated"), kv("userId", userId));
         claimsService.updateClaims(userId, claims);
-        logger.info("action: updateClaims, state: succeeded, userId: {}", userId);
+        logger.info("", kv("action", "updateClaims"), kv("state", "succeeded"), kv("userId", userId));
         return new Response();
     }
 
@@ -115,9 +117,9 @@ class ClaimsController {
     )
     @DeleteMapping("/admin/claims")
     public Response deleteClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
-        logger.info("action: deleteClaims, state: initiated, userId: {}, claim: {}", userId, claim);
+        logger.info("", kv("action", "deleteClaims"), kv("state", "initiated"), kv("userId", userId), kv("claim", claim));
         claimsService.deleteClaims(userId, claim);
-        logger.info("action: deleteClaims, state: succeeded, userId: {}, claim: {}", userId, claim);
+        logger.info("", kv("action", "deleteClaims"), kv("state", "succeeded"), kv("userId", userId), kv("claim", claim));
         return new Response();
     }
 }
