@@ -40,6 +40,6 @@ public record DocumentGetRequest(
         @Size(max = 255)
         String documentType,
 
-        Map<String, Object> attributes
+        Map<String, String> attributes
 
 ) { }
