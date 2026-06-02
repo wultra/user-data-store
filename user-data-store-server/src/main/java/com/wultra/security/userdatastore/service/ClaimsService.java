@@ -36,7 +36,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 /**
  * Service for manipulating claims.
@@ -90,7 +95,7 @@ public class ClaimsService {
                             throw new ResourceAlreadyExistsException("Claims for user '%s' already exist".formatted(userId));
                         },
                         () -> {
-                            logger.debug("Creating new claims of user ID: {}", userId);
+                            logger.debug("Creating new claims", kv("userId", userId));
                             final DocumentEntity entity = new DocumentEntity();
                             entity.setId(UUID.randomUUID().toString());
                             entity.setUserId(userId);
@@ -116,7 +121,7 @@ public class ClaimsService {
         }
         documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE).stream().findAny()
                 .ifPresentOrElse(entity -> {
-                            logger.debug("Updating claims of user ID: {}", userId);
+                            logger.debug("Updating claims", kv("userId", userId));
                             encryptionService.encryptDocumentData(entity, claimsAsString);
                             entity.setTimestampLastUpdated(LocalDateTime.now());
                             audit("action: updateClaims, userId: {}", userId);
@@ -136,7 +141,7 @@ public class ClaimsService {
         }
         documentRepository.findAllByUserIdAndDataType(userId, CLAIMS_DATA_TYPE).stream().findAny()
                 .ifPresentOrElse(entity -> {
-                    logger.debug("Updating claims of user ID: {}, deleted claim: {}", userId, claim);
+                    logger.debug("Updating claims", kv("userId", userId), kv("claim", claim));
                     final String claims = encryptionService.decryptDocumentData(entity);
                     final Map<String, Object> claimMap;
                     try {
@@ -151,7 +156,7 @@ public class ClaimsService {
                     documentRepository.save(entity);
                     audit("action: deleteClaims, userId: {}, claim: {}", userId, claim);
                 },
-                () -> logger.debug("Delete request ignored, no claims found for user ID: {}", userId));
+                () -> logger.debug("Delete request ignored, no claims found", kv("userId", userId)));
     }
 
     private String readClaims(final String userId) {

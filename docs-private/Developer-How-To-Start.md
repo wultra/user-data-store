@@ -81,3 +81,15 @@ docker build . -t user-data-store:0.3.0
 ```shell
 docker run -p 80:8080 -e USER_DATA_STORE_DATASOURCE_USERNAME='powerauth' -e USER_DATA_STORE_DATASOURCE_PASSWORD='' user-data-store:0.3.0 
 ```
+
+
+# Logging
+
+This application uses structured logging. Log format differs by environment:
+
+- **Local development** (`spring.profiles.active=...,dev`): text format with structured arguments rendered
+  as `key=value` pairs (e.g. `action=createAttachment state=initiated userId=abc123`).
+  Activated automatically via `src/main/resources/logback-dev.xml` when the `dev` profile is active.
+- **Production**: JSON format consumed by the log aggregation platform.
+
+To see structured log output locally, ensure `ext,dev` (or at minimum `dev`) is in your active profiles.

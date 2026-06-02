@@ -39,6 +39,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -109,7 +111,7 @@ public class DocumentService {
     @Transactional
     public DocumentCreateResponse createDocument(final DocumentCreateRequest request) {
         final String userId = request.userId();
-        logger.debug("Creating document for user ID: {}", userId);
+        logger.debug("Creating document", kv("userId", userId));
         DocumentEntity documentEntity = new DocumentEntity();
         documentEntity.setId(UUID.randomUUID().toString());
         documentEntity.setUserId(userId);
@@ -150,7 +152,7 @@ public class DocumentService {
     @Transactional
     public void updateDocument(final String documentId, final DocumentUpdateRequest request) {
         final String userId = request.userId();
-        logger.debug("Updating document for user ID: {}", userId);
+        logger.debug("Updating document", kv("userId", userId));
         final DocumentEntity documentEntity = documentRepository.findById(documentId).orElseThrow(
                 () -> new ResourceNotFoundException("Document not found, ID: '%s'".formatted(documentId)));
         documentEntity.setUserId(userId);

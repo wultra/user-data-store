@@ -178,6 +178,11 @@
 
         <!-- Logging -->
         <dependency>
+            <groupId>com.wultra.core</groupId>
+            <artifactId>logging-support</artifactId>
+            <version>${wultra-core.version}</version>
+        </dependency>
+        <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash.version}</version>
