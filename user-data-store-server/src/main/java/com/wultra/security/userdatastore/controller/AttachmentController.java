@@ -32,6 +32,8 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -62,9 +64,9 @@ class AttachmentController {
     )
     @GetMapping("/attachments")
     public ObjectResponse<AttachmentResponse> fetchAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
-        logger.info("action: fetchAttachments, state: initiated, userId: {}, documentId: {}", userId, documentId);
+        logger.info("", kv("action", "fetchAttachments"), kv("state", "initiated"), kv("userId", userId), kv("documentId", documentId));
         final AttachmentResponse attachments = attachmentService.fetchAttachments(userId, Optional.ofNullable(documentId));
-        logger.info("action: fetchAttachments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
+        logger.info("", kv("action", "fetchAttachments"), kv("state", "succeeded"), kv("userId", userId), kv("documentId", documentId));
         return new ObjectResponse<>(attachments);
     }
 
@@ -80,9 +82,9 @@ class AttachmentController {
     )
     @PostMapping("/admin/attachments")
     public ObjectResponse<AttachmentCreateResponse> createAttachment(@Valid @RequestBody final ObjectRequest<AttachmentCreateRequest> request) {
-        logger.info("action: createAttachment, state: initiated, userId: {}", request.getRequestObject().userId());
+        logger.info("", kv("action", "createAttachment"), kv("state", "initiated"), kv("userId", request.getRequestObject().userId()));
         final AttachmentCreateResponse response = attachmentService.createAttachment(request.getRequestObject());
-        logger.info("action: createAttachment, state: succeeded, userId: {}", request.getRequestObject().userId());
+        logger.info("", kv("action", "createAttachment"), kv("state", "succeeded"), kv("userId", request.getRequestObject().userId()));
         return new ObjectResponse<>(response);
     }
 
@@ -98,9 +100,9 @@ class AttachmentController {
     )
     @PutMapping("/admin/attachments/{attachmentId}")
     public Response updateAttachment(@NotBlank @Size(max = 36) @PathVariable("attachmentId") String attachmentId, @Valid @RequestBody final ObjectRequest<AttachmentUpdateRequest> request) {
-        logger.info("action: updateAttachment, state: initiated, attachmentId: {}", attachmentId);
+        logger.info("", kv("action", "updateAttachment"), kv("state", "initiated"), kv("attachmentId", attachmentId));
         attachmentService.updateAttachment(attachmentId, request.getRequestObject());
-        logger.info("action: updateAttachment, state: succeeded, attachmentId: {}", attachmentId);
+        logger.info("", kv("action", "updateAttachment"), kv("state", "succeeded"), kv("attachmentId", attachmentId));
         return new Response();
     }
 
@@ -117,9 +119,9 @@ class AttachmentController {
     )
     @DeleteMapping("/admin/attachments")
     public Response deleteAttachments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
-        logger.info("action: deleteAttachments, state: initiated, userId: {}, documentId: {}", userId, documentId);
+        logger.info("", kv("action", "deleteAttachments"), kv("state", "initiated"), kv("userId", userId), kv("documentId", documentId));
         attachmentService.deleteAttachments(userId, Optional.ofNullable(documentId));
-        logger.info("action: deleteAttachments, state: succeeded, userId: {}, documentId: {}", userId, documentId);
+        logger.info("", kv("action", "deleteAttachments"), kv("state", "succeeded"), kv("userId", userId), kv("documentId", documentId));
         return new Response();
     }
 
