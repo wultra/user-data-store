@@ -17,20 +17,18 @@
  */
 package com.wultra.security.userdatastore.service;
 
-import com.wultra.security.userdatastore.model.entity.*;
-import com.wultra.security.userdatastore.model.error.EncryptionException;
 import com.wultra.security.powerauth.crypto.lib.generator.KeyGenerator;
 import com.wultra.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import com.wultra.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
 import com.wultra.security.powerauth.crypto.lib.util.AESEncryptionUtils;
+import com.wultra.security.userdatastore.model.entity.*;
+import com.wultra.security.userdatastore.model.error.EncryptionException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-
-import static net.logstash.logback.argument.StructuredArguments.kv;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -40,6 +38,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.util.Arrays;
 import java.util.Base64;
+
+import static com.wultra.security.userdatastore.logging.StructuredLogging.*;
 
 /**
  * Service for encryption and decryption database data.
@@ -195,7 +195,7 @@ public class EncryptionService {
             baos.write(encrypted);
             return Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (GenericCryptoException | CryptoProviderException | InvalidKeyException | IOException e) {
-            logger.error("", kv("action", "encryptClaims"), kv("state", "failed"), kv("userId", userId), e);
+            logger.error("", action("encryptClaims"), stateFailed(), kv("userId", userId), e);
             throw new EncryptionException("Unable to encrypt claims for user ID: " + userId, e);
         }
     }
@@ -218,7 +218,7 @@ public class EncryptionService {
             final byte[] decryptedClaims = aesEncryptionUtils.decrypt(encryptedClaims, iv, secretKey);
             return new String(decryptedClaims, StandardCharsets.UTF_8);
         } catch (InvalidKeyException | GenericCryptoException | CryptoProviderException e) {
-            logger.error("", kv("action", "decryptClaims"), kv("state", "failed"), kv("userId", userId), e);
+            logger.error("", action("decryptClaims"), stateFailed(), kv("userId", userId), e);
             throw new EncryptionException("Unable to decrypt claims for user ID: " + userId, e);
         }
     }

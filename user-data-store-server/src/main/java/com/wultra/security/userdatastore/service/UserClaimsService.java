@@ -33,12 +33,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static net.logstash.logback.argument.StructuredArguments.kv;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.wultra.security.userdatastore.logging.StructuredLogging.kv;
 
 /**
  * Service for user claims.

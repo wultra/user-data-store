@@ -22,7 +22,10 @@ import com.wultra.core.audit.base.model.AuditDetail;
 import com.wultra.security.userdatastore.client.model.dto.DocumentDto;
 import com.wultra.security.userdatastore.client.model.request.DocumentCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.DocumentUpdateRequest;
-import com.wultra.security.userdatastore.client.model.response.*;
+import com.wultra.security.userdatastore.client.model.response.DocumentCreateResponse;
+import com.wultra.security.userdatastore.client.model.response.DocumentResponse;
+import com.wultra.security.userdatastore.client.model.response.EmbeddedAttachmentCreateResponse;
+import com.wultra.security.userdatastore.client.model.response.EmbeddedPhotoCreateResponse;
 import com.wultra.security.userdatastore.converter.DocumentConverter;
 import com.wultra.security.userdatastore.model.entity.DocumentEntity;
 import com.wultra.security.userdatastore.model.entity.DocumentHistoryEntity;
@@ -39,10 +42,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import static net.logstash.logback.argument.StructuredArguments.kv;
-
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static com.wultra.security.userdatastore.logging.StructuredLogging.kv;
 
 /**
  * Service for user documents.

@@ -17,6 +17,9 @@
  */
 package com.wultra.security.userdatastore.controller;
 
+import com.wultra.core.rest.model.base.request.ObjectRequest;
+import com.wultra.core.rest.model.base.response.ObjectResponse;
+import com.wultra.core.rest.model.base.response.Response;
 import com.wultra.security.userdatastore.client.model.request.PhotoCreateRequest;
 import com.wultra.security.userdatastore.client.model.request.PhotoUpdateRequest;
 import com.wultra.security.userdatastore.client.model.request.PhotosImportCsvRequest;
@@ -25,9 +28,6 @@ import com.wultra.security.userdatastore.client.model.response.PhotoCreateRespon
 import com.wultra.security.userdatastore.client.model.response.PhotoResponse;
 import com.wultra.security.userdatastore.client.model.response.PhotosImportResponse;
 import com.wultra.security.userdatastore.service.PhotoService;
-import com.wultra.core.rest.model.base.request.ObjectRequest;
-import com.wultra.core.rest.model.base.response.ObjectResponse;
-import com.wultra.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -35,11 +35,14 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-
-import static net.logstash.logback.argument.StructuredArguments.kv;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+
+import static com.wultra.security.userdatastore.logging.StructuredLogging.action;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.kv;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.stateInitiated;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.stateSucceeded;
 
 /**
  * REST controller providing API for CRUD for photos.
@@ -67,9 +70,9 @@ class PhotoController {
     )
     @GetMapping("/photos")
     public ObjectResponse<PhotoResponse> fetchPhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
-        logger.info("", kv("action", "fetchPhotos"), kv("state", "initiated"), kv("userId", userId), kv("documentId", documentId));
+        logger.info("", action("fetchPhotos"), stateInitiated(), kv("userId", userId), kv("documentId", documentId));
         final PhotoResponse photos = photoService.fetchPhotos(userId, Optional.ofNullable(documentId));
-        logger.info("", kv("action", "fetchPhotos"), kv("state", "succeeded"), kv("userId", userId), kv("documentId", documentId));
+        logger.info("", action("fetchPhotos"), stateSucceeded(), kv("userId", userId), kv("documentId", documentId));
         return new ObjectResponse<>(photos);
     }
 
@@ -85,9 +88,9 @@ class PhotoController {
     )
     @PostMapping("/admin/photos")
     public ObjectResponse<PhotoCreateResponse> createPhoto(@Valid @RequestBody final ObjectRequest<PhotoCreateRequest> request) {
-        logger.info("", kv("action", "createPhoto"), kv("state", "initiated"), kv("userId", request.getRequestObject().userId()), kv("documentId", request.getRequestObject().documentId()));
+        logger.info("", action("createPhoto"), stateInitiated(), kv("userId", request.getRequestObject().userId()), kv("documentId", request.getRequestObject().documentId()));
         final PhotoCreateResponse response = photoService.createPhoto(request.getRequestObject());
-        logger.info("", kv("action", "createPhoto"), kv("state", "succeeded"), kv("userId", request.getRequestObject().userId()), kv("documentId", request.getRequestObject().documentId()));
+        logger.info("", action("createPhoto"), stateSucceeded(), kv("userId", request.getRequestObject().userId()), kv("documentId", request.getRequestObject().documentId()));
         return new ObjectResponse<>(response);
     }
 
@@ -103,9 +106,9 @@ class PhotoController {
     )
     @PutMapping("/admin/photos/{photoId}")
     public Response updatePhoto(@NotBlank @Size(max = 36) @PathVariable("photoId") String photoId, @Valid @RequestBody final ObjectRequest<PhotoUpdateRequest> request) {
-        logger.info("", kv("action", "createPhoto"), kv("state", "initiated"), kv("photoId", photoId));
+        logger.info("", action("createPhoto"), stateInitiated(), kv("photoId", photoId));
         photoService.updatePhoto(photoId, request.getRequestObject());
-        logger.info("", kv("action", "createPhoto"), kv("state", "succeeded"), kv("photoId", photoId));
+        logger.info("", action("createPhoto"), stateSucceeded(), kv("photoId", photoId));
         return new Response();
     }
 
@@ -122,9 +125,9 @@ class PhotoController {
     )
     @DeleteMapping("/admin/photos")
     public Response deletePhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
-        logger.info("", kv("action", "deletePhotos"), kv("state", "initiated"), kv("userId", userId), kv("documentId", documentId));
+        logger.info("", action("deletePhotos"), stateInitiated(), kv("userId", userId), kv("documentId", documentId));
         photoService.deletePhotos(userId, Optional.ofNullable(documentId));
-        logger.info("", kv("action", "deletePhotos"), kv("state", "succeeded"), kv("userId", userId), kv("documentId", documentId));
+        logger.info("", action("deletePhotos"), stateSucceeded(), kv("userId", userId), kv("documentId", documentId));
         return new Response();
     }
 
@@ -140,9 +143,9 @@ class PhotoController {
     )
     @PostMapping("/admin/photos/import")
     public ObjectResponse<PhotosImportResponse> importPhotos(@Valid @RequestBody final ObjectRequest<PhotosImportRequest> request) {
-        logger.info("", kv("action", "importPhotos"), kv("state", "initiated"));
+        logger.info("", action("importPhotos"), stateInitiated());
         final PhotosImportResponse response = photoService.importPhotos(request.getRequestObject());
-        logger.info("", kv("action", "importPhotos"), kv("state", "succeeded"));
+        logger.info("", action("importPhotos"), stateSucceeded());
         return new ObjectResponse<>(response);
     }
 
@@ -158,9 +161,9 @@ class PhotoController {
     )
     @PostMapping("/admin/photos/import/csv")
     public Response importPhotosCsv(@Valid @RequestBody final ObjectRequest<PhotosImportCsvRequest> request) {
-        logger.info("", kv("action", "importPhotosCsv"), kv("state", "initiated"));
+        logger.info("", action("importPhotosCsv"), stateInitiated());
         photoService.importPhotosCsv(request.getRequestObject());
-        logger.info("", kv("action", "importPhotosCsv"), kv("state", "succeeded"));
+        logger.info("", action("importPhotosCsv"), stateSucceeded());
         return new Response();
     }
 

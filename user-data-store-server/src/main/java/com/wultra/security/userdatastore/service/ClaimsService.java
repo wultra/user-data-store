@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static net.logstash.logback.argument.StructuredArguments.kv;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.kv;
 
 /**
  * Service for manipulating claims.

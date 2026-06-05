@@ -45,7 +45,8 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static net.logstash.logback.argument.StructuredArguments.kv;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.action;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.stateFailed;
 
 /**
  * Service for importing photos.
@@ -201,7 +202,7 @@ public class PhotoImportService {
                 }
                 return new FetchResult(path, null, "HTTP status code: " + response.statusCode());
             } catch (IOException | InterruptedException e) {
-                logger.error("Error occurred while downloading", kv("action", "fetchFromPath"), kv("state", "failed"), e);
+                logger.error("Error occurred while downloading", action("fetchFromPath"), stateFailed(), e);
                 return new FetchResult(path, null, "IO error: " + e.getMessage());
             }
         }
@@ -209,7 +210,7 @@ public class PhotoImportService {
             final byte[] dataBytes = Files.readAllBytes(Paths.get(path));
             return new FetchResult(path, dataBytes, null);
         } catch (IOException e) {
-            logger.error("Error occurred while reading file", kv("action", "fetchFromPath"), kv("state", "failed"), e);
+            logger.error("Error occurred while reading file", action("fetchFromPath"), stateFailed(), e);
             return new FetchResult(path, null, "IO error: " + e.getMessage());
         }
     }
