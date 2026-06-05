@@ -33,8 +33,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-
-import static net.logstash.logback.argument.StructuredArguments.kv;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +40,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.wultra.security.userdatastore.logging.StructuredLogging.action;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.kv;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.stateInitiated;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.stateSucceeded;
 
 /**
  * REST controller providing API for CRUD for user documents.
@@ -91,7 +94,7 @@ class DocumentController {
             @Size(max = 255) @RequestParam(required = false) String documentType,
             @RequestParam(required = false) List<String> attributes) {
 
-        logger.info("", kv("action", "fetchDocuments"), kv("state", "initiated"), kv("userId", userId), kv("documentId", documentId), kv("documentType", documentType), kv("attributes", attributes));
+        logger.info("", action("fetchDocuments"), stateInitiated(), kv("userId", userId), kv("documentId", documentId), kv("documentType", documentType), kv("attributes", attributes));
         final var request = DocumentService.DocumentsRequest.builder()
                 .userId(userId)
                 .documentId(documentId)
@@ -99,7 +102,7 @@ class DocumentController {
                 .attributes(parseAttributes(attributes))
                 .build();
         final DocumentResponse documents = documentService.fetchDocuments(request);
-        logger.info("", kv("action", "fetchDocuments"), kv("state", "succeeded"), kv("count", documents.documents().size()));
+        logger.info("", action("fetchDocuments"), stateSucceeded(), kv("count", documents.documents().size()));
         return new ObjectResponse<>(documents);
     }
 
@@ -139,9 +142,9 @@ class DocumentController {
     )
     @PostMapping("/admin/documents")
     public ObjectResponse<DocumentCreateResponse> createDocument(@Valid @RequestBody final ObjectRequest<DocumentCreateRequest> request) {
-        logger.info("", kv("action", "createDocument"), kv("state", "initiated"), kv("userId", request.getRequestObject().userId()));
+        logger.info("", action("createDocument"), stateInitiated(), kv("userId", request.getRequestObject().userId()));
         final DocumentCreateResponse response = documentService.createDocument(request.getRequestObject());
-        logger.info("", kv("action", "createDocument"), kv("state", "succeeded"), kv("userId", request.getRequestObject().userId()));
+        logger.info("", action("createDocument"), stateSucceeded(), kv("userId", request.getRequestObject().userId()));
         return new ObjectResponse<>(response);
     }
 
@@ -158,9 +161,9 @@ class DocumentController {
     )
     @PutMapping("/admin/documents/{documentId}")
     public Response updateDocument(@NotBlank @Size(max = 36) @PathVariable("documentId") String documentId, @Valid @RequestBody final ObjectRequest<DocumentUpdateRequest> request) {
-        logger.info("", kv("action", "updateDocument"), kv("state", "initiated"), kv("userId", request.getRequestObject().userId()), kv("documentId", documentId));
+        logger.info("", action("updateDocument"), stateInitiated(), kv("userId", request.getRequestObject().userId()), kv("documentId", documentId));
         documentService.updateDocument(documentId, request.getRequestObject());
-        logger.info("", kv("action", "updateDocument"), kv("state", "succeeded"), kv("userId", request.getRequestObject().userId()), kv("documentId", documentId));
+        logger.info("", action("updateDocument"), stateSucceeded(), kv("userId", request.getRequestObject().userId()), kv("documentId", documentId));
         return new Response();
     }
 
@@ -177,9 +180,9 @@ class DocumentController {
     )
     @DeleteMapping("/admin/documents")
     public Response deleteDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
-        logger.info("", kv("action", "deleteDocuments"), kv("state", "initiated"), kv("userId", userId), kv("documentId", documentId));
+        logger.info("", action("deleteDocuments"), stateInitiated(), kv("userId", userId), kv("documentId", documentId));
         documentService.deleteDocuments(userId, Optional.ofNullable(documentId));
-        logger.info("", kv("action", "deleteDocuments"), kv("state", "succeeded"), kv("userId", userId), kv("documentId", documentId));
+        logger.info("", action("deleteDocuments"), stateSucceeded(), kv("userId", userId), kv("documentId", documentId));
         return new Response();
     }
 

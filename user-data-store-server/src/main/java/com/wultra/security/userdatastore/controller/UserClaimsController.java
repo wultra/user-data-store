@@ -17,18 +17,21 @@
  */
 package com.wultra.security.userdatastore.controller;
 
-import com.wultra.security.userdatastore.service.UserClaimsService;
 import com.wultra.core.rest.model.base.response.ObjectResponse;
 import com.wultra.core.rest.model.base.response.Response;
+import com.wultra.security.userdatastore.service.UserClaimsService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-
-import static net.logstash.logback.argument.StructuredArguments.kv;
 import org.springframework.web.bind.annotation.*;
+
+import static com.wultra.security.userdatastore.logging.StructuredLogging.action;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.kv;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.stateInitiated;
+import static com.wultra.security.userdatastore.logging.StructuredLogging.stateSucceeded;
 
 /**
  * REST controller providing API for CRUD of user claims.
@@ -60,9 +63,9 @@ class UserClaimsController {
     )
     @GetMapping("/private/user-claims")
     public ObjectResponse<Object> fetchClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
-        logger.info("", kv("action", "fetchClaims"), kv("state", "initiated"), kv("userId", userId));
+        logger.info("", action("fetchClaims"), stateInitiated(), kv("userId", userId));
         final Object userClaims = userClaimsService.fetchUserClaims(userId);
-        logger.info("", kv("action", "fetchClaims"), kv("state", "succeeded"), kv("userId", userId));
+        logger.info("", action("fetchClaims"), stateSucceeded(), kv("userId", userId));
         return new ObjectResponse<>(userClaims);
     }
 
@@ -79,9 +82,9 @@ class UserClaimsController {
     )
     @PostMapping("/public/user-claims")
     public Response storeClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
-        logger.info("", kv("action", "storeClaims"), kv("state", "initiated"), kv("userId", userId));
+        logger.info("", action("storeClaims"), stateInitiated(), kv("userId", userId));
         userClaimsService.createOrUpdateUserClaims(userId, claims);
-        logger.info("", kv("action", "storeClaims"), kv("state", "succeeded"), kv("userId", userId));
+        logger.info("", action("storeClaims"), stateSucceeded(), kv("userId", userId));
         return new Response();
     }
 
@@ -97,9 +100,9 @@ class UserClaimsController {
     )
     @DeleteMapping("/public/user-claims")
     public Response deleteClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
-        logger.info("", kv("action", "deleteClaims"), kv("state", "initiated"), kv("userId", userId));
+        logger.info("", action("deleteClaims"), stateInitiated(), kv("userId", userId));
         userClaimsService.deleteUserClaims(userId);
-        logger.info("", kv("action", "deleteClaims"), kv("state", "succeeded"), kv("userId", userId));
+        logger.info("", action("deleteClaims"), stateSucceeded(), kv("userId", userId));
         return new Response();
     }
 }

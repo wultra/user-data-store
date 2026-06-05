@@ -238,7 +238,7 @@ Follows [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/):
 
 ### Logging
 
-- Use `StructuredArguments.kv()` from `logstash-logback-encoder` for structured key-value pairs.
+- Use `com.wultra.security.userdatastore.logging.StructuredLogging#kv()` for structured key-value pairs.
 - Dev/test logback configs: use `logging-support` module from `java-core` with `%msg%sa%n` pattern (no literal space before `%sa` — the converter prepends its own leading space).
 - Production configs: use `LogstashEncoder` for JSON output.
 
