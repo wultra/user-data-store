@@ -46,7 +46,7 @@
         <wultra-core.version>2.2.0-SNAPSHOT</wultra-core.version>
         <powerauth-crypto.version>2.2.0-SNAPSHOT</powerauth-crypto.version>
 
-        <swagger-annotations-jakarta.version>2.2.50</swagger-annotations-jakarta.version>
+        <swagger-annotations-jakarta.version>2.2.51</swagger-annotations-jakarta.version>
         <springdoc-openapi-starter-webmvc-ui.version>3.0.3</springdoc-openapi-starter-webmvc-ui.version>
         <logstash.version>9.0</logstash.version>
         <commons-csv.version>1.14.1</commons-csv.version>
