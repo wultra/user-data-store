@@ -64,9 +64,9 @@ class ClaimsController {
     )
     @GetMapping("/claims")
     public ObjectResponse<Object> fetchClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
-        logger.info("", action("fetchClaims"), stateInitiated(), kv("userId", userId), kv("claim", claim));
+        logger.info("Fetch claims initiated", action("fetchClaims"), stateInitiated(), kv("userId", userId), kv("claim", claim));
         final Object claims = claimsService.fetchClaims(userId, Optional.ofNullable(claim));
-        logger.info("", action("fetchClaims"), stateSucceeded(), kv("userId", userId), kv("claim", claim));
+        logger.info("Fetch claims succeeded", action("fetchClaims"), stateSucceeded(), kv("userId", userId), kv("claim", claim));
         return new ObjectResponse<>(claims);
     }
 
@@ -83,9 +83,9 @@ class ClaimsController {
     )
     @PostMapping("/admin/claims")
     public Response createClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
-        logger.info("", action("createClaims"), stateInitiated(), kv("userId", userId));
+        logger.info("Create claims initiated", action("createClaims"), stateInitiated(), kv("userId", userId));
         claimsService.createClaims(userId, claims);
-        logger.info("", action("createClaims"), stateSucceeded(), kv("userId", userId));
+        logger.info("Create claims succeeded", action("createClaims"), stateSucceeded(), kv("userId", userId));
         return new Response();
     }
 
@@ -102,9 +102,9 @@ class ClaimsController {
     )
     @PutMapping("/admin/claims")
     public Response updateClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
-        logger.info("", action("updateClaims"), stateInitiated(), kv("userId", userId));
+        logger.info("Update claims initiated", action("updateClaims"), stateInitiated(), kv("userId", userId));
         claimsService.updateClaims(userId, claims);
-        logger.info("", action("updateClaims"), stateSucceeded(), kv("userId", userId));
+        logger.info("Update claims succeeded", action("updateClaims"), stateSucceeded(), kv("userId", userId));
         return new Response();
     }
 
@@ -120,9 +120,9 @@ class ClaimsController {
     )
     @DeleteMapping("/admin/claims")
     public Response deleteClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String claim) {
-        logger.info("", action("deleteClaims"), stateInitiated(), kv("userId", userId), kv("claim", claim));
+        logger.info("Delete claims initiated", action("deleteClaims"), stateInitiated(), kv("userId", userId), kv("claim", claim));
         claimsService.deleteClaims(userId, claim);
-        logger.info("", action("deleteClaims"), stateSucceeded(), kv("userId", userId), kv("claim", claim));
+        logger.info("Delete claims succeeded", action("deleteClaims"), stateSucceeded(), kv("userId", userId), kv("claim", claim));
         return new Response();
     }
 }

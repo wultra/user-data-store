@@ -63,9 +63,9 @@ class UserClaimsController {
     )
     @GetMapping("/private/user-claims")
     public ObjectResponse<Object> fetchClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
-        logger.info("", action("fetchClaims"), stateInitiated(), kv("userId", userId));
+        logger.info("Fetch claims initiated", action("fetchClaims"), stateInitiated(), kv("userId", userId));
         final Object userClaims = userClaimsService.fetchUserClaims(userId);
-        logger.info("", action("fetchClaims"), stateSucceeded(), kv("userId", userId));
+        logger.info("Fetch claims succeeded", action("fetchClaims"), stateSucceeded(), kv("userId", userId));
         return new ObjectResponse<>(userClaims);
     }
 
@@ -82,9 +82,9 @@ class UserClaimsController {
     )
     @PostMapping("/public/user-claims")
     public Response storeClaims(@NotBlank @Size(max = 255) @RequestParam String userId, @RequestBody final Object claims) {
-        logger.info("", action("storeClaims"), stateInitiated(), kv("userId", userId));
+        logger.info("Store claims initiated", action("storeClaims"), stateInitiated(), kv("userId", userId));
         userClaimsService.createOrUpdateUserClaims(userId, claims);
-        logger.info("", action("storeClaims"), stateSucceeded(), kv("userId", userId));
+        logger.info("Store claims succeeded", action("storeClaims"), stateSucceeded(), kv("userId", userId));
         return new Response();
     }
 
@@ -100,9 +100,9 @@ class UserClaimsController {
     )
     @DeleteMapping("/public/user-claims")
     public Response deleteClaims(@NotBlank @Size(max = 255) @RequestParam String userId) {
-        logger.info("", action("deleteClaims"), stateInitiated(), kv("userId", userId));
+        logger.info("Delete claims initiated", action("deleteClaims"), stateInitiated(), kv("userId", userId));
         userClaimsService.deleteUserClaims(userId);
-        logger.info("", action("deleteClaims"), stateSucceeded(), kv("userId", userId));
+        logger.info("Delete claims succeeded", action("deleteClaims"), stateSucceeded(), kv("userId", userId));
         return new Response();
     }
 }

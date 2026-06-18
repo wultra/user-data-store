@@ -94,7 +94,7 @@ class DocumentController {
             @Size(max = 255) @RequestParam(required = false) String documentType,
             @RequestParam(required = false) List<String> attributes) {
 
-        logger.info("", action("fetchDocuments"), stateInitiated(), kv("userId", userId), kv("documentId", documentId), kv("documentType", documentType), kv("attributes", attributes));
+        logger.info("Fetch documents initiated", action("fetchDocuments"), stateInitiated(), kv("userId", userId), kv("documentId", documentId), kv("documentType", documentType), kv("attributes", attributes));
         final var request = DocumentService.DocumentsRequest.builder()
                 .userId(userId)
                 .documentId(documentId)
@@ -102,7 +102,7 @@ class DocumentController {
                 .attributes(parseAttributes(attributes))
                 .build();
         final DocumentResponse documents = documentService.fetchDocuments(request);
-        logger.info("", action("fetchDocuments"), stateSucceeded(), kv("count", documents.documents().size()));
+        logger.info("Fetch documents succeeded", action("fetchDocuments"), stateSucceeded(), kv("count", documents.documents().size()));
         return new ObjectResponse<>(documents);
     }
 
@@ -142,9 +142,9 @@ class DocumentController {
     )
     @PostMapping("/admin/documents")
     public ObjectResponse<DocumentCreateResponse> createDocument(@Valid @RequestBody final ObjectRequest<DocumentCreateRequest> request) {
-        logger.info("", action("createDocument"), stateInitiated(), kv("userId", request.getRequestObject().userId()));
+        logger.info("Create document initiated", action("createDocument"), stateInitiated(), kv("userId", request.getRequestObject().userId()));
         final DocumentCreateResponse response = documentService.createDocument(request.getRequestObject());
-        logger.info("", action("createDocument"), stateSucceeded(), kv("userId", request.getRequestObject().userId()));
+        logger.info("Create document succeeded", action("createDocument"), stateSucceeded(), kv("userId", request.getRequestObject().userId()));
         return new ObjectResponse<>(response);
     }
 
@@ -161,9 +161,9 @@ class DocumentController {
     )
     @PutMapping("/admin/documents/{documentId}")
     public Response updateDocument(@NotBlank @Size(max = 36) @PathVariable("documentId") String documentId, @Valid @RequestBody final ObjectRequest<DocumentUpdateRequest> request) {
-        logger.info("", action("updateDocument"), stateInitiated(), kv("userId", request.getRequestObject().userId()), kv("documentId", documentId));
+        logger.info("Update document initiated", action("updateDocument"), stateInitiated(), kv("userId", request.getRequestObject().userId()), kv("documentId", documentId));
         documentService.updateDocument(documentId, request.getRequestObject());
-        logger.info("", action("updateDocument"), stateSucceeded(), kv("userId", request.getRequestObject().userId()), kv("documentId", documentId));
+        logger.info("Update document succeeded", action("updateDocument"), stateSucceeded(), kv("userId", request.getRequestObject().userId()), kv("documentId", documentId));
         return new Response();
     }
 
@@ -180,9 +180,9 @@ class DocumentController {
     )
     @DeleteMapping("/admin/documents")
     public Response deleteDocuments(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
-        logger.info("", action("deleteDocuments"), stateInitiated(), kv("userId", userId), kv("documentId", documentId));
+        logger.info("Delete documents initiated", action("deleteDocuments"), stateInitiated(), kv("userId", userId), kv("documentId", documentId));
         documentService.deleteDocuments(userId, Optional.ofNullable(documentId));
-        logger.info("", action("deleteDocuments"), stateSucceeded(), kv("userId", userId), kv("documentId", documentId));
+        logger.info("Delete documents succeeded", action("deleteDocuments"), stateSucceeded(), kv("userId", userId), kv("documentId", documentId));
         return new Response();
     }
 

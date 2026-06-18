@@ -195,7 +195,7 @@ public class EncryptionService {
             baos.write(encrypted);
             return Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (GenericCryptoException | CryptoProviderException | InvalidKeyException | IOException e) {
-            logger.error("", action("encryptClaims"), stateFailed(), kv("userId", userId), e);
+            logger.error("Encrypt claims failed", action("encryptClaims"), stateFailed(), kv("userId", userId), e);
             throw new EncryptionException("Unable to encrypt claims for user ID: " + userId, e);
         }
     }
@@ -218,7 +218,7 @@ public class EncryptionService {
             final byte[] decryptedClaims = aesEncryptionUtils.decrypt(encryptedClaims, iv, secretKey);
             return new String(decryptedClaims, StandardCharsets.UTF_8);
         } catch (InvalidKeyException | GenericCryptoException | CryptoProviderException e) {
-            logger.error("", action("decryptClaims"), stateFailed(), kv("userId", userId), e);
+            logger.error("Decrypt claims failed", action("decryptClaims"), stateFailed(), kv("userId", userId), e);
             throw new EncryptionException("Unable to decrypt claims for user ID: " + userId, e);
         }
     }
