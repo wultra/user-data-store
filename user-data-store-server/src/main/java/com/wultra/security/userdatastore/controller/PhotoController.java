@@ -70,9 +70,9 @@ class PhotoController {
     )
     @GetMapping("/photos")
     public ObjectResponse<PhotoResponse> fetchPhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @NotBlank @Size(max = 255) @RequestParam String documentId) {
-        logger.info("", action("fetchPhotos"), stateInitiated(), kv("userId", userId), kv("documentId", documentId));
+        logger.info("Fetch photos initiated", action("fetchPhotos"), stateInitiated(), kv("userId", userId), kv("documentId", documentId));
         final PhotoResponse photos = photoService.fetchPhotos(userId, Optional.ofNullable(documentId));
-        logger.info("", action("fetchPhotos"), stateSucceeded(), kv("userId", userId), kv("documentId", documentId));
+        logger.info("Fetch photos succeeded", action("fetchPhotos"), stateSucceeded(), kv("userId", userId), kv("documentId", documentId));
         return new ObjectResponse<>(photos);
     }
 
@@ -88,9 +88,9 @@ class PhotoController {
     )
     @PostMapping("/admin/photos")
     public ObjectResponse<PhotoCreateResponse> createPhoto(@Valid @RequestBody final ObjectRequest<PhotoCreateRequest> request) {
-        logger.info("", action("createPhoto"), stateInitiated(), kv("userId", request.getRequestObject().userId()), kv("documentId", request.getRequestObject().documentId()));
+        logger.info("Create photo initiated", action("createPhoto"), stateInitiated(), kv("userId", request.getRequestObject().userId()), kv("documentId", request.getRequestObject().documentId()));
         final PhotoCreateResponse response = photoService.createPhoto(request.getRequestObject());
-        logger.info("", action("createPhoto"), stateSucceeded(), kv("userId", request.getRequestObject().userId()), kv("documentId", request.getRequestObject().documentId()));
+        logger.info("Create photo succeeded", action("createPhoto"), stateSucceeded(), kv("userId", request.getRequestObject().userId()), kv("documentId", request.getRequestObject().documentId()));
         return new ObjectResponse<>(response);
     }
 
@@ -106,9 +106,9 @@ class PhotoController {
     )
     @PutMapping("/admin/photos/{photoId}")
     public Response updatePhoto(@NotBlank @Size(max = 36) @PathVariable("photoId") String photoId, @Valid @RequestBody final ObjectRequest<PhotoUpdateRequest> request) {
-        logger.info("", action("createPhoto"), stateInitiated(), kv("photoId", photoId));
+        logger.info("Create photo initiated", action("createPhoto"), stateInitiated(), kv("photoId", photoId));
         photoService.updatePhoto(photoId, request.getRequestObject());
-        logger.info("", action("createPhoto"), stateSucceeded(), kv("photoId", photoId));
+        logger.info("Create photo succeeded", action("createPhoto"), stateSucceeded(), kv("photoId", photoId));
         return new Response();
     }
 
@@ -125,9 +125,9 @@ class PhotoController {
     )
     @DeleteMapping("/admin/photos")
     public Response deletePhotos(@NotBlank @Size(max = 255) @RequestParam String userId, @Size(max = 255) @RequestParam(required = false) String documentId) {
-        logger.info("", action("deletePhotos"), stateInitiated(), kv("userId", userId), kv("documentId", documentId));
+        logger.info("Delete photos initiated", action("deletePhotos"), stateInitiated(), kv("userId", userId), kv("documentId", documentId));
         photoService.deletePhotos(userId, Optional.ofNullable(documentId));
-        logger.info("", action("deletePhotos"), stateSucceeded(), kv("userId", userId), kv("documentId", documentId));
+        logger.info("Delete photos succeeded", action("deletePhotos"), stateSucceeded(), kv("userId", userId), kv("documentId", documentId));
         return new Response();
     }
 
@@ -143,9 +143,9 @@ class PhotoController {
     )
     @PostMapping("/admin/photos/import")
     public ObjectResponse<PhotosImportResponse> importPhotos(@Valid @RequestBody final ObjectRequest<PhotosImportRequest> request) {
-        logger.info("", action("importPhotos"), stateInitiated());
+        logger.info("Import photos initiated", action("importPhotos"), stateInitiated());
         final PhotosImportResponse response = photoService.importPhotos(request.getRequestObject());
-        logger.info("", action("importPhotos"), stateSucceeded());
+        logger.info("Import photos succeeded", action("importPhotos"), stateSucceeded());
         return new ObjectResponse<>(response);
     }
 
@@ -161,9 +161,9 @@ class PhotoController {
     )
     @PostMapping("/admin/photos/import/csv")
     public Response importPhotosCsv(@Valid @RequestBody final ObjectRequest<PhotosImportCsvRequest> request) {
-        logger.info("", action("importPhotosCsv"), stateInitiated());
+        logger.info("Import photos csv initiated", action("importPhotosCsv"), stateInitiated());
         photoService.importPhotosCsv(request.getRequestObject());
-        logger.info("", action("importPhotosCsv"), stateSucceeded());
+        logger.info("Import photos csv succeeded", action("importPhotosCsv"), stateSucceeded());
         return new Response();
     }
 
