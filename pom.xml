@@ -52,7 +52,7 @@
         <commons-csv.version>1.14.1</commons-csv.version>
         <ojdbc-version>23.26.2.0.0</ojdbc-version>
         <central.publishing.plugin.version>0.11.0</central.publishing.plugin.version>
-        <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
+        <cyclonedx-maven-plugin.version>2.9.2</cyclonedx-maven-plugin.version>
     </properties>
 
     <dependencies>
