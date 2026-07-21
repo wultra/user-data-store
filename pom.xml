@@ -29,7 +29,7 @@
 
     <groupId>com.wultra.security</groupId>
     <artifactId>user-data-store</artifactId>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0</version>
     <packaging>pom</packaging>
     <name>user-data-store</name>
     <description>Storage of user data</description>
@@ -44,7 +44,7 @@
         <java.version>17</java.version>
 
         <wultra-core.version>2.2.0</wultra-core.version>
-        <powerauth-crypto.version>2.2.0-SNAPSHOT</powerauth-crypto.version>
+        <powerauth-crypto.version>2.2.0</powerauth-crypto.version>
 
         <swagger-annotations-jakarta.version>2.2.52</swagger-annotations-jakarta.version>
         <springdoc-openapi-starter-webmvc-ui.version>3.0.3</springdoc-openapi-starter-webmvc-ui.version>
