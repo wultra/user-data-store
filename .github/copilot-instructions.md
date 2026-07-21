@@ -125,7 +125,7 @@ Use `User Data Store` (not a different project name) in the copyright header:
 
 ## Changelog
 
-`CHANGELOG.md` lives at the `/docs` folder. Update it as part of every PR — before creating the PR, not after merge.
+`Changelog.md` lives at the repository root. Update it as part of every PR — before creating the PR, not after merge.
 
 
 ### Format
