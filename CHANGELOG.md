@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.2.0] - 2026-07-21
+## [1.6.0] - 2026-07-21
 
 ### Added
 
@@ -25,5 +25,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Registered Lombok annotation processor [(#419)](https://github.com/wultra/user-data-store/issues/419)
 
-[unreleased]: https://github.com/wultra/user-data-store/compare/2.2.0...HEAD
-[2.2.0]: https://github.com/wultra/user-data-store/compare/2.1.0...2.2.0
+[unreleased]: https://github.com/wultra/user-data-store/compare/1.6.0...HEAD
+[1.6.0]: https://github.com/wultra/user-data-store/compare/1.5.0...1.6.0
