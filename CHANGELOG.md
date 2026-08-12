@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.1] - 2026-08-11
+
+### Changed
+
+- Updated `wultra-core` to 2.2.1, restoring serialization of dates as numeric epoch timestamps in REST clients [(#454)](https://github.com/wultra/user-data-store/issues/454)
+
 ## [1.6.0] - 2026-07-21
 
 ### Added
@@ -25,5 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Registered Lombok annotation processor [(#419)](https://github.com/wultra/user-data-store/issues/419)
 
-[unreleased]: https://github.com/wultra/user-data-store/compare/1.6.0...HEAD
+[unreleased]: https://github.com/wultra/user-data-store/compare/1.6.1...HEAD
+[1.6.1]: https://github.com/wultra/user-data-store/compare/1.6.0...1.6.1
 [1.6.0]: https://github.com/wultra/user-data-store/compare/1.5.0...1.6.0
