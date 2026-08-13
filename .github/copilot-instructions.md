@@ -135,8 +135,12 @@ Follows [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/):
 ```markdown
 # Changelog
 
+All notable changes to this project will be documented in this file.
 
-## X.Y.Z (TBA)
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
 
 
 ### Added
@@ -154,12 +158,15 @@ Follows [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/):
 - Bug fix description [(#N)](...)
 
 
-## 1.2.3 - 2025-03-01
+## [1.2.3] - 2025-03-01
 
 
 ### Added
 
 - ...
+
+[unreleased]: https://github.com/wultra/user-data-store/compare/1.2.3...HEAD
+[1.2.3]: https://github.com/wultra/user-data-store/compare/1.2.2...1.2.3
 ```
 
 **Change type subsections** (use only those that apply):
@@ -171,8 +178,9 @@ Follows [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/):
 - `Security` — security vulnerability fixes
 
 **Rules:**
-- Always add new entries under `## X.Y.Z (TBA)` (the unreleased section at the top).
-- On release, rename `## X.Y.Z (TBA)` to `## x.y.z - YYYY-MM-DD` (ISO 8601 date).
+- Always add new entries under the `## [Unreleased]` section at the top.
+- On release, rename `## [Unreleased]` to `## [x.y.z] - YYYY-MM-DD` (ISO 8601), add a fresh empty `## [Unreleased]` above it, update the `[unreleased]` reference link, and add the released version's compare link.
+- Versions and the unreleased section must be linkable through reference-style links at the bottom of the file.
 - Each entry: `- <Description starting with verb> [(#N)](url)` — link to the issue, not the PR.
 - Descriptions should be human-readable, not raw commit messages (e.g. "Fixed NPE when application list is empty" not "fix #811: add missing import").
 - Skip the Changelog update only for changes with no user-visible impact (e.g. pure CI/tooling changes).
