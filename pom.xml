@@ -46,13 +46,13 @@
         <wultra-core.version>2.2.1</wultra-core.version>
         <powerauth-crypto.version>2.2.0</powerauth-crypto.version>
 
-        <swagger-annotations-jakarta.version>2.2.52</swagger-annotations-jakarta.version>
+        <swagger-annotations-jakarta.version>2.2.53</swagger-annotations-jakarta.version>
         <springdoc-openapi-starter-webmvc-ui.version>3.0.3</springdoc-openapi-starter-webmvc-ui.version>
         <logstash.version>9.0</logstash.version>
         <commons-csv.version>1.14.1</commons-csv.version>
-        <ojdbc-version>23.26.2.0.0</ojdbc-version>
+        <ojdbc-version>23.26.3.0.0</ojdbc-version>
         <central.publishing.plugin.version>0.11.0</central.publishing.plugin.version>
-        <cyclonedx-maven-plugin.version>2.9.2</cyclonedx-maven-plugin.version>
+        <cyclonedx-maven-plugin.version>2.9.3</cyclonedx-maven-plugin.version>
     </properties>
 
     <dependencies>
