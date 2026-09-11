@@ -52,7 +52,6 @@
         <commons-csv.version>1.14.1</commons-csv.version>
         <ojdbc-version>23.26.3.0.0</ojdbc-version>
         <central.publishing.plugin.version>0.11.0</central.publishing.plugin.version>
-        <cyclonedx-maven-plugin.version>2.9.3</cyclonedx-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -114,7 +113,6 @@
             <plugin>
                 <groupId>org.cyclonedx</groupId>
                 <artifactId>cyclonedx-maven-plugin</artifactId>
-                <version>${cyclonedx-maven-plugin.version}</version>
                 <configuration>
                     <skipNotDeployed>false</skipNotDeployed>
                 </configuration>
