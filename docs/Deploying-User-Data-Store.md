@@ -53,3 +53,14 @@ INSERT INTO public.uds_authorities (username, authority) VALUES ('admin', 'ROLE_
 Right now, the only standalone war is supported running from console using the `java -jar` command.
 The deployed application is accessible on `http://localhost:8080/user-data-store/`.
 
+
+## Logging
+
+By default, User Data Store logs plain text to the console. The output includes structured key-value data (`kv()`), which is rendered by the `%sa` conversion word at the end of each log line.
+
+To switch to JSON (Logstash) logging, set the `USER_DATA_STORE_LOGGING` environment variable to the path of a Logback configuration, for example `/opt/logback/conf/uds-logback.xml` in the Docker image.
+
+The console pattern can be customized using the `logging.pattern.console` property.
+
+> **Warning:** A custom `logging.pattern.console` that omits `%sa` silently drops structured log data.
+
